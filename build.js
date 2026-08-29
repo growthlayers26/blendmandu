@@ -391,8 +391,21 @@ for (const file of ['index.html', 'shop.html', 'cart.html']) {
      URL was typed into them — changing SHOP.url silently updated the
      sitemap and every generated page but left the homepage pointing at a
      domain that no longer resolves, breaking its social preview. */
-  const title = (t.match(/<title>([\s\S]*?)<\/title>/) || [])[1] || 'Blendmandu';
-  const desc = (t.match(/<meta name="description" content="([^"]*)"/) || [])[1] || '';
+  /* The title and description are read back out of already-escaped HTML,
+     then head() escapes them again — so "&" became "&amp;amp;" and grew
+     another "amp;" on every single build. Decode fully before re-escaping;
+     looping also repairs any entity that already compounded. */
+  const unesc = v => {
+    let prev, out = v;
+    do {
+      prev = out;
+      out = out.replace(/&amp;/g, '&').replace(/&lt;/g, '<')
+               .replace(/&gt;/g, '>').replace(/&quot;/g, '"');
+    } while (out !== prev);
+    return out;
+  };
+  const title = unesc((t.match(/<title>([\s\S]*?)<\/title>/) || [])[1] || 'Blendmandu');
+  const desc = unesc((t.match(/<meta name="description" content="([^"]*)"/) || [])[1] || '');
   const noindex = /name="robots" content="noindex"/.test(t);
   t = t.replace(/<head>[\s\S]*?<\/head>/,
     '<head>\n' + head({ title, desc, url, base: '', lang: 'en', alt })

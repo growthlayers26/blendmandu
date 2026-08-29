@@ -12,8 +12,8 @@ const SHOP = {
   brandTab:   'KTM',
 
   // ---- CHANGE THIS to your real WhatsApp number (country code, no +) ----
-  whatsapp:   '9779800000000',
-  phone:      '+977 980-0000000',
+  whatsapp:   '9779842579959',
+  phone:      '+977 9842579959',
   email:      'order@blendmandu.com',
   instagram:  'https://instagram.com/',
 
