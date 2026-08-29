@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en" data-base="" data-lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your cart | Blendmandu</title>
+<meta name="description" content="Review your order and send it through on WhatsApp. Cash on delivery, eSewa, Khalti or Fonepay.">
+<link rel="canonical" href="https://blendmandu.com/cart.html">
+<link rel="alternate" hreflang="en" href="https://blendmandu.com/cart.html">
+<link rel="alternate" hreflang="ne" href="https://blendmandu.com/ne/cart.html">
+<link rel="alternate" hreflang="x-default" href="https://blendmandu.com/cart.html">
+
+<!-- social cards: this is how the link renders in WhatsApp, Instagram and Messenger -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Blendmandu">
+<meta property="og:locale" content="en_NP">
+<meta property="og:title" content="Your cart">
+<meta property="og:description" content="Review your order and send it through on WhatsApp. Cash on delivery, eSewa, Khalti or Fonepay.">
+<meta property="og:url" content="https://blendmandu.com/cart.html">
+<meta property="og:image" content="https://blendmandu.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Blendmandu — smoothies delivered 24/7 in Kathmandu">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Your cart">
+<meta name="twitter:description" content="Review your order and send it through on WhatsApp. Cash on delivery, eSewa, Khalti or Fonepay.">
+<meta name="twitter:image" content="https://blendmandu.com/og-image.png">
+
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#f8f7e5">
+<meta name="msapplication-TileColor" content="#ff834f">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Righteous&family=Eczar:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css?v=f04039cb">
+<meta name="robots" content="noindex">
+</head>
+<body data-page="cart">
+
+<main class="shell section">
+  <h1>Your cart</h1>
+
+  <div id="cart-empty" class="empty" hidden>
+    <p class="lede" style="margin-inline:auto">Nothing in here yet.</p>
+    <a class="pill pill--accent" href="shop.html">Browse the menu</a>
+  </div>
+
+  <div id="cart-body" hidden>
+    <div class="cartlayout">
+
+      <section>
+        <div id="lines"></div>
+        <div class="totals" role="status" aria-live="polite" aria-atomic="true">
+          <div class="totals__row"><span>Subtotal</span><span class="totals__val" id="sub">&mdash;</span></div>
+          <div class="totals__row"><span>Delivery</span><span class="totals__val" id="ship">&mdash;</span></div>
+          <div class="totals__row totals__row--grand"><span>Total</span><span class="totals__val" id="grand">&mdash;</span></div>
+        </div>
+        <p class="field__hint" id="free-hint"></p>
+      </section>
+
+      <section class="panel">
+        <p class="eyebrow eyebrow--accent">Checkout</p>
+        <h2 style="font-size:1.7rem">Where to?</h2>
+
+        <form id="checkout" novalidate>
+          <div class="field">
+            <label for="name">Your name</label>
+            <input class="input" id="name" required autocomplete="name">
+          </div>
+
+          <div class="field">
+            <label for="phone">Phone number</label>
+            <input class="input" id="phone" type="tel" required autocomplete="tel"
+                   inputmode="numeric" placeholder="98XXXXXXXX">
+          </div>
+
+          <div class="field">
+            <label for="zone">Delivery area</label>
+            <select class="input" id="zone"></select>
+            <p class="field__hint">We only deliver inside Kathmandu at the moment.</p>
+          </div>
+
+          <div class="field">
+            <label for="address">Address</label>
+            <textarea class="input" id="address" required autocomplete="street-address"
+                      placeholder="Street, tole, house or flat number"></textarea>
+          </div>
+
+          <div class="field">
+            <label for="landmark">Nearest landmark</label>
+            <input class="input" id="landmark" autocomplete="address-level3"
+                   placeholder="Helps the rider find you faster">
+          </div>
+
+          <div class="field">
+            <label for="when">When do you want it?</label>
+            <select class="input" id="when">
+              <option value="now">Right now — 30 to 45 min</option>
+              <option value="later">Schedule for later</option>
+            </select>
+          </div>
+
+          <div class="field" id="when-later" hidden>
+            <label for="when-at">Deliver at</label>
+            <input class="input" id="when-at" type="datetime-local">
+          </div>
+
+          <div class="field">
+            <label>Payment</label>
+            <div class="choices" id="pay"></div>
+          </div>
+
+          <div class="field">
+            <label for="notes">Anything else?</label>
+            <textarea class="input" id="notes" placeholder="Allergies, no ice, extra ginger…"></textarea>
+          </div>
+
+          <button class="pill pill--accent pill--wide" type="submit">Send order on WhatsApp</button>
+          <p class="field__hint" style="text-align:center">Opens WhatsApp with your order filled in. Nothing is charged here.</p>
+        </form>
+      </section>
+
+    </div>
+  </div>
+</main>
+
+<script src="assets/vendor/lenis.min.js"></script>
+<script src="assets/js/i18n.js?v=f04039cb"></script>
+<script src="assets/js/products.js?v=f04039cb"></script>
+<script src="assets/js/analytics.js?v=f04039cb"></script>
+<script src="assets/js/app.js?v=f04039cb"></script>
+</body>
+</html>

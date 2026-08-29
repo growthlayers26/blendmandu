@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="ne-NP" data-base="" data-lang="ne">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>तपाईंको कार्ट | Blendmandu</title>
+<meta name="description" content="आफ्नो अर्डर हेरेर व्हाट्सएपमा पठाउनुहोस्। डेलिभरीमा नगद, इसेवा, खल्ती वा फोनपे।">
+<link rel="canonical" href="https://blendmandu.com/ne/cart.html">
+<link rel="alternate" hreflang="en" href="https://blendmandu.com/cart.html">
+<link rel="alternate" hreflang="ne" href="https://blendmandu.com/ne/cart.html">
+<link rel="alternate" hreflang="x-default" href="https://blendmandu.com/cart.html">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Blendmandu">
+<meta property="og:locale" content="ne_NP">
+<meta property="og:title" content="तपाईंको कार्ट | Blendmandu">
+<meta property="og:description" content="आफ्नो अर्डर हेरेर व्हाट्सएपमा पठाउनुहोस्। डेलिभरीमा नगद, इसेवा, खल्ती वा फोनपे।">
+<meta property="og:url" content="https://blendmandu.com/ne/cart.html">
+<meta property="og:image" content="https://blendmandu.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="तपाईंको कार्ट | Blendmandu">
+<meta name="twitter:description" content="आफ्नो अर्डर हेरेर व्हाट्सएपमा पठाउनुहोस्। डेलिभरीमा नगद, इसेवा, खल्ती वा फोनपे।">
+<meta name="twitter:image" content="https://blendmandu.com/og-image.png">
+
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#f8f7e5">
+<meta name="msapplication-TileColor" content="#ff834f">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Righteous&family=Eczar:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css?v=f04039cb">
+<meta name="robots" content="noindex">
+</head>
+<body data-page="cart">
+
+<main class="shell section">
+  <h1>तपाईंको कार्ट</h1>
+
+  <div id="cart-empty" class="empty" hidden>
+    <p class="lede" style="margin-inline:auto">अहिलेसम्म केही छैन।</p>
+    <a class="pill pill--accent" href="shop.html">मेनु हेर्नुहोस्</a>
+  </div>
+
+  <div id="cart-body" hidden>
+    <div class="cartlayout">
+
+      <section>
+        <div id="lines"></div>
+        <div class="totals" role="status" aria-live="polite" aria-atomic="true">
+          <div class="totals__row"><span>उप-जम्मा</span><span class="totals__val" id="sub">&mdash;</span></div>
+          <div class="totals__row"><span>डेलिभरी</span><span class="totals__val" id="ship">&mdash;</span></div>
+          <div class="totals__row totals__row--grand"><span>जम्मा</span><span class="totals__val" id="grand">&mdash;</span></div>
+        </div>
+        <p class="field__hint" id="free-hint"></p>
+      </section>
+
+      <section class="panel">
+        <p class="eyebrow eyebrow--accent">चेकआउट</p>
+        <h2 style="font-size:1.7rem">कहाँ पुर्‍याउने?</h2>
+
+        <form id="checkout" novalidate>
+          <div class="field">
+            <label for="name">तपाईंको नाम</label>
+            <input class="input" id="name" required autocomplete="name">
+          </div>
+
+          <div class="field">
+            <label for="phone">फोन नम्बर</label>
+            <input class="input" id="phone" type="tel" required autocomplete="tel"
+                   inputmode="numeric" placeholder="98XXXXXXXX">
+          </div>
+
+          <div class="field">
+            <label for="zone">डेलिभरी क्षेत्र</label>
+            <select class="input" id="zone"></select>
+            <p class="field__hint">अहिले हामी काठमाडौंभित्र मात्र पुर्‍याउँछौं।</p>
+          </div>
+
+          <div class="field">
+            <label for="address">ठेगाना</label>
+            <textarea class="input" id="address" required autocomplete="street-address"
+                      placeholder="सडक, टोल, घर वा फ्ल्याट नम्बर"></textarea>
+          </div>
+
+          <div class="field">
+            <label for="landmark">नजिकको ल्यान्डमार्क</label>
+            <input class="input" id="landmark" autocomplete="address-level3"
+                   placeholder="राइडरलाई छिटो भेट्न सजिलो हुन्छ">
+          </div>
+
+          <div class="field">
+            <label for="when">कहिले चाहनुहुन्छ?</label>
+            <select class="input" id="when">
+              <option value="now">अहिले नै — ३० देखि ४५ मिनेट</option>
+              <option value="later">पछिका लागि तय गर्नुहोस्</option>
+            </select>
+          </div>
+
+          <div class="field" id="when-later" hidden>
+            <label for="when-at">यति बेला पुर्‍याउनुहोस्</label>
+            <input class="input" id="when-at" type="datetime-local">
+          </div>
+
+          <div class="field">
+            <label>भुक्तानी</label>
+            <div class="choices" id="pay"></div>
+          </div>
+
+          <div class="field">
+            <label for="notes">अरू केही?</label>
+            <textarea class="input" id="notes" placeholder="एलर्जी, बरफ नहाल्ने, बढी अदुवा…"></textarea>
+          </div>
+
+          <button class="pill pill--accent pill--wide" type="submit">व्हाट्सएपमा अर्डर पठाउनुहोस्</button>
+          <p class="field__hint" style="text-align:center">तपाईंको अर्डर भरिएको व्हाट्सएप खुल्छ। यहाँ कुनै रकम काटिँदैन।</p>
+        </form>
+      </section>
+
+    </div>
+  </div>
+</main>
+
+<script src="../assets/vendor/lenis.min.js"></script>
+<script src="../assets/js/i18n.js?v=f04039cb"></script>
+<script src="../assets/js/products.js?v=f04039cb"></script>
+<script src="../assets/js/analytics.js?v=f04039cb"></script>
+<script src="../assets/js/app.js?v=f04039cb"></script>
+</body>
+</html>

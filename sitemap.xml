@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://blendmandu.com/</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blendmandu.com/"/>
+    <xhtml:link rel="alternate" hreflang="ne" href="https://blendmandu.com/ne/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://blendmandu.com/"/>
+  </url>
+  <url>
+    <loc>https://blendmandu.com/shop.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blendmandu.com/shop.html"/>
+    <xhtml:link rel="alternate" hreflang="ne" href="https://blendmandu.com/ne/shop.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://blendmandu.com/shop.html"/>
+  </url>
+  <url>
+    <loc>https://blendmandu.com/contact.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blendmandu.com/contact.html"/>
+    <xhtml:link rel="alternate" hreflang="ne" href="https://blendmandu.com/ne/contact.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://blendmandu.com/contact.html"/>
+  </url>
+  <url>
+    <loc>https://blendmandu.com/privacy-policy.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blendmandu.com/privacy-policy.html"/>
+    <xhtml:link rel="alternate" hreflang="ne" href="https://blendmandu.com/ne/privacy-policy.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://blendmandu.com/privacy-policy.html"/>
+  </url>
+  <url>
+    <loc>https://blendmandu.com/return-policy.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blendmandu.com/return-policy.html"/>
+    <xhtml:link rel="alternate" hreflang="ne" href="https://blendmandu.com/ne/return-policy.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://blendmandu.com/return-policy.html"/>
+  </url>
+  <url>
+    <loc>https://blendmandu.com/terms.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blendmandu.com/terms.html"/>
+    <xhtml:link rel="alternate" hreflang="ne" href="https://blendmandu.com/ne/terms.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://blendmandu.com/terms.html"/>
+  </url>
+  <url>
+    <loc>https://blendmandu.com/cookies.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blendmandu.com/cookies.html"/>
+    <xhtml:link rel="alternate" hreflang="ne" href="https://blendmandu.com/ne/cookies.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://blendmandu.com/cookies.html"/>
+  </url>
+  <url>
+    <loc>https://blendmandu.com/product/himalayan-berry.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blendmandu.com/product/himalayan-berry.html"/>
+    <xhtml:link rel="alternate" hreflang="ne" href="https://blendmandu.com/ne/product/himalayan-berry.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://blendmandu.com/product/himalayan-berry.html"/>
+  </url>
+  <url>
+    <loc>https://blendmandu.com/product/mango-sunrise.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blendmandu.com/product/mango-sunrise.html"/>
+    <xhtml:link rel="alternate" hreflang="ne" href="https://blendmandu.com/ne/product/mango-sunrise.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://blendmandu.com/product/mango-sunrise.html"/>
+  </url>
+  <url>
+    <loc>https://blendmandu.com/product/green-machine.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blendmandu.com/product/green-machine.html"/>
+    <xhtml:link rel="alternate" hreflang="ne" href="https://blendmandu.com/ne/product/green-machine.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://blendmandu.com/product/green-machine.html"/>
+  </url>
+  <url>
+    <loc>https://blendmandu.com/product/peanut-banana.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blendmandu.com/product/peanut-banana.html"/>
+    <xhtml:link rel="alternate" hreflang="ne" href="https://blendmandu.com/ne/product/peanut-banana.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://blendmandu.com/product/peanut-banana.html"/>
+  </url>
+  <url>
+    <loc>https://blendmandu.com/product/cacao-almond.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blendmandu.com/product/cacao-almond.html"/>
+    <xhtml:link rel="alternate" hreflang="ne" href="https://blendmandu.com/ne/product/cacao-almond.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://blendmandu.com/product/cacao-almond.html"/>
+  </url>
+  <url>
+    <loc>https://blendmandu.com/product/tropical-turmeric.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blendmandu.com/product/tropical-turmeric.html"/>
+    <xhtml:link rel="alternate" hreflang="ne" href="https://blendmandu.com/ne/product/tropical-turmeric.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://blendmandu.com/product/tropical-turmeric.html"/>
+  </url>
+  <url>
+    <loc>https://blendmandu.com/product/acai-bowl.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blendmandu.com/product/acai-bowl.html"/>
+    <xhtml:link rel="alternate" hreflang="ne" href="https://blendmandu.com/ne/product/acai-bowl.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://blendmandu.com/product/acai-bowl.html"/>
+  </url>
+  <url>
+    <loc>https://blendmandu.com/product/dragonfruit-bowl.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blendmandu.com/product/dragonfruit-bowl.html"/>
+    <xhtml:link rel="alternate" hreflang="ne" href="https://blendmandu.com/ne/product/dragonfruit-bowl.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://blendmandu.com/product/dragonfruit-bowl.html"/>
+  </url>
+  <url>
+    <loc>https://blendmandu.com/product/protein-bowl.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blendmandu.com/product/protein-bowl.html"/>
+    <xhtml:link rel="alternate" hreflang="ne" href="https://blendmandu.com/ne/product/protein-bowl.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://blendmandu.com/product/protein-bowl.html"/>
+  </url>
+  <url>
+    <loc>https://blendmandu.com/product/beet-ginger.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blendmandu.com/product/beet-ginger.html"/>
+    <xhtml:link rel="alternate" hreflang="ne" href="https://blendmandu.com/ne/product/beet-ginger.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://blendmandu.com/product/beet-ginger.html"/>
+  </url>
+  <url>
+    <loc>https://blendmandu.com/product/citrus-immunity.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blendmandu.com/product/citrus-immunity.html"/>
+    <xhtml:link rel="alternate" hreflang="ne" href="https://blendmandu.com/ne/product/citrus-immunity.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://blendmandu.com/product/citrus-immunity.html"/>
+  </url>
+  <url>
+    <loc>https://blendmandu.com/product/green-press.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blendmandu.com/product/green-press.html"/>
+    <xhtml:link rel="alternate" hreflang="ne" href="https://blendmandu.com/ne/product/green-press.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://blendmandu.com/product/green-press.html"/>
+  </url>
+  <url>
+    <loc>https://blendmandu.com/product/ginger-turmeric-shot.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blendmandu.com/product/ginger-turmeric-shot.html"/>
+    <xhtml:link rel="alternate" hreflang="ne" href="https://blendmandu.com/ne/product/ginger-turmeric-shot.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://blendmandu.com/product/ginger-turmeric-shot.html"/>
+  </url>
+  <url>
+    <loc>https://blendmandu.com/product/wheatgrass-shot.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blendmandu.com/product/wheatgrass-shot.html"/>
+    <xhtml:link rel="alternate" hreflang="ne" href="https://blendmandu.com/ne/product/wheatgrass-shot.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://blendmandu.com/product/wheatgrass-shot.html"/>
+  </url>
+  <url>
+    <loc>https://blendmandu.com/product/amla-shot.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blendmandu.com/product/amla-shot.html"/>
+    <xhtml:link rel="alternate" hreflang="ne" href="https://blendmandu.com/ne/product/amla-shot.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://blendmandu.com/product/amla-shot.html"/>
+  </url>
+  <url>
+    <loc>https://blendmandu.com/ne/</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blendmandu.com/"/>
+    <xhtml:link rel="alternate" hreflang="ne" href="https://blendmandu.com/ne/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://blendmandu.com/"/>
+  </url>
+  <url>
+    <loc>https://blendmandu.com/ne/shop.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blendmandu.com/shop.html"/>
+    <xhtml:link rel="alternate" hreflang="ne" href="https://blendmandu.com/ne/shop.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://blendmandu.com/shop.html"/>
+  </url>
+  <url>
+    <loc>https://blendmandu.com/ne/contact.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blendmandu.com/contact.html"/>
+    <xhtml:link rel="alternate" hreflang="ne" href="https://blendmandu.com/ne/contact.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://blendmandu.com/contact.html"/>
+  </url>
+  <url>
+    <loc>https://blendmandu.com/ne/privacy-policy.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blendmandu.com/privacy-policy.html"/>
+    <xhtml:link rel="alternate" hreflang="ne" href="https://blendmandu.com/ne/privacy-policy.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://blendmandu.com/privacy-policy.html"/>
+  </url>
+  <url>
+    <loc>https://blendmandu.com/ne/return-policy.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blendmandu.com/return-policy.html"/>
+    <xhtml:link rel="alternate" hreflang="ne" href="https://blendmandu.com/ne/return-policy.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://blendmandu.com/return-policy.html"/>
+  </url>
+  <url>
+    <loc>https://blendmandu.com/ne/terms.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blendmandu.com/terms.html"/>
+    <xhtml:link rel="alternate" hreflang="ne" href="https://blendmandu.com/ne/terms.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://blendmandu.com/terms.html"/>
+  </url>
+  <url>
+    <loc>https://blendmandu.com/ne/cookies.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blendmandu.com/cookies.html"/>
+    <xhtml:link rel="alternate" hreflang="ne" href="https://blendmandu.com/ne/cookies.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://blendmandu.com/cookies.html"/>
+  </url>
+  <url>
+    <loc>https://blendmandu.com/ne/product/himalayan-berry.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blendmandu.com/product/himalayan-berry.html"/>
+    <xhtml:link rel="alternate" hreflang="ne" href="https://blendmandu.com/ne/product/himalayan-berry.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://blendmandu.com/product/himalayan-berry.html"/>
+  </url>
+  <url>
+    <loc>https://blendmandu.com/ne/product/mango-sunrise.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blendmandu.com/product/mango-sunrise.html"/>
+    <xhtml:link rel="alternate" hreflang="ne" href="https://blendmandu.com/ne/product/mango-sunrise.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://blendmandu.com/product/mango-sunrise.html"/>
+  </url>
+  <url>
+    <loc>https://blendmandu.com/ne/product/green-machine.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blendmandu.com/product/green-machine.html"/>
+    <xhtml:link rel="alternate" hreflang="ne" href="https://blendmandu.com/ne/product/green-machine.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://blendmandu.com/product/green-machine.html"/>
+  </url>
+  <url>
+    <loc>https://blendmandu.com/ne/product/peanut-banana.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blendmandu.com/product/peanut-banana.html"/>
+    <xhtml:link rel="alternate" hreflang="ne" href="https://blendmandu.com/ne/product/peanut-banana.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://blendmandu.com/product/peanut-banana.html"/>
+  </url>
+  <url>
+    <loc>https://blendmandu.com/ne/product/cacao-almond.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blendmandu.com/product/cacao-almond.html"/>
+    <xhtml:link rel="alternate" hreflang="ne" href="https://blendmandu.com/ne/product/cacao-almond.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://blendmandu.com/product/cacao-almond.html"/>
+  </url>
+  <url>
+    <loc>https://blendmandu.com/ne/product/tropical-turmeric.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blendmandu.com/product/tropical-turmeric.html"/>
+    <xhtml:link rel="alternate" hreflang="ne" href="https://blendmandu.com/ne/product/tropical-turmeric.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://blendmandu.com/product/tropical-turmeric.html"/>
+  </url>
+  <url>
+    <loc>https://blendmandu.com/ne/product/acai-bowl.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blendmandu.com/product/acai-bowl.html"/>
+    <xhtml:link rel="alternate" hreflang="ne" href="https://blendmandu.com/ne/product/acai-bowl.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://blendmandu.com/product/acai-bowl.html"/>
+  </url>
+  <url>
+    <loc>https://blendmandu.com/ne/product/dragonfruit-bowl.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blendmandu.com/product/dragonfruit-bowl.html"/>
+    <xhtml:link rel="alternate" hreflang="ne" href="https://blendmandu.com/ne/product/dragonfruit-bowl.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://blendmandu.com/product/dragonfruit-bowl.html"/>
+  </url>
+  <url>
+    <loc>https://blendmandu.com/ne/product/protein-bowl.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blendmandu.com/product/protein-bowl.html"/>
+    <xhtml:link rel="alternate" hreflang="ne" href="https://blendmandu.com/ne/product/protein-bowl.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://blendmandu.com/product/protein-bowl.html"/>
+  </url>
+  <url>
+    <loc>https://blendmandu.com/ne/product/beet-ginger.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blendmandu.com/product/beet-ginger.html"/>
+    <xhtml:link rel="alternate" hreflang="ne" href="https://blendmandu.com/ne/product/beet-ginger.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://blendmandu.com/product/beet-ginger.html"/>
+  </url>
+  <url>
+    <loc>https://blendmandu.com/ne/product/citrus-immunity.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blendmandu.com/product/citrus-immunity.html"/>
+    <xhtml:link rel="alternate" hreflang="ne" href="https://blendmandu.com/ne/product/citrus-immunity.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://blendmandu.com/product/citrus-immunity.html"/>
+  </url>
+  <url>
+    <loc>https://blendmandu.com/ne/product/green-press.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blendmandu.com/product/green-press.html"/>
+    <xhtml:link rel="alternate" hreflang="ne" href="https://blendmandu.com/ne/product/green-press.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://blendmandu.com/product/green-press.html"/>
+  </url>
+  <url>
+    <loc>https://blendmandu.com/ne/product/ginger-turmeric-shot.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blendmandu.com/product/ginger-turmeric-shot.html"/>
+    <xhtml:link rel="alternate" hreflang="ne" href="https://blendmandu.com/ne/product/ginger-turmeric-shot.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://blendmandu.com/product/ginger-turmeric-shot.html"/>
+  </url>
+  <url>
+    <loc>https://blendmandu.com/ne/product/wheatgrass-shot.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blendmandu.com/product/wheatgrass-shot.html"/>
+    <xhtml:link rel="alternate" hreflang="ne" href="https://blendmandu.com/ne/product/wheatgrass-shot.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://blendmandu.com/product/wheatgrass-shot.html"/>
+  </url>
+  <url>
+    <loc>https://blendmandu.com/ne/product/amla-shot.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blendmandu.com/product/amla-shot.html"/>
+    <xhtml:link rel="alternate" hreflang="ne" href="https://blendmandu.com/ne/product/amla-shot.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://blendmandu.com/product/amla-shot.html"/>
+  </url>
+</urlset>
