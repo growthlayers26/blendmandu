@@ -66,6 +66,14 @@ for (const f of pages) {
   const vers = [...new Set([...s.matchAll(/\?v=([a-f0-9]+)/g)].map(m => m[1]))];
   if (vers.length > 1) bad(f, `mixed asset versions: ${vers.join(', ')}`);
 
+  /* Every absolute URL the page declares about itself must share one
+     origin. A canonical or og:image left on an old domain 404s in link
+     previews and tells search engines the wrong home. */
+  const origins = new Set();
+  for (const m of s.matchAll(/(?:rel="canonical" href|property="og:(?:url|image)" content|name="twitter:image" content|rel="alternate" hreflang="[^"]*" href)="(https?:\/\/[^\/"]+)/g))
+    origins.add(m[1]);
+  if (origins.size > 1) bad(f, `mixed self-referential origins: ${[...origins].join(', ')}`);
+
   // internal links must resolve to a real file
   const dir = path.dirname(f);
   for (const m of s.matchAll(/(?:href|src)="([^"#?:][^"]*?)(?:[?#][^"]*)?"/g)) {

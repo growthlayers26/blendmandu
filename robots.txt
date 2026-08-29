@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /cart.html
 
-Sitemap: https://blendmandu.com/sitemap.xml
+Sitemap: https://blendmandu-ktm.vercel.app/sitemap.xml

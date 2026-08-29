@@ -385,10 +385,19 @@ for (const file of ['index.html', 'shop.html', 'cart.html']) {
 
   t = t.replace(/<html[^>]*>/, '<html lang="en" data-base="" data-lang="en">');
 
-  // hreflang block, replacing any previous one
-  t = t.replace(/\n<link rel="alternate"[^>]*>/g, '');
-  t = t.replace(/(<link rel="canonical"[^>]*>)/,
-    `$1\n<link rel="alternate" hreflang="en" href="${url}">\n<link rel="alternate" hreflang="ne" href="${alt}">\n<link rel="alternate" hreflang="x-default" href="${url}">`);
+  /* Rebuild the whole head from head(), exactly as the generated pages do.
+     Previously this pass only injected hreflang, so the canonical, og:url
+     and og:image on these three hand-written pages kept whatever absolute
+     URL was typed into them — changing SHOP.url silently updated the
+     sitemap and every generated page but left the homepage pointing at a
+     domain that no longer resolves, breaking its social preview. */
+  const title = (t.match(/<title>([\s\S]*?)<\/title>/) || [])[1] || 'Blendmandu';
+  const desc = (t.match(/<meta name="description" content="([^"]*)"/) || [])[1] || '';
+  const noindex = /name="robots" content="noindex"/.test(t);
+  t = t.replace(/<head>[\s\S]*?<\/head>/,
+    '<head>\n' + head({ title, desc, url, base: '', lang: 'en', alt })
+    + (noindex ? '\n<meta name="robots" content="noindex">' : '')
+    + '\n</head>');
 
   // strip the old inline bootstrap script entirely
   t = t.replace(/<script>window\.__BASE__[^<]*<\/script>\n?/g, '');

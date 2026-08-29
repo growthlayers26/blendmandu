@@ -6,7 +6,7 @@
 const SHOP = {
   brand:      'BLENDMANDU',
   // ---- CHANGE THIS to your real domain (no trailing slash) ----
-  url:        'https://blendmandu.com',
+  url:        'https://blendmandu-ktm.vercel.app',
   brandLine1: 'BLEND',
   brandLine2: 'MANDU',
   brandTab:   'KTM',
