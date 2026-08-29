@@ -229,6 +229,8 @@ function renderShell() {
           `<a href="${href}" style="--i:${i}">${label}</a>`).join('')}
       </nav>
       <div class="menu-foot">
+        <a class="menu-lang" href="${altLangHref()}" hreflang="${LANG === 'en' ? 'ne' : 'en'}"
+           lang="${LANG === 'en' ? 'ne' : 'en'}">${LANG === 'en' ? 'नेपालीमा हेर्नुहोस्' : 'View in English'}</a>
         <a href="https://wa.me/${SHOP.whatsapp}">WhatsApp ${SHOP.phone}</a>
         <span>${t('ticker.open')} &middot; ${t('ticker.area')}</span>
       </div>
