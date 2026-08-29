@@ -49,10 +49,21 @@ const VER = crypto.createHash('sha1').update(
     .map(f => fs.readFileSync(f)).join('')
 ).digest('hex').slice(0, 8);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* Google cuts meta descriptions around 155 characters. Anything past that
+   is invisible, so trim on a word boundary rather than let it dangle. */
+function clampDesc(text, max = 155) {
+  const t = String(text).replace(/\s+/g, ' ').trim();
+  if (t.length <= max) return t;
+  const cut = t.slice(0, max);
+  const trimmed = cut.slice(0, cut.lastIndexOf(' ')).replace(/[,;:]+$/, '');
+  return /[.!?]$/.test(trimmed) ? trimmed : trimmed + '.';
+}
 const money = n => `${SHOP.currency} ${n.toLocaleString('en-IN')}`;
 
 /* ---------- shared head ---------- */
 function head({ title, desc, url, ogtype = 'website', base = '', extra = '', lang = 'en', alt = '' }) {
+  desc = clampDesc(desc);   // clamp once here so no call site can forget
   const hreflang = alt ? `
 <link rel="alternate" hreflang="en" href="${lang === 'en' ? url : alt}">
 <link rel="alternate" hreflang="ne" href="${lang === 'ne' ? url : alt}">
@@ -123,8 +134,9 @@ function enrich(t, file, lang) {
   const blocks = [];
   if (file === 'index.html') {
     blocks.push(SCHEMA.business(lang), SCHEMA.website(lang), SCHEMA.faq(lang));
-    t = t.replace(/<div class="faq" id="faq"><\/div>/,
-                  `<div class="faq" id="faq">${faqHTML(lang)}\n    </div>`);
+    // match the div whatever it already contains, so a rebuild refreshes it
+    t = t.replace(/<div class="faq" id="faq">[\s\S]*?<\/div>\s*<\/section>/,
+                  `<div class="faq" id="faq">${faqHTML(lang)}\n    </div>\n  </section>`);
     t = t.replace(/(<p class="eyebrow eyebrow--accent" data-faq-eyebrow>)[^<]*/,
                   `$1${esc(T(lang, 'faq.eyebrow'))}`);
     t = t.replace(/(<h2 data-faq-title>)[^<]*/, `$1${esc(T(lang, 'faq.title'))}`);
@@ -157,7 +169,8 @@ for (const lang of LANGCODES) {
     const alrg  = trField(lang, p.id, 'allergens', p.allergens);
     const tag   = trField(lang, p.id, 'tag', p.tag);
 
-    const desc = `${blurb} ${meta}. ${money(p.price)}.`;
+    const firstSentence = blurb.split(/(?<=\.)\s/)[0];
+    const desc = clampDesc(`${firstSentence} ${money(p.price)}, delivered across Kathmandu in 30 to 45 minutes.`);
     const related = PRODUCTS.filter(x => x.cat === p.cat && x.id !== p.id).slice(0, 3);
 
     const jsonld = {
@@ -185,7 +198,7 @@ for (const lang of LANGCODES) {
     const html = `<!doctype html>
 <html lang="${LANGS[lang].htmlLang}" data-base="${linkBase}" data-lang="${lang}">
 <head>
-${head({ title: `${p.name} — ${money(p.price)} | Blendmandu`, desc, url, ogtype: 'product', base: assetBase, lang, alt,
+${head({ title: `${p.name}, ${money(p.price)} | Smoothie Delivery Kathmandu`, desc, url, ogtype: 'product', base: assetBase, lang, alt,
   extra: `\n<script type="application/ld+json">${JSON.stringify(jsonld)}</script>\n<script type="application/ld+json">${JSON.stringify(breadcrumb)}</script>` })}
 </head>
 <body>
@@ -555,16 +568,22 @@ for (const file of ['index.html', 'shop.html', 'cart.html']) {
   t = t.replace(/(href|src)="(index|shop|cart|contact|404|privacy-policy|return-policy|terms|cookies)\.html/g, '$1="$2.html');
   t = t.replace(/<script>window\.__BASE__[^<]*<\/script>\n?/g, '');
 
-  // prose
-  let missed = [];
+  /* Check the required markers against the ENGLISH source before any
+     substitution. The previous version compared them against the list of
+     unmatched `strings` keys, which are full sentences — a short marker
+     could never appear in that list, so the guard never fired once and a
+     Nepali page quietly shipped English copy. */
+  const required = NE_COPY.requiredIn[file] || [];
+  const absent = required.filter(marker => !t.includes(marker));
+  if (absent.length)
+    throw new Error(
+      `ne-copy.js: English copy in ${file} changed, so its Nepali mapping is stale.\n` +
+      `  These markers are no longer present:\n    ` + absent.join('\n    ') +
+      `\n  Update ne-copy.js (strings + requiredIn) to match.`);
+
   for (const [en, ne] of NE_COPY.strings) {
     if (t.includes(en)) t = t.split(en).join(ne);
-    else missed.push(en);
   }
-  const required = NE_COPY.requiredIn[file] || [];
-  const reallyMissing = missed.filter(m => required.includes(m));
-  if (reallyMissing.length)
-    throw new Error(`ne-copy.js: strings not found in ${file}:\n  ` + reallyMissing.join('\n  '));
 
   t = enrich(t, file, 'ne');
   fs.mkdirSync('ne', { recursive: true });

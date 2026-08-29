@@ -31,7 +31,7 @@ const I18N = {
 
     'ticker.open': 'Open 24/7',
     'ticker.area': 'Delivery inside Kathmandu',
-    'ticker.fresh': 'Blended to order',
+    'ticker.fresh': 'Blended after you order',
     'ticker.free': 'Free over {amount}',
     'ticker.pay': 'Cash · eSewa · Khalti',
 
@@ -39,7 +39,7 @@ const I18N = {
     'gate.title': 'Welcome to the neighborhood',
     'gate.yes': 'Yes, I am',
     'gate.no': "No, I'm not",
-    'gate.blurb': 'We blend fresh and ride it out 24 hours a day — but only inside the Kathmandu ring road for now.',
+    'gate.blurb': 'We blend fresh and ride it out 24 hours a day. For now we only cross the Kathmandu ring road.',
     'gate.out.eyebrow': 'Not yet, sorry',
     'gate.out.title': "We don't ride that far",
     'gate.out.blurb': "Delivery is Kathmandu-only right now. Leave your email and we'll shout when we reach your area.",
@@ -62,7 +62,7 @@ const I18N = {
     'product.delivery': 'Delivery',
     'product.made': 'Made',
     'product.deliveryVal': '24/7, inside Kathmandu · free over {amount}',
-    'product.madeVal': 'Blended after you order — never pre-batched',
+    'product.madeVal': 'Blended after you order, never pre-batched',
     'product.askAllergy': 'Allergy or ingredient question?',
     'product.askAllergyLink': 'Message us on WhatsApp',
     'product.askAllergyEnd': 'before ordering.',
@@ -90,14 +90,14 @@ const I18N = {
     'cart.landmark': 'Nearest landmark',
     'cart.landmarkHint': 'Helps the rider find you faster',
     'cart.when': 'When do you want it?',
-    'cart.now': 'Right now — 30 to 45 min',
+    'cart.now': 'Right now, 30 to 45 min',
     'cart.later': 'Schedule for later',
     'cart.at': 'Deliver at',
     'cart.payment': 'Payment',
     'cart.notes': 'Anything else?',
     'cart.notesPlaceholder': 'Allergies, no ice, extra ginger…',
-    'cart.send': 'Send order on WhatsApp',
-    'cart.sendHint': 'Opens WhatsApp with your order filled in. Nothing is charged here.',
+    'cart.send': 'Send my order on WhatsApp',
+    'cart.sendHint': 'Your order is already written out. Press send and we start blending. Nothing is charged on this page.',
     'cart.increase': 'Increase',
     'cart.decrease': 'Decrease',
 
@@ -109,7 +109,7 @@ const I18N = {
     'toast.badPhone': 'That phone number looks wrong',
     'toast.needTime': 'Pick a delivery time',
     'toast.opening': 'Opening WhatsApp to confirm…',
-    'toast.subscribed': 'Thanks — you are on the list',
+    'toast.subscribed': 'Thanks, you are on the list',
     'toast.willTell': 'We will let you know',
 
     'footer.blurb': 'Cloud kitchen, no storefront. We blend to order and ride it to your door anywhere inside Kathmandu, any hour of the day.',
@@ -127,7 +127,7 @@ const I18N = {
     'footer.legal': 'Legal',
 
     'seq.step1': 'Whole fruit, weighed and dropped in',
-    'seq.step2': 'Thirty seconds on high — nothing pre-batched',
+    'seq.step2': 'Thirty seconds on high, nothing pre-batched',
     'seq.step3': 'Poured straight across, no holding tank',
     'seq.step4': 'Lidded, sleeved, and out the door',
 
@@ -141,10 +141,10 @@ const I18N = {
 
     'news.invalid': 'That email looks wrong',
     'news.sending': 'Sending…',
-    'news.error': 'That did not send — try again shortly',
+    'news.error': 'That did not send, try again shortly',
 
     'cart.viewCart': 'View cart',
-    'cart.freeProgress': '{amount} to free delivery',
+    'cart.freeProgress': 'Add {amount} for free delivery',
     'cart.freeReached': 'Free delivery unlocked',
     'cart.again': 'Order again',
     'cart.againBlurb': 'Your last order, one tap away.',
@@ -180,7 +180,7 @@ const I18N = {
 
     'ticker.open': '२४/७ खुला',
     'ticker.area': 'काठमाडौंभित्र डेलिभरी',
-    'ticker.fresh': 'अर्डरपछि मात्र बनाइन्छ',
+    'ticker.fresh': 'अर्डरपछि मात्र ब्लेन्ड',
     'ticker.free': '{amount} माथि निःशुल्क',
     'ticker.pay': 'नगद · इसेवा · खल्ती',
 
@@ -188,7 +188,7 @@ const I18N = {
     'gate.title': 'छिमेकमा स्वागत छ',
     'gate.yes': 'हो, म छु',
     'gate.no': 'होइन, म छैन',
-    'gate.blurb': 'हामी ताजा ब्लेन्ड गरेर दिनको २४ घण्टै पुर्‍याउँछौं — तर अहिलेलाई काठमाडौं रिङरोडभित्र मात्र।',
+    'gate.blurb': 'हामी ताजा ब्लेन्ड गरेर दिनको २४ घण्टै पुर्‍याउँछौं। अहिलेलाई काठमाडौं रिङरोडभित्र मात्र।',
     'gate.out.eyebrow': 'माफ गर्नुहोस्, अहिले होइन',
     'gate.out.title': 'हामी त्यति टाढा पुग्दैनौं',
     'gate.out.blurb': 'अहिले डेलिभरी काठमाडौंमा मात्र छ। इमेल छोड्नुहोस्, तपाईंको क्षेत्रमा पुगेपछि खबर गर्नेछौं।',
@@ -211,7 +211,7 @@ const I18N = {
     'product.delivery': 'डेलिभरी',
     'product.made': 'बनाउने तरिका',
     'product.deliveryVal': '२४/७, काठमाडौंभित्र · {amount} माथि निःशुल्क',
-    'product.madeVal': 'अर्डरपछि मात्र ब्लेन्ड — पहिल्यै बनाइँदैन',
+    'product.madeVal': 'अर्डरपछि मात्र ब्लेन्ड, पहिल्यै बनाइँदैन',
     'product.askAllergy': 'एलर्जी वा सामग्रीबारे प्रश्न छ?',
     'product.askAllergyLink': 'व्हाट्सएपमा सोध्नुहोस्',
     'product.askAllergyEnd': 'अर्डर गर्नुअघि।',
@@ -239,14 +239,14 @@ const I18N = {
     'cart.landmark': 'नजिकको ल्यान्डमार्क',
     'cart.landmarkHint': 'राइडरलाई छिटो भेट्न सजिलो हुन्छ',
     'cart.when': 'कहिले चाहनुहुन्छ?',
-    'cart.now': 'अहिले नै — ३० देखि ४५ मिनेट',
+    'cart.now': 'अहिले नै, ३० देखि ४५ मिनेट',
     'cart.later': 'पछिका लागि तय गर्नुहोस्',
     'cart.at': 'यति बेला पुर्‍याउनुहोस्',
     'cart.payment': 'भुक्तानी',
     'cart.notes': 'अरू केही?',
     'cart.notesPlaceholder': 'एलर्जी, बरफ नहाल्ने, बढी अदुवा…',
-    'cart.send': 'व्हाट्सएपमा अर्डर पठाउनुहोस्',
-    'cart.sendHint': 'तपाईंको अर्डर भरिएको व्हाट्सएप खुल्छ। यहाँ कुनै रकम काटिँदैन।',
+    'cart.send': 'मेरो अर्डर व्हाट्सएपमा पठाउनुहोस्',
+    'cart.sendHint': 'तपाईंको अर्डर लेखिसकियो। पठाउनुहोस्, हामी ब्लेन्ड सुरु गर्छौं। यो पृष्ठमा कुनै रकम काटिँदैन।',
     'cart.increase': 'बढाउनुहोस्',
     'cart.decrease': 'घटाउनुहोस्',
 
@@ -258,7 +258,7 @@ const I18N = {
     'toast.badPhone': 'फोन नम्बर मिलेको जस्तो देखिँदैन',
     'toast.needTime': 'डेलिभरीको समय छान्नुहोस्',
     'toast.opening': 'पुष्टिका लागि व्हाट्सएप खुल्दै…',
-    'toast.subscribed': 'धन्यवाद — तपाईं सूचीमा हुनुहुन्छ',
+    'toast.subscribed': 'धन्यवाद, तपाईं सूचीमा हुनुहुन्छ',
     'toast.willTell': 'हामी तपाईंलाई खबर गर्नेछौं',
 
     'footer.blurb': 'क्लाउड किचन, पसल छैन। अर्डरपछि ब्लेन्ड गरेर काठमाडौंभित्र जुनसुकै समय तपाईंको ढोकासम्म पुर्‍याउँछौं।',
@@ -276,7 +276,7 @@ const I18N = {
     'footer.legal': 'कानुनी',
 
     'seq.step1': 'सग्लो फलफूल, तौलेर हालिन्छ',
-    'seq.step2': 'तीस सेकेन्ड तीव्र गतिमा — पहिल्यै बनाइएको केही छैन',
+    'seq.step2': 'तीस सेकेन्ड तीव्र गतिमा, पहिल्यै बनाइएको केही छैन',
     'seq.step3': 'सिधै खन्याइन्छ, कतै रोकिँदैन',
     'seq.step4': 'ढक्कन लगाएर, स्लिभ हालेर, बाहिर',
 
@@ -290,10 +290,10 @@ const I18N = {
 
     'news.invalid': 'इमेल मिलेको जस्तो देखिँदैन',
     'news.sending': 'पठाउँदै…',
-    'news.error': 'पठाउन सकिएन — केही बेरमा फेरि प्रयास गर्नुहोस्',
+    'news.error': 'पठाउन सकिएन, केही बेरमा फेरि प्रयास गर्नुहोस्',
 
     'cart.viewCart': 'कार्ट हेर्नुहोस्',
-    'cart.freeProgress': 'निःशुल्क डेलिभरीका लागि {amount}',
+    'cart.freeProgress': 'निःशुल्क डेलिभरीका लागि {amount} थप्नुहोस्',
     'cart.freeReached': 'निःशुल्क डेलिभरी खुल्यो',
     'cart.again': 'फेरि अर्डर गर्नुहोस्',
     'cart.againBlurb': 'तपाईंको पछिल्लो अर्डर, एकै ट्यापमा।',
