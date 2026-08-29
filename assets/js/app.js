@@ -34,9 +34,25 @@ const store = {
 };
 
 /* ---------- cart store ---------- */
+/* Prune at the boundary. A saved cart outlives the menu: the README tells
+   the operator to replace these products, so a returning customer can hold
+   an id that no longer exists. Filtering here means nothing downstream —
+   totals, the order message, analytics — ever sees an unknown id. */
 function readCart() {
-  try { return JSON.parse(store.get(CART_KEY)) || {}; }
+  let raw;
+  try { raw = JSON.parse(store.get(CART_KEY)) || {}; }
   catch { return {}; }
+  if (!raw || typeof raw !== 'object') return {};
+
+  const clean = {};
+  let dropped = false;
+  for (const [id, qty] of Object.entries(raw)) {
+    const n = Number(qty);
+    if (byId(id) && Number.isFinite(n) && n > 0) clean[id] = Math.min(20, Math.floor(n));
+    else dropped = true;
+  }
+  if (dropped) store.set(CART_KEY, JSON.stringify(clean));   // heal it once
+  return clean;
 }
 function writeCart(c) {
   store.set(CART_KEY, JSON.stringify(c));
@@ -48,11 +64,13 @@ const cartSubtotal = () => Object.entries(readCart())
   .reduce((sum, [id, q]) => sum + ((byId(id)?.price || 0) * q), 0);
 
 function addToCart(id, qty = 1) {
+  const p = byId(id);
+  if (!p) { console.warn('[blendmandu] unknown product:', id); return; }
   const c = readCart();
-  c[id] = (c[id] || 0) + qty;
+  c[id] = Math.min(20, (c[id] || 0) + qty);
   writeCart(c);
-  toast(t('toast.added', { name: byId(id).name }));
-  track('add_to_cart', { item_id: id, quantity: qty, value: byId(id).price * qty, currency: 'NPR' });
+  toast(t('toast.added', { name: p.name }));
+  track('add_to_cart', { item_id: id, quantity: qty, value: p.price * qty, currency: 'NPR' });
 }
 function setQty(id, qty) {
   const c = readCart();
@@ -103,7 +121,7 @@ const BOLT = `<svg class="bolt bolt--%SIDE%" viewBox="0 0 120 60" aria-hidden="t
   <path d="M62 46 L92 20 L86 36 L116 28 L84 58 L92 42 Z" fill="currentColor" opacity=".75"/>
 </svg>`;
 
-function renderShell(active) {
+function renderShell() {
   const TICKER = [
     t('ticker.open'), t('ticker.area'), t('ticker.fresh'),
     t('ticker.free', { amount: money(SHOP.freeDeliveryOver) }), t('ticker.pay'),
@@ -626,8 +644,12 @@ function placeOrder() {
     return setError($('#when-at'), t('toast.needTime'));
   }
 
-  const zone = SHOP.zones.find(z => z.id === $('#zone').value);
-  const pay  = SHOP.payments.find(m => m.id === $('input[name="pay"]:checked').value);
+  // mirror deliveryFee()'s fallback so a stale or missing selection
+  // cannot throw on the one path that actually sends the order
+  const zone = SHOP.zones.find(z => z.id === $('#zone')?.value) || SHOP.zones[0];
+  const payEl = $('input[name="pay"]:checked');
+  const pay = SHOP.payments.find(m => m.id === payEl?.value) || SHOP.payments[0];
+  if (!zone || !pay) { console.error('[blendmandu] zones/payments misconfigured'); return; }
   const sub  = cartSubtotal();
   const ship = deliveryFee();
 
@@ -637,8 +659,8 @@ function placeOrder() {
 
   const lines = ids.map(id => {
     const p = byId(id);
-    return `• ${cart[id]} x ${p.name} — ${money(p.price * cart[id])}`;
-  }).join('\n');
+    return p ? `• ${cart[id]} x ${p.name} — ${money(p.price * cart[id])}` : '';
+  }).filter(Boolean).join('\n');
 
   const msg =
 `${t('order.heading')} — ${SHOP.brand}
@@ -1000,38 +1022,44 @@ document.addEventListener('DOMContentLoaded', () => {
     ['initReveals', initReveals],
   ]);
 
-  /* Service worker: makes repeat visits work on a flaky connection, which
-     in Kathmandu is most of them. Registered last so a failure here can
-     never delay the shop rendering. */
-  const secure = location.protocol === 'https:' ||
-                 ['localhost', '127.0.0.1'].includes(location.hostname);
-  if ('serviceWorker' in navigator && secure) {
-    navigator.serviceWorker.register('/sw.js').catch(err =>
-      console.warn('[blendmandu] service worker not registered:', err));
-  }
-
-  // a11y: let keyboard users jump the masthead
-  const skip = document.createElement('a');
-  skip.className = 'skiplink';
-  skip.href = '#main';
-  skip.textContent = t('a11y.skip');
-  document.body.prepend(skip);
-  const main = document.querySelector('main');
-  if (main && !main.id) main.id = 'main';
-
-  // page-level events
-  if ($('#pdp-qty')) {
-    const id = $('[data-add]')?.dataset.add;
-    const p = id && byId(id);
-    if (p) track('view_item', { item_id: p.id, value: p.price, currency: 'NPR' });
-  }
-  if (document.body.dataset.page === 'cart') {
-    track('view_cart', { value: cartSubtotal(), currency: 'NPR', items: cartCount() });
-  }
+  /* These used to run after boot(), outside its isolation — so one throw
+     here could cost the skip link or the service worker registration. */
+  boot([
+    ['serviceWorker', () => {
+      const secure = location.protocol === 'https:' ||
+                     ['localhost', '127.0.0.1'].includes(location.hostname);
+      if ('serviceWorker' in navigator && secure) {
+        navigator.serviceWorker.register('/sw.js').catch(err =>
+          console.warn('[blendmandu] service worker not registered:', err));
+      }
+    }],
+    ['skipLink', () => {
+      const skip = document.createElement('a');
+      skip.className = 'skiplink';
+      skip.href = '#main';
+      skip.textContent = t('a11y.skip');
+      document.body.prepend(skip);
+      const main = document.querySelector('main');
+      if (main && !main.id) main.id = 'main';
+    }],
+    ['pageEvents', () => {
+      if ($('#pdp-qty')) {
+        const id = $('[data-add]')?.dataset.add;
+        const p = id && byId(id);
+        if (p) track('view_item', { item_id: p.id, value: p.price, currency: 'NPR' });
+      }
+      if (document.body.dataset.page === 'cart') {
+        track('view_cart', { value: cartSubtotal(), currency: 'NPR', items: cartCount() });
+      }
+    }],
 
   // flat art sits under the WebGL stage; cup3d hides it once the canvas is live
-  const fb = $('#cup-fallback');
-  if (fb) fb.innerHTML = productArt(byId('himalayan-berry'));
+    ['fallbackArt', () => {
+      const fb = $('#cup-fallback');
+      const hero = PRODUCTS.find(p => p.cat === 'smoothies') || PRODUCTS[0];
+      if (fb && hero) fb.innerHTML = productArt(hero);
+    }],
+  ]);
 });
 
 /* cards are drawn after boot (filtering, cart edits) — re-arm reveals for them */
