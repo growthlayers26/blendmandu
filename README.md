@@ -16,6 +16,31 @@ assets/vendor/three.module.js   Three.js r160 (MIT)
 assets/vendor/lenis.min.js      Lenis 1.1.18 smooth scroll (MIT)
 ```
 
+## Live
+
+| | |
+|---|---|
+| Site | https://blendmandu-ktm.vercel.app |
+| Repo | https://github.com/growthlayers26/blendmandu (private) |
+| Vercel project | `blendmandu` |
+
+Pushing to `main` triggers a Vercel deploy. For a manual production deploy:
+
+```bash
+vercel deploy --prod
+```
+
+**Deployment Protection is off.** Vercel enables SSO on all `.vercel.app`
+URLs by default, which made every page redirect to a Vercel login — a
+storefront nobody could open. If you ever see that again, it is
+Settings → Deployment Protection.
+
+**`SHOP.url` must match the domain you actually serve from.** It feeds every
+canonical, `hreflang`, `og:url`, `og:image`, sitemap entry and JSON-LD URL.
+Point it at a domain you do not own and link previews break, because the
+`og:image` 404s. `check.js` now fails the build if a page mixes origins.
+When you attach a custom domain, change `SHOP.url`, rebuild, redeploy.
+
 ## Run it locally
 
 ```bash
