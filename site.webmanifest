@@ -1,7 +1,7 @@
 {
   "name": "BLENDMANDU — smoothies delivered 24/7 in Kathmandu",
   "short_name": "BLENDMANDU",
-  "description": "Smoothies, acai bowls, cold-pressed juice and wellness shots, blended to order and delivered any hour across Kathmandu.",
+  "description": "Smoothies, acai bowls, cold pressed juice and wellness shots, blended to order and delivered any hour across Kathmandu.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

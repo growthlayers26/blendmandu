@@ -220,7 +220,7 @@ ${head({ title: `${p.name}, ${money(p.price)} | Smoothie Delivery Kathmandu`, de
     <div class="pdp__info">
       <p class="eyebrow eyebrow--accent">${esc(catName)}</p>
       <h1>${esc(p.name)}</h1>
-      <p class="meta pdp__meta">${esc(meta)} &middot; SKU ${p.id.toUpperCase()}</p>
+      <p class="meta pdp__meta">${esc(meta)} &middot; SKU ${p.id.toUpperCase().replace(/-/g, '')}</p>
       <p class="lede">${esc(blurb)}</p>
 
       <p class="pdp__price">${money(p.price)}</p>
@@ -316,7 +316,7 @@ Sitemap: ${ORIGIN}/sitemap.xml
 fs.writeFileSync('site.webmanifest', JSON.stringify({
   name: `${SHOP.brand} — smoothies delivered 24/7 in Kathmandu`,
   short_name: SHOP.brand,
-  description: 'Smoothies, acai bowls, cold-pressed juice and wellness shots, blended to order and delivered any hour across Kathmandu.',
+  description: 'Smoothies, acai bowls, cold pressed juice and wellness shots, blended to order and delivered any hour across Kathmandu.',
   start_url: '/',
   scope: '/',
   display: 'standalone',

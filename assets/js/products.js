@@ -109,14 +109,14 @@ const PRODUCTS = [
     price:590, cup:'bowl', c1:'#C08B4E', c2:'#7A4A22', tag:'High protein',
     blurb:'Whey or pea protein with peanut butter, banana, oats and cacao nibs. Thirty four grams of protein, no chalky aftertaste.', allergens:'Peanuts, oats (gluten), milk (whey option)' },
 
-  // --- cold-pressed juice ---
-  { id:'beet-ginger', cat:'juices', name:'Beet & Ginger', meta:'300 ml · cold-pressed',
+  // --- cold pressed juice ---
+  { id:'beet-ginger', cat:'juices', name:'Beet & Ginger', meta:'300 ml · cold pressed',
     price:320, cup:'bottle', c1:'#C33A5C', c2:'#6E1730',
     blurb:'Beetroot, carrot, apple and a hard hit of raw ginger. Cold pressed to order, never from concentrate.', allergens:'None' },
-  { id:'citrus-immunity', cat:'juices', name:'Citrus Immunity', meta:'300 ml · cold-pressed',
+  { id:'citrus-immunity', cat:'juices', name:'Citrus Immunity', meta:'300 ml · cold pressed',
     price:300, cup:'bottle', c1:'#F0B23C', c2:'#D2762A', tag:'Vitamin C',
     blurb:'Orange, lemon, amla and honey, pressed the moment you order. More vitamin C than you will get from a whole orange.', allergens:'Honey' },
-  { id:'green-press', cat:'juices', name:'Green Press', meta:'300 ml · cold-pressed',
+  { id:'green-press', cat:'juices', name:'Green Press', meta:'300 ml · cold pressed',
     price:340, cup:'bottle', c1:'#79B85A', c2:'#3B6E33', tag:'Vegan',
     blurb:'Cucumber, celery, spinach, green apple and mint. Light, clean and properly cold pressed.', allergens:'None' },
 
@@ -136,7 +136,7 @@ const CATEGORIES = [
   { id:'all',       label:'All products' },
   { id:'smoothies', label:'Smoothies' },
   { id:'bowls',     label:'Bowls' },
-  { id:'juices',    label:'Cold-pressed' },
+  { id:'juices',    label:'Cold pressed' },
   { id:'shots',     label:'Wellness shots' },
 ];
 
@@ -240,9 +240,9 @@ const PRODUCT_I18N = {
     'acai-bowl':           { blurb: 'असाई बेसमा ग्रानोला, केरा, नरिवल र चिया सिड।', meta: '450 मिलि · ग्रानोला + फलफूल', allergens: 'ओट्स (ग्लुटेन), नरिवल', tag: 'सबैभन्दा लोकप्रिय' },
     'dragonfruit-bowl':    { blurb: 'ड्र्यागनफ्रुट, आँप र केरामाथि भुटेको ओट्स र फर्सीको बियाँ।', meta: '450 मिलि · ग्रानोला + फलफूल', allergens: 'ओट्स (ग्लुटेन), फर्सीको बियाँ' },
     'protein-bowl':        { blurb: 'ह्वे वा मटरको प्रोटिन, बदाम पेस्ट, केरा, ओट्स र काकाओ निब्स।', meta: '450 मिलि · 34 ग्राम प्रोटिन', allergens: 'बदाम, ओट्स (ग्लुटेन), दूध (ह्वे विकल्प)', tag: 'उच्च प्रोटिन' },
-    'beet-ginger':         { blurb: 'चुकन्दर, गाजर, स्याउ र कडा काँचो अदुवा।', meta: '300 मिलि · कोल्ड-प्रेस्ड', allergens: 'छैन' },
-    'citrus-immunity':     { blurb: 'सुन्तला, कागती, अमला र मह। अर्डरपछि मात्र निचोरिन्छ।', meta: '300 मिलि · कोल्ड-प्रेस्ड', allergens: 'मह', tag: 'भिटामिन सी' },
-    'green-press':         { blurb: 'काँक्रो, सेलेरी, पालुंगो, हरियो स्याउ र पुदिना।', meta: '300 मिलि · कोल्ड-प्रेस्ड', allergens: 'छैन', tag: 'भेगन' },
+    'beet-ginger':         { blurb: 'चुकन्दर, गाजर, स्याउ र कडा काँचो अदुवा।', meta: '300 मिलि · कोल्ड प्रेस्ड', allergens: 'छैन' },
+    'citrus-immunity':     { blurb: 'सुन्तला, कागती, अमला र मह। अर्डरपछि मात्र निचोरिन्छ।', meta: '300 मिलि · कोल्ड प्रेस्ड', allergens: 'मह', tag: 'भिटामिन सी' },
+    'green-press':         { blurb: 'काँक्रो, सेलेरी, पालुंगो, हरियो स्याउ र पुदिना।', meta: '300 मिलि · कोल्ड प्रेस्ड', allergens: 'छैन', tag: 'भेगन' },
     'ginger-turmeric-shot':{ blurb: 'काँचो अदुवा, बेसार, कागती र खुर्सानी। जानाजान चर्को।', meta: '60 मिलि · दैनिक सट', allergens: 'छैन' },
     'wheatgrass-shot':     { blurb: 'एकै ठाउँको गहुँको जमरा, बिहानै काटेर निचोरिएको।', meta: '60 मिलि · दैनिक सट', allergens: 'छैन', tag: 'भेगन' },
     'amla-shot':           { blurb: 'नेपाली अमला, कागती र मह। सुन्तलाभन्दा बढी भिटामिन सी।', meta: '60 मिलि · दैनिक सट', allergens: 'मह' },
@@ -252,7 +252,7 @@ const PRODUCT_I18N = {
 const CATEGORY_I18N = {
   ne: {
     all: 'सबै उत्पादन', smoothies: 'स्मुदी', bowls: 'बाउल',
-    juices: 'कोल्ड-प्रेस्ड', shots: 'वेलनेस सट',
+    juices: 'कोल्ड प्रेस्ड', shots: 'वेलनेस सट',
   },
 };
 

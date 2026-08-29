@@ -21,7 +21,7 @@ module.exports = ({ wa, phone, email, instagram, freeOver }) => ({
   <h2>Something wrong with an order?</h2>
   <p>Message us on WhatsApp with your order and a photo. If we got it wrong, spoiled or unreasonably late, we remake it or refund it. See the <a href="return-policy.html">refund policy</a>.</p>
   <h2>Allergies</h2>
-  <p>Every product page lists its allergens. We blend in a shared kitchen, so we cannot promise zero cross-contact with dairy, peanuts, tree nuts or gluten. If a reaction would be serious, message us before you order.</p>
+  <p>Every product page lists its allergens. We blend in a shared kitchen, so we cannot promise zero cross contact with dairy, peanuts, tree nuts or gluten. If a reaction would be serious, message us before you order.</p>
   <p style="margin-top:34px"><a class="pill pill--accent" href="${wa}">Message us on WhatsApp</a></p>` },
     ne: { file: 'contact.html', eyebrow: 'सम्पर्क', h1: 'हामीसँग कुरा गर्नुहोस्',
       title: 'सम्पर्क | Blendmandu',
@@ -56,7 +56,7 @@ module.exports = ({ wa, phone, email, instagram, freeOver }) => ({
   </p>` },
     ne: { file: '404.html', eyebrow: 'त्रुटि 404', h1: 'यो पृष्ठ मेनुमा छैन', noindex: true,
       title: 'पृष्ठ भेटिएन | Blendmandu',
-      desc: 'यो पृष्ठ भेटिएन। Blendmandu को मेनुमा फर्कनुहोस्। स्मुदी, बाउल र कोल्ड-प्रेस्ड, काठमाडौंभर २४/७ डेलिभरी।',
+      desc: 'यो पृष्ठ भेटिएन। Blendmandu को मेनुमा फर्कनुहोस्। स्मुदी, बाउल र कोल्ड प्रेस्ड, काठमाडौंभर २४/७ डेलिभरी।',
       body: `
   <p class="lede">लिंक गलत छ, वा हामीले केही सारेका छौं। दुवैमा तपाईंको दोष छैन। फर्कने बाटो यहाँ छ।</p>
   <p style="margin-top:28px;display:flex;gap:12px;flex-wrap:wrap">
@@ -173,7 +173,7 @@ module.exports = ({ wa, phone, email, instagram, freeOver }) => ({
   <h2>Payment</h2>
   <p>Cash on delivery, eSewa, Khalti or Fonepay. For digital payment we send a request after you confirm the order.</p>
   <h2>Food and allergens</h2>
-  <p>Allergens are listed on every product page. We blend in a shared kitchen and cannot guarantee the absence of cross-contact. If a reaction would be serious, ask us before ordering.</p>
+  <p>Allergens are listed on every product page. We blend in a shared kitchen and cannot guarantee the absence of cross contact. If a reaction would be serious, ask us before ordering.</p>
   <h2>Cancelling and refunds</h2>
   <p>See the <a href="return-policy.html">refund policy</a>.</p>
   <h2>Governing law</h2>
@@ -213,7 +213,7 @@ module.exports = ({ wa, phone, email, instagram, freeOver }) => ({
   <h2>Analytics</h2>
   <p>We may switch on basic analytics to see which blends people actually order. If we do, <strong>a banner asks you first</strong> and nothing loads unless you say yes. Decline and no analytics script is fetched at all. It is never requested in the first place, not fetched and then ignored. Your answer is remembered in your browser.</p>
   <h2>What we don't do</h2>
-  <p>No advertising cookies, no cross-site trackers, and nothing that follows you to other websites.</p>
+  <p>No advertising cookies, no cross site trackers, and nothing that follows you to other websites.</p>
   <h2>Fonts</h2>
   <p>Our typefaces load from Google Fonts, which means Google receives your IP address as part of that request. That is the only third party the pages contact.</p>
   <h2>Clearing it</h2>
@@ -231,7 +231,7 @@ module.exports = ({ wa, phone, email, instagram, freeOver }) => ({
   <h2>एनालिटिक्स</h2>
   <p>कुन ब्लेन्ड मानिसले साँच्चै अर्डर गर्छन् हेर्न हामी आधारभूत एनालिटिक्स चलाउन सक्छौं। त्यसो गर्दा <strong>पहिले ब्यानरले तपाईंलाई सोध्छ</strong> र तपाईंले हुन्छ नभनेसम्म केही लोड हुँदैन। अस्वीकार गर्नुभयो भने कुनै एनालिटिक्स स्क्रिप्ट मगाइँदैन। लोड गरेर बेवास्ता गरिने होइन, बरु कहिल्यै मगाइँदैन। तपाईंको जवाफ ब्राउजरमै सम्झिन्छ।</p>
   <h2>हामी के गर्दैनौं</h2>
-  <p>विज्ञापन कुकी छैन, क्रस-साइट ट्र्याकर छैन, र अन्य वेबसाइटसम्म पछ्याउने केही छैन।</p>
+  <p>विज्ञापन कुकी छैन, क्रस साइट ट्र्याकर छैन, र अन्य वेबसाइटसम्म पछ्याउने केही छैन।</p>
   <h2>फन्ट</h2>
   <p>हाम्रा टाइपफेस Google Fonts बाट लोड हुन्छन्, जसको अर्थ त्यो अनुरोधमा Google ले तपाईंको IP ठेगाना पाउँछ। पृष्ठले सम्पर्क गर्ने एक मात्र तेस्रो पक्ष त्यही हो।</p>
   <h2>हटाउने तरिका</h2>

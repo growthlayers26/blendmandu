@@ -62,7 +62,7 @@ const I18N = {
     'product.delivery': 'Delivery',
     'product.made': 'Made',
     'product.deliveryVal': '24/7, inside Kathmandu · free over {amount}',
-    'product.madeVal': 'Blended after you order, never pre-batched',
+    'product.madeVal': 'Blended after you order, never batched in advance',
     'product.askAllergy': 'Allergy or ingredient question?',
     'product.askAllergyLink': 'Message us on WhatsApp',
     'product.askAllergyEnd': 'before ordering.',
@@ -127,7 +127,7 @@ const I18N = {
     'footer.legal': 'Legal',
 
     'seq.step1': 'Whole fruit, weighed and dropped in',
-    'seq.step2': 'Thirty seconds on high, nothing pre-batched',
+    'seq.step2': 'Thirty seconds on high, nothing batched in advance',
     'seq.step3': 'Poured straight across, no holding tank',
     'seq.step4': 'Lidded, sleeved, and out the door',
 
@@ -221,7 +221,7 @@ const I18N = {
     'cart.title': 'तपाईंको कार्ट',
     'cart.empty': 'अहिलेसम्म केही छैन।',
     'cart.browse': 'मेनु हेर्नुहोस्',
-    'cart.subtotal': 'उप-जम्मा',
+    'cart.subtotal': 'उपजम्मा',
     'cart.delivery': 'डेलिभरी',
     'cart.total': 'जम्मा',
     'cart.free': 'निःशुल्क',
@@ -301,7 +301,7 @@ const I18N = {
     'a11y.skip': 'मुख्य सामग्रीमा जानुहोस्',
 
     'order.heading': 'नयाँ अर्डर',
-    'order.subtotal': 'उप-जम्मा',
+    'order.subtotal': 'उपजम्मा',
     'order.delivery': 'डेलिभरी',
     'order.total': 'जम्मा',
     'order.name': 'नाम',
