@@ -14,7 +14,7 @@ module.exports = {
     ['Which areas of Kathmandu do you deliver to?',
      'We deliver across Kathmandu. Thamel, Durbar Marg, Lazimpat and Naxal cost Rs 100. Baluwatar, Maharajgunj, Chabahil and Baneshwor cost Rs 120. Kalanki, Swayambhu, Gongabu and Koteshwor cost Rs 150. Delivery is free once your order passes Rs 1,500.'],
     ['How long does delivery take?',
-     'Usually 30 to 45 minutes from the moment you send your order. That is not a guarantee, because weather, traffic and load shedding are real here, but if your order is running late we message you rather than leave you guessing.'],
+     'Usually 30 to 45 minutes from the moment you send your order. Weather, traffic and load shedding are real here — if your order is running late we message you rather than leave you guessing.'],
     ['How do I pay?',
      'Cash on delivery, or eSewa, Khalti and Fonepay if you would rather settle it digitally. For digital payment we send a request once you confirm the order. There is no minimum order value.'],
     ['How do I place an order?',
