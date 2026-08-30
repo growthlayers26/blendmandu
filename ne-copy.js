@@ -90,7 +90,7 @@ module.exports = {
     ['every hour', 'हरेक घण्टा'],
     ['We ride inside the Kathmandu ring road and the neighbourhoods just outside it. Delivery is free once your order passes Rs 1,500.',
      'हामी काठमाडौं रिङरोडभित्र र त्यसको वरिपरिका टोलहरूमा पुग्छौं। अर्डर रु 1,500 नाघेपछि डेलिभरी निःशुल्क।'],
-    ['Areas &amp; fees', 'क्षेत्र र शुल्क'],
+    ['Areas & fees', 'क्षेत्र र शुल्क'],
     ['Thamel · Durbar Marg · Lazimpat · Naxal', 'ठमेल · दरबारमार्ग · लाजिम्पाट · नक्साल'],
     ['Baluwatar · Maharajgunj · Chabahil · Baneshwor', 'बालुवाटार · महाराजगन्ज · चाबहिल · बानेश्वर'],
     ['Kalanki · Swayambhu · Gongabu · Koteshwor', 'कलंकी · स्वयम्भू · गोंगबु · कोटेश्वर'],
@@ -136,7 +136,7 @@ module.exports = {
      which is how a copy change on the English page gets caught */
   requiredIn: {
     'index.html': ['<span>Smoothies blended at 3 AM,</span>', 'How we blend', 'Welcome!', 'How it works',
-                   'Areas &amp; fees', 'Four steps, no app'],
+                   'Areas & fees', 'Four steps, no app'],
     'shop.html':  ['>Categories<', '>Search<'],
     'cart.html':  ['>Your cart<', 'Where to?', 'Send my order on WhatsApp'],
   },
