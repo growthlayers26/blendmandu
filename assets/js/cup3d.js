@@ -32,8 +32,9 @@ function webglOK() {
     const c = document.createElement('canvas');
     const gl = c.getContext('webgl2') || c.getContext('webgl');
     if (!gl) return false;
-    if ((navigator.deviceMemory || 4) < 3) return false;
-    if ((navigator.hardwareConcurrency || 4) < 4) return false;
+    // Dropped deviceMemory / hardwareConcurrency guards — the cup is
+    // simple lathe geometry + a canvas texture.  Any phone that can
+    // create a WebGL context can render it without jank.
     if (navigator.connection && /^(slow-)?2g$/.test(navigator.connection.effectiveType)) return false;
     return true;
   } catch { return false; }
