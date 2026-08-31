@@ -17,6 +17,9 @@
 let THREE = null;
 
 const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+/* Idle rotation is the one thing that runs without the visitor asking, so
+   it is what reduced motion switches off. The cup itself stays. */
+const IDLE_SPIN = REDUCED ? 0 : 0.0042;
 
 /* i18n lookup — cup3d.js is a module, so it cannot see app.js's t() */
 const t2 = (key) => {
@@ -27,7 +30,13 @@ const t2 = (key) => {
 /* WebGL is a real cost on the cheap Androids most of Kathmandu orders from.
    Bail to the flat SVG art unless the device can clearly take it. */
 function webglOK() {
-  if (REDUCED) return false;
+  /* Reduced motion used to return false here, which threw away the whole
+     3D cup and left the flat SVG. That reads as a broken page, and it is
+     more than the setting asks for: WCAG 2.3.3 is about animation, not
+     about removing content. iOS also reports reduce whenever Low Power
+     Mode is on, so a phone on low battery lost the product visual with no
+     accessibility setting touched anywhere. The cup now renders either
+     way; what reduced motion removes is the idle spin and the transitions. */
   try {
     const c = document.createElement('canvas');
     const gl = c.getContext('webgl2') || c.getContext('webgl');
@@ -61,6 +70,11 @@ const damp = (cur, to, smoothing, dt) =>
 
 const tweens = [];
 function tween(onUpdate, dur, easing = easeOutQuart, onDone) {
+  if (REDUCED) {            // jump straight to the finished state
+    onUpdate(1);
+    if (onDone) onDone();
+    return;
+  }
   const t0 = performance.now();
   tweens.push({ onUpdate, dur: dur * 1000, easing, onDone, t0 });
 }
@@ -276,7 +290,7 @@ function initHero() {
   scene.add(cup);
 
   // spin state
-  let spin = 0, spinVel = 0.0042, targetTilt = 0, tilt = 0;
+  let spin = 0, spinVel = IDLE_SPIN, targetTilt = 0, tilt = 0;
   let dragging = false, lastX = 0, lastY = 0, moved = false;
 
   canvas.addEventListener('pointerdown', e => {
@@ -399,7 +413,7 @@ function initHero() {
     runTweens(now);
     if (!visible) return;
 
-    if (!dragging) spinVel = damp(spinVel, 0.0042, 0.6, dt);
+    if (!dragging) spinVel = damp(spinVel, IDLE_SPIN, 0.6, dt);
     spin += spinVel * (dt * 60);
     spinVel *= Math.pow(0.955, dt * 60);
     tilt = damp(tilt, targetTilt, 0.35, dt);
