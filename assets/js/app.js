@@ -1059,7 +1059,23 @@ document.addEventListener('DOMContentLoaded', () => {
     ['fallbackArt', () => {
       const fb = $('#cup-fallback');
       const hero = PRODUCTS.find(p => p.cat === 'smoothies') || PRODUCTS[0];
-      if (fb && hero) fb.innerHTML = productArt(hero);
+      if (!fb || !hero) return;
+      const paint = () => { if (!fb.innerHTML) fb.innerHTML = productArt(hero); };
+
+      /* This used to paint unconditionally, which is what made every
+         refresh flash the flat cup: app.js drew it, then cup3d.js faded
+         it out once WebGL was ready. Preloading three.js shrank that
+         window but could never close it, because the library still has to
+         parse, compile and build a scene after it arrives. So do not draw
+         the flat cup at all unless the real one is genuinely not coming. */
+      if (document.documentElement.classList.contains('no-webgl')) { paint(); return; }
+      addEventListener('blendmandu:no-webgl', paint, { once: true });
+
+      /* Last resort: something has gone wrong that neither path reported,
+         and an empty stage is worse than the flat art. */
+      setTimeout(() => {
+        if (!document.querySelector('.cupstage.is-live')) paint();
+      }, 2500);
     }],
   ]);
 });

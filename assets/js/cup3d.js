@@ -840,6 +840,7 @@ async function boot() {
   } catch (err) {
     console.error('[blendmandu] three.js failed to load:', err);
     document.documentElement.classList.add('no-webgl');
+  dispatchEvent(new Event('blendmandu:no-webgl'));   // app.js paints the flat cup
     return;
   }
   document.querySelectorAll('[data-webgl]').forEach(el => el.classList.add('is-live'));
@@ -854,4 +855,5 @@ if (webglOK()) {
   // no WebGL: the markup already carries a static SVG fallback, and the
   // 1.2 MB library above is never requested
   document.documentElement.classList.add('no-webgl');
+  dispatchEvent(new Event('blendmandu:no-webgl'));   // app.js paints the flat cup
 }
