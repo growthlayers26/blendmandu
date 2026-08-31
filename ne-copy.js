@@ -42,7 +42,7 @@ module.exports = {
     ['Fruit first', 'पहिले फलफूल'],
     ['Seasonal Nepali fruit wherever the season allows it, and nothing frozen months ago standing in for it.',
      'मौसमले दिएसम्म नेपाली मौसमी फलफूल। महिनौंअघि जमाइएको कुनै विकल्प होइन।'],
-    ['Nothing sits waiting', 'पहिल्यै बनाइएको केही छैन'],
+    ['Nothing premade', 'पहिल्यै बनाइएको केही छैन'],
     ["The blender doesn't start until your order lands. No batches sitting in a fridge losing everything that made them worth drinking.",
      'तपाईंको अर्डर नआएसम्म ब्लेन्डर चल्दैन। फ्रिजमा राखेर स्वाद गुमाइरहेका ब्याच हामीसँग छैनन्।'],
     ['Sealed and sent', 'बन्द गरी पठाइन्छ'],
