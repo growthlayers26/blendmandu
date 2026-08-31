@@ -904,17 +904,6 @@ function renderWhatsApp() {
   document.body.appendChild(a);
 }
 
-/* ---------- sticky mobile order CTA ---------- */
-function renderMobileOrderCTA() {
-  if (SHOP.stickyCartBar === false) return;
-  if (document.body.dataset.page === 'cart' || document.body.dataset.page === 'shop') return;
-  const a = document.createElement('a');
-  a.className = 'mobile-order-cta';
-  a.href = `${BASE}shop.html`;
-  a.textContent = 'Order Smoothies';
-  document.body.appendChild(a);
-}
-
 /* ---------- order again ---------- */
 const LAST_ORDER_KEY = 'blendmandu.lastOrder.v1';
 function saveLastOrder(cart) {
@@ -1027,7 +1016,6 @@ document.addEventListener('DOMContentLoaded', () => {
     ['initNewsletter', initNewsletter],
     ['renderCartBar', renderCartBar],
     ['renderWhatsApp', renderWhatsApp],
-    ['renderMobileOrderCTA', renderMobileOrderCTA],
     ['renderOrderAgain', renderOrderAgain],
     ['renderConsent', renderConsent],
     ['initSmoothScroll', initSmoothScroll],
