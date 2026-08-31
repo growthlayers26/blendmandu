@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en" data-base="/" data-lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Device check | Blendmandu</title>
+<meta name="description" content="Internal device check for the Blendmandu storefront.">
+<meta name="robots" content="noindex">
+<meta property="og:title" content="Device check">
+<meta property="og:image" content="https://blendmandu-ktm.vercel.app/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#f8f7e5">
+<style>
+  :root { color-scheme: dark; }
+  body {
+    margin: 0; padding: 20px 16px 60px;
+    background: #3a1f36; color: #f8f7e5;
+    font: 16px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  h1 { font-size: 1.25rem; margin: 0 0 4px; letter-spacing: .02em; }
+  .sub { opacity: .6; font-size: .82rem; margin: 0 0 20px; }
+  #verdict {
+    background: #4a2a44; border-left: 4px solid #E98A5B;
+    padding: 12px 14px; margin: 0 0 20px; border-radius: 6px;
+    font-size: .95rem;
+  }
+  .row {
+    display: flex; gap: 10px; justify-content: space-between;
+    padding: 9px 0; border-bottom: 1px solid rgba(248,247,229,.12);
+    align-items: baseline;
+  }
+  .k { opacity: .68; font-size: .8rem; flex: 0 0 auto; max-width: 46%; }
+  .v { text-align: right; word-break: break-word; font-size: .84rem; }
+  .row.ok   .v { color: #8BD17C; }
+  .row.bad  .v { color: #FF9B8A; font-weight: 700; }
+  .row.warn .v { color: #F0C05A; }
+  .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+  button {
+    flex: 1 1 auto; min-height: 48px; padding: 12px 18px;
+    border: 0; border-radius: 999px; cursor: pointer;
+    font: inherit; font-weight: 700;
+  }
+  #reset { background: #E98A5B; color: #3a1f36; }
+  #copy  { background: transparent; color: #f8f7e5; border: 1px solid rgba(248,247,229,.4); }
+  #raw {
+    width: 100%; min-height: 160px; margin-top: 14px; padding: 10px;
+    background: #2b1728; color: #f8f7e5; border: 1px solid rgba(248,247,229,.25);
+    border-radius: 6px; font: inherit; font-size: .78rem;
+  }
+  a { color: #E98A5B; }
+</style>
+</head>
+<body>
+  <h1>Device check</h1>
+  <p class="sub">Open this on the phone that shows the problem.</p>
+
+  <div id="verdict">Running checks…</div>
+  <div id="rows"></div>
+
+  <div class="actions">
+    <button id="reset" type="button">Reset and reload the site</button>
+    <button id="copy" type="button">Copy report</button>
+  </div>
+  <textarea id="raw" hidden readonly></textarea>
+
+  <p class="sub" style="margin-top:22px"><a href="/">Back to the site</a></p>
+
+  <script type="module" src="assets/js/diag.js?v=12cfd059"></script>
+</body>
+</html>
