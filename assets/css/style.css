@@ -1382,7 +1382,7 @@ html.is-tinted .input[aria-invalid="true"] { border-color: #ffb4ab; }
   /* stub rules read as breakage, not decoration */
   .masthead__side::after { display: none; }
 
-  .masthead__grid { gap: 10px; align-items: center; }
+  .masthead__grid { gap: 6px; align-items: center; }
   .masthead__side { min-height: 0; padding-top: 0; gap: 8px; }
 
   /* text labels go; the burger carries the meaning */
@@ -1397,8 +1397,16 @@ html.is-tinted .input[aria-invalid="true"] { border-color: #ffb4ab; }
   }
   .menu-btn .burger { width: 26px; }
 
-  /* language lives in the overlay at this size */
-  .masthead .lang-btn { display: none; }
+  /* The language switch belongs in the header, not buried in the menu:
+     a Nepali speaker should see it without opening anything. It was only
+     hidden because six controls collided here. Now that the text labels
+     and rules are gone there is room, provided the gaps are tightened. */
+  .masthead .lang-btn {
+    display: inline-flex;
+    width: 40px; height: 40px;
+    font-size: .66rem;
+  }
+  .masthead__side--right { gap: 6px; }
 
   .badge { padding: 0 8px; }
   .badge__box { min-width: 92px; padding: 7px 10px 5px; }
@@ -1409,12 +1417,16 @@ html.is-tinted .input[aria-invalid="true"] { border-color: #ffb4ab; }
   .ticker { margin-top: 18px; }
 }
 
-@media (max-width: 420px) {
+@media (max-width: 460px) {
   .badge__box { min-width: 80px; }
   .badge__line { font-size: .95rem; }
-  .masthead__side .pill { padding: 9px 14px 8px; font-size: .72rem; }
+  /* the CTA is the widest thing in the row, so it gives up the most */
+  .masthead__side .pill { padding: 9px 11px 8px; font-size: .68rem; }
+  .masthead .lang-btn { width: 38px; height: 38px; }
 }
 
-/* the language switch shown inside the overlay instead */
+/* Kept in the overlay as well: it is a full-width tap target with the
+   language written out in its own script, which is easier to find than a
+   two letter circle for someone who does not read English. */
 .menu-lang { font-weight: 600; }
 @media (min-width: 901px) { .menu-lang { display: none; } }
