@@ -102,7 +102,7 @@ const tintOf = p => mix(hexToRgb(p.c2), SHADE, 0.52);
 /* ============================================================
    LABEL TEXTURE — the wrap that goes round the cup
    ============================================================ */
-function labelTexture(p, W = 1024, H = 512) {
+function labelTexture(p, W = 1024, H = 512, plain = false) {
   const c = document.createElement('canvas');
   c.width = W; c.height = H;
   const x = c.getContext('2d');
@@ -122,6 +122,44 @@ function labelTexture(p, W = 1024, H = 512) {
   g.addColorStop(1, p.c2);
   x.fillStyle = g;
   x.fillRect(0, 0, DW, DH);
+
+  /* A bowl is wide and shallow and a shot is tiny, so the tall cup's
+     300x250 panel would either stretch across the whole sheet or shrink
+     past reading. Those get the flavour gradient and a compact wordmark
+     band instead, which survives both shapes. */
+  if (plain) {
+    for (const cx of [DW * 0.25, DW * 0.75]) {
+      x.save();
+      x.translate(cx, DH / 2);
+      x.fillStyle = 'rgba(248,247,229,.93)';
+      x.fillRect(-190, -46, 380, 92);
+      x.fillStyle = '#1d1d1d';
+      x.textAlign = 'center';
+      x.font = '52px Righteous, sans-serif';
+      x.fillText('BLENDMANDU', 0, 18);
+      x.restore();
+
+      x.save();
+      x.translate(cx, DH / 2 - 96);
+      x.fillStyle = '#f8f7e5';
+      x.textAlign = 'center';
+      x.font = '40px Righteous, sans-serif';
+      x.fillText(p.name.toUpperCase(), 0, 0);
+      x.restore();
+
+      x.save();
+      x.translate(cx, DH / 2 + 104);
+      x.fillStyle = 'rgba(248,247,229,.85)';
+      x.textAlign = 'center';
+      x.font = '30px Righteous, sans-serif';
+      x.fillText(p.meta.split('·')[0].trim().toUpperCase(), 0, 0);
+      x.restore();
+    }
+    const tp = new THREE.CanvasTexture(c);
+    tp.colorSpace = THREE.SRGBColorSpace;
+    tp.anisotropy = 8;
+    return tp;
+  }
 
   // the label panel repeats twice so it reads from either side
   for (const cx of [DW * 0.25, DW * 0.75]) {
@@ -174,64 +212,165 @@ function labelTexture(p, W = 1024, H = 512) {
 /* ============================================================
    CUP MESH — lathed body + dome lid + straw
    ============================================================ */
+/* The four vessels the menu actually sells. Everything used to be built
+   as the tall smoothie cup, so a bowl, a juice bottle and a 60ml shot all
+   arrived on the card as the same lidded cup with a straw in it. The data
+   already said which was which; only the geometry ignored it. */
+const VESSELS = {
+  /* tall: the smoothie cup, rolled rim, domed lid, straw */
+  tall: () => {
+    const pts = [new THREE.Vector2(0, -1.30), new THREE.Vector2(0.52, -1.30),
+                 new THREE.Vector2(0.56, -1.24)];
+    for (let i = 0; i <= 12; i++) {
+      const t = i / 12;
+      pts.push(new THREE.Vector2(0.56 + t * 0.26, -1.24 + t * 2.42));
+    }
+    pts.push(new THREE.Vector2(0.86, 1.22));
+    return { pts, rim: [0.87, 1.22], lid: [0.86, 1.22, 0.52], straw: true,
+             scale: 1, plainLabel: false };
+  },
+
+  /* bowl: wide and shallow on a short foot, open, with the blend showing */
+  bowl: () => {
+    /* A short wide foot, not a stem: the first pass gave it a long narrow
+       base and the thing read as a funnel rather than a bowl. */
+    const pts = [new THREE.Vector2(0, -0.58), new THREE.Vector2(0.36, -0.58),
+                 new THREE.Vector2(0.40, -0.53), new THREE.Vector2(0.40, -0.44),
+                 new THREE.Vector2(0.50, -0.38)];
+    for (let i = 0; i <= 16; i++) {
+      const t = i / 16;
+      /* ease the radius faster than the height so the wall curves out and
+         then levels, which is a bowl. Linear in both is a cone. */
+      pts.push(new THREE.Vector2(0.50 + 0.70 * Math.sin(t * Math.PI / 2),
+                                 -0.38 + 0.80 * Math.pow(t, 1.45)));
+    }
+    return { pts, rim: [1.21, 0.42], fill: [1.02, 0.15, 0.20], granola: true,
+             scale: 1.05, plainLabel: true, tilt: -0.38 };
+  },
+
+  /* bottle: cold pressed juice, straight sided with a shoulder and a cap */
+  bottle: () => {
+    const pts = [new THREE.Vector2(0, -1.15), new THREE.Vector2(0.44, -1.15),
+                 new THREE.Vector2(0.48, -1.09), new THREE.Vector2(0.50, -0.96),
+                 new THREE.Vector2(0.50, 0.34)];
+    for (let i = 1; i <= 8; i++) {
+      const t = i / 8;
+      pts.push(new THREE.Vector2(0.50 - 0.30 * Math.pow(t, 1.4), 0.34 + 0.52 * t));
+    }
+    pts.push(new THREE.Vector2(0.20, 1.10));
+    return { pts, cap: [0.235, 0.26, 1.20], scale: 1, plainLabel: false };
+  },
+
+  /* shot: 60ml, squat, capped. Scaled up so it fills a card without
+     pretending to be a bottle. */
+  shot: () => {
+    /* Squat on purpose. The first pass was slim enough that on its own
+       card, with no other object to judge it against, a 60ml shot read as
+       just another juice bottle. Width against height is the only cue the
+       frame gives, so it has to carry the difference. */
+    const pts = [new THREE.Vector2(0, -0.46), new THREE.Vector2(0.40, -0.46),
+                 new THREE.Vector2(0.44, -0.41), new THREE.Vector2(0.45, -0.18),
+                 new THREE.Vector2(0.45, 0.10)];
+    for (let i = 1; i <= 6; i++) {
+      const t = i / 6;
+      pts.push(new THREE.Vector2(0.45 - 0.23 * Math.pow(t, 1.25), 0.10 + 0.22 * t));
+    }
+    pts.push(new THREE.Vector2(0.22, 0.40));
+    return { pts, cap: [0.255, 0.20, 0.47], scale: 1.62, plainLabel: true };
+  },
+};
+
 function buildCup(product, texW, texH) {
   const group = new THREE.Group();
-
-  // profile of a tapered smoothie cup, bottom -> top
-  const pts = [];
-  pts.push(new THREE.Vector2(0.00, -1.30));
-  pts.push(new THREE.Vector2(0.52, -1.30));
-  pts.push(new THREE.Vector2(0.56, -1.24));
-  for (let i = 0; i <= 12; i++) {
-    const t = i / 12;
-    pts.push(new THREE.Vector2(0.56 + t * 0.26, -1.24 + t * 2.42));
-  }
-  pts.push(new THREE.Vector2(0.86, 1.22));
+  const spec = (VESSELS[product.cup] || VESSELS.tall)();
+  /* Parts go on an inner group so a vessel can carry a fixed tilt while the
+     outer group is still free to be spun on Y by whoever is driving it. */
+  const inner = new THREE.Group();
+  inner.rotation.x = spec.tilt || 0;
+  group.add(inner);
 
   const body = new THREE.Mesh(
-    new THREE.LatheGeometry(pts, 96),
+    new THREE.LatheGeometry(spec.pts, 96),
     new THREE.MeshStandardMaterial({
-      map: labelTexture(product, texW, texH),
+      map: labelTexture(product, texW, texH, spec.plainLabel),
       roughness: 0.42,
       metalness: 0.06,
     })
   );
-  group.add(body);
+  inner.add(body);
 
-  // rolled rim
-  const rim = new THREE.Mesh(
-    new THREE.TorusGeometry(0.87, 0.045, 16, 96),
-    new THREE.MeshStandardMaterial({ color: 0xefe7d2, roughness: 0.5 })
-  );
-  rim.rotation.x = Math.PI / 2;
-  rim.position.y = 1.22;
-  group.add(rim);
+  if (spec.rim) {
+    const rim = new THREE.Mesh(
+      new THREE.TorusGeometry(spec.rim[0], 0.045, 16, 96),
+      new THREE.MeshStandardMaterial({ color: 0xefe7d2, roughness: 0.5 })
+    );
+    rim.rotation.x = Math.PI / 2;
+    rim.position.y = spec.rim[1];
+    inner.add(rim);
+  }
 
-  // dome lid
-  const lid = new THREE.Mesh(
-    new THREE.SphereGeometry(0.86, 64, 32, 0, Math.PI * 2, 0, Math.PI / 2),
-    new THREE.MeshPhysicalMaterial({
-      color: 0xdcd3bc,
-      roughness: 0.28,
-      transmission: 0.45,
-      thickness: 0.4,
-      transparent: true,
-      opacity: 0.92,
-    })
-  );
-  lid.position.y = 1.22;
-  lid.scale.y = 0.52;
-  group.add(lid);
+  if (spec.lid) {
+    const lid = new THREE.Mesh(
+      new THREE.SphereGeometry(spec.lid[0], 64, 32, 0, Math.PI * 2, 0, Math.PI / 2),
+      new THREE.MeshPhysicalMaterial({
+        color: 0xdcd3bc, roughness: 0.28, transmission: 0.45,
+        thickness: 0.4, transparent: true, opacity: 0.92,
+      })
+    );
+    lid.position.y = spec.lid[1];
+    lid.scale.y = spec.lid[2];
+    inner.add(lid);
+  }
 
-  // straw
-  const straw = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.075, 0.075, 1.5, 24),
-    new THREE.MeshStandardMaterial({ color: 0x191917, roughness: 0.55 })
-  );
-  straw.position.set(0.2, 1.85, 0.05);
-  straw.rotation.z = -0.17;
-  group.add(straw);
+  if (spec.straw) {
+    const straw = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.075, 0.075, 1.5, 24),
+      new THREE.MeshStandardMaterial({ color: 0x191917, roughness: 0.55 })
+    );
+    straw.position.set(0.2, 1.85, 0.05);
+    straw.rotation.z = -0.17;
+    inner.add(straw);
+  }
 
+  if (spec.cap) {
+    const cap = new THREE.Mesh(
+      new THREE.CylinderGeometry(spec.cap[0], spec.cap[0], spec.cap[1], 48),
+      new THREE.MeshStandardMaterial({ color: 0x2a2724, roughness: 0.45 })
+    );
+    cap.position.y = spec.cap[2];
+    inner.add(cap);
+  }
+
+  /* An open bowl has to show what is in it, otherwise it reads as a very
+     short cup with nothing inside. */
+  if (spec.fill) {
+    const surface = new THREE.Mesh(
+      new THREE.SphereGeometry(spec.fill[0], 48, 24, 0, Math.PI * 2, 0, Math.PI / 2),
+      new THREE.MeshStandardMaterial({ color: new THREE.Color(product.c1), roughness: 0.62 })
+    );
+    surface.position.y = spec.fill[1];
+    surface.scale.y = spec.fill[2];
+    inner.add(surface);
+
+    if (spec.granola) {
+      const bits = new THREE.MeshStandardMaterial({ color: 0xc79a5a, roughness: 0.85 });
+      const seed = new THREE.DodecahedronGeometry(0.062, 0);
+      for (let i = 0; i < 11; i++) {
+        const a = i * 2.399;                       // golden angle, so no clumping
+        const r = 0.22 + 0.58 * Math.sqrt(i / 11);
+        const bit = new THREE.Mesh(seed, bits);
+        /* on the blend, inside the rim: they were landing at rim height and
+           reading as teeth around the edge */
+        bit.position.set(Math.cos(a) * r,
+                         spec.fill[1] + spec.fill[0] * spec.fill[2] * 0.72,
+                         Math.sin(a) * r);
+        bit.rotation.set(a, a * 1.7, a * 0.6);
+        inner.add(bit);
+      }
+    }
+  }
+
+  group.scale.setScalar(spec.scale);
   group.userData.body = body;
   return group;
 }
@@ -459,7 +598,7 @@ function initSticky() {
   if (!canvas || !section) return;
 
   const { renderer, scene, camera, resize } = makeScene(canvas);
-  const cup = buildCup(PRODUCTS.find(p => p.id === 'acai-bowl') || PRODUCTS[0]);
+  const cup = buildCup(PRODUCTS.find(p => p.id === 'himalayan-berry') || PRODUCTS[0]);
   scene.add(cup);
 
   const steps = [...section.querySelectorAll('[data-pin-step]')];
@@ -858,7 +997,28 @@ function initCardCups() {
   try {
     renderer = new THREE.WebGLRenderer({ canvas: gl, alpha: true, antialias: true,
                                          powerPreference: 'low-power' });
-  } catch { return; }                             // leave the SVG in place
+  } catch (err) {
+    /* Silent returns here cost real debugging time: the page just showed
+       the flat SVG with nothing in the console to say why. */
+    console.warn('[blendmandu] card cups unavailable:', err);
+    return;
+  }
+  /* A GPU under pressure can take the context away, and three.js just
+     logs it. Without this the cards would sit blank rather than falling
+     back to the flat art they still have underneath. */
+  gl.addEventListener('webglcontextlost', e => {
+    e.preventDefault();
+    console.warn('[blendmandu] card cup context lost, falling back to flat art');
+    for (const el of cards.keys()) el.classList.remove('has-cup');
+    visible.clear();
+    if (raf) { cancelAnimationFrame(raf); raf = 0; }
+  });
+  gl.addEventListener('webglcontextrestored', () => {
+    cups.clear();                                 // textures died with the context
+    for (const el of cards.keys()) el.classList.add('has-cup');
+    scan();
+  });
+
   renderer.setPixelRatio(1);                      // dpr is already in the backing store
   renderer.setSize(W, H, false);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -903,7 +1063,7 @@ function initCardCups() {
   function mount(el) {
     if (cards.has(el)) return;
     const p = PRODUCTS.find(x => x.id === el.dataset.cup);
-    if (!p) return;
+    if (!p) { console.warn('[blendmandu] no product for data-cup', el.dataset.cup); return; }
     const c = document.createElement('canvas');
     c.className = 'cardcup';
     c.width = W; c.height = H;
