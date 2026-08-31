@@ -119,12 +119,15 @@ function head({ title, desc, url, ogtype = 'website', base = '', extra = '', lan
    That is what lets the CSP drop 'unsafe-inline' from script-src, which
    is the difference between a CSP that stops injected script and one
    that only looks like it does. */
-const scripts = assetBase =>
+const scripts = (assetBase, cup = false) =>
 `<script src="${assetBase}assets/vendor/lenis.min.js"></script>
 <script src="${assetBase}assets/js/i18n.js?v=${VER}"></script>
 <script src="${assetBase}assets/js/products.js?v=${VER}"></script>
 <script src="${assetBase}assets/js/analytics.js?v=${VER}"></script>
-<script src="${assetBase}assets/js/app.js?v=${VER}"></script>`;
+<script src="${assetBase}assets/js/app.js?v=${VER}"></script>` +
+/* The 3D engine is opt-in per page: a policy page must never be made
+   to pull 1.24 MB of three.js it has no cup to draw with. */
+(cup ? `\n<script type="module" src="${assetBase}assets/js/cup3d.js?v=${VER}"></script>` : '');
 
 const SCHEMA = require('./schema.js')({
   SHOP, ORIGIN, urlFor, T, money, PRODUCTS, CATEGORIES, catLabel, FAQ,
@@ -208,7 +211,7 @@ for (const lang of LANGCODES) {
     const html = `<!doctype html>
 <html lang="${LANGS[lang].htmlLang}" data-base="${linkBase}" data-lang="${lang}">
 <head>
-${head({ title: `${p.name}, ${money(p.price)} | Smoothie Delivery Kathmandu`, desc, url, ogtype: 'product', base: assetBase, lang, alt,
+${head({ title: `${p.name}, ${money(p.price)} | Smoothie Delivery Kathmandu`, desc, url, ogtype: 'product', base: assetBase, lang, alt, preload: true,
   extra: `\n<script type="application/ld+json">${JSON.stringify(jsonld)}</script>\n<script type="application/ld+json">${JSON.stringify(breadcrumb)}</script>` })}
 </head>
 <body>
@@ -222,7 +225,7 @@ ${head({ title: `${p.name}, ${money(p.price)} | Smoothie Delivery Kathmandu`, de
   </nav>
 
   <div class="pdp">
-    <div class="pdp__art">
+    <div class="pdp__art" data-cup="${p.id}">
       ${tag ? `<span class="card__tag">${esc(tag)}</span>` : ''}
       ${productArt(p)}
     </div>
@@ -261,7 +264,7 @@ ${head({ title: `${p.name}, ${money(p.price)} | Smoothie Delivery Kathmandu`, de
        data-related="${related.map(r => r.id).join(',')}"></div>` : ''}
 </main>
 
-${scripts(assetBase)}
+${scripts(assetBase, true)}
 </body>
 </html>
 `;
@@ -432,7 +435,7 @@ for (const file of ['index.html', 'shop.html', 'cart.html']) {
   const noindex = /name="robots" content="noindex"/.test(t);
   t = t.replace(/<head>[\s\S]*?<\/head>/,
     '<head>\n' + head({ title, desc, url, base: '', lang: 'en', alt,
-                        preload: file === 'index.html' })
+                        preload: file === 'index.html' || file === 'shop.html' })
     + (noindex ? '\n<meta name="robots" content="noindex">' : '')
     + '\n</head>');
 
@@ -571,7 +574,7 @@ for (const file of ['index.html', 'shop.html', 'cart.html']) {
   t = t.replace(/<html[^>]*>/, `<html lang="${LANGS.ne.htmlLang}" data-base="" data-lang="ne">`);
   t = t.replace(/<head>[\s\S]*?<\/head>/,
     '<head>\n' + head({ title: meta.title, desc: meta.desc, url, base: '../', lang: 'ne', alt,
-                        preload: file === 'index.html' })
+                        preload: file === 'index.html' || file === 'shop.html' })
     + (/name="robots" content="noindex"/.test(t) ? '\n<meta name="robots" content="noindex">' : '')
     + '\n</head>');
 

@@ -102,23 +102,31 @@ const tintOf = p => mix(hexToRgb(p.c2), SHADE, 0.52);
 /* ============================================================
    LABEL TEXTURE — the wrap that goes round the cup
    ============================================================ */
-function labelTexture(p) {
-  const W = 1024, H = 512;
+function labelTexture(p, W = 1024, H = 512) {
   const c = document.createElement('canvas');
   c.width = W; c.height = H;
   const x = c.getContext('2d');
 
+  /* Everything below is positioned with fixed offsets that were tuned for
+     a 1024x512 sheet: the label panel, the rule weights, the text
+     baselines. Scaling the context rather than those numbers means a
+     smaller texture is the same artwork shrunk, not the same artwork
+     cropped. Halving the canvas without this made the white panel swallow
+     the flavour gradient, so every card cup rendered cream. */
+  const DW = 1024, DH = 512;
+  x.scale(W / DW, H / DH);
+
   // base flavour gradient
-  const g = x.createLinearGradient(0, 0, 0, H);
+  const g = x.createLinearGradient(0, 0, 0, DH);
   g.addColorStop(0, p.c1);
   g.addColorStop(1, p.c2);
   x.fillStyle = g;
-  x.fillRect(0, 0, W, H);
+  x.fillRect(0, 0, DW, DH);
 
   // the label panel repeats twice so it reads from either side
-  for (const cx of [W * 0.25, W * 0.75]) {
+  for (const cx of [DW * 0.25, DW * 0.75]) {
     x.save();
-    x.translate(cx, H / 2);
+    x.translate(cx, DH / 2);
 
     x.fillStyle = '#f8f7e5';
     x.fillRect(-150, -125, 300, 250);
@@ -140,7 +148,7 @@ function labelTexture(p) {
 
     // flavour name above the panel
     x.save();
-    x.translate(cx, H / 2 - 168);
+    x.translate(cx, DH / 2 - 168);
     x.fillStyle = '#f8f7e5';
     x.textAlign = 'center';
     x.font = '44px Righteous, sans-serif';
@@ -149,7 +157,7 @@ function labelTexture(p) {
 
     // volume line below
     x.save();
-    x.translate(cx, H / 2 + 178);
+    x.translate(cx, DH / 2 + 178);
     x.fillStyle = 'rgba(248,247,229,.85)';
     x.textAlign = 'center';
     x.font = '28px Righteous, sans-serif';
@@ -166,7 +174,7 @@ function labelTexture(p) {
 /* ============================================================
    CUP MESH — lathed body + dome lid + straw
    ============================================================ */
-function buildCup(product) {
+function buildCup(product, texW, texH) {
   const group = new THREE.Group();
 
   // profile of a tapered smoothie cup, bottom -> top
@@ -183,7 +191,7 @@ function buildCup(product) {
   const body = new THREE.Mesh(
     new THREE.LatheGeometry(pts, 96),
     new THREE.MeshStandardMaterial({
-      map: labelTexture(product),
+      map: labelTexture(product, texW, texH),
       roughness: 0.42,
       metalness: 0.06,
     })
@@ -832,6 +840,122 @@ function initSequence() {
 }
 
 /* ============================================================
+   4. MENU CUPS — the real thing on every product card
+   A card cannot own a WebGLRenderer: browsers cap contexts at roughly
+   eight to sixteen and a phone gives up well before fifteen. So there is
+   one renderer, offscreen, and each card gets a cheap 2D canvas that the
+   rendered frame is blitted into. One GPU context, N memcpys.
+   ============================================================ */
+function initCardCups() {
+  const RW = 320, RH = 400;                       // card art is 4:5
+  const dpr = Math.min(devicePixelRatio, 1.5);    // these are small; 2x is waste
+  const W = Math.round(RW * dpr), H = Math.round(RH * dpr);
+
+  const gl = document.createElement('canvas');    // never enters the DOM
+  gl.width = W; gl.height = H;
+
+  let renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ canvas: gl, alpha: true, antialias: true,
+                                         powerPreference: 'low-power' });
+  } catch { return; }                             // leave the SVG in place
+  renderer.setPixelRatio(1);                      // dpr is already in the backing store
+  renderer.setSize(W, H, false);
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.05;
+
+  /* Same light rig as the hero, so a card cup and the big one read as the
+     same object rather than two different products. */
+  const scene = new THREE.Scene();
+  scene.add(new THREE.AmbientLight(0xffffff, 0.55));
+  const key = new THREE.DirectionalLight(0xffffff, 2.05); key.position.set(3, 5, 4);
+  const rim = new THREE.DirectionalLight(0xffd9b0, 1.05); rim.position.set(-4, 1, -3);
+  const fill = new THREE.DirectionalLight(0xffffff, 0.3); fill.position.set(-2, -3, 3);
+  scene.add(key, rim, fill);
+
+  const camera = new THREE.PerspectiveCamera(34, RW / RH, 0.1, 100);
+  camera.position.set(0, 0.05, 7.6 * (1 + (1 - RW / RH) * 0.55));
+  camera.updateProjectionMatrix();
+
+  /* Built on first sight, not up front: fifteen lathes and fifteen label
+     textures at load would cost more than the whole rest of the page. */
+  const cups = new Map();
+  function cupFor(p) {
+    let c = cups.get(p.id);
+    if (!c) { c = buildCup(p, 512, 256); cups.set(p.id, c); }
+    return c;
+  }
+
+  const cards = new Map();      // el -> { p, ctx, canvas, phase }
+  const visible = new Set();
+  let raf = 0;
+
+  const io = new IntersectionObserver(es => {
+    for (const e of es) {
+      if (e.isIntersecting) { mount(e.target); visible.add(e.target); }
+      else visible.delete(e.target);
+    }
+    if (visible.size && !raf) raf = requestAnimationFrame(frame);
+    if (!visible.size && raf) { cancelAnimationFrame(raf); raf = 0; }
+  }, { rootMargin: '200px' });   // start building just before it is needed
+
+  function mount(el) {
+    if (cards.has(el)) return;
+    const p = PRODUCTS.find(x => x.id === el.dataset.cup);
+    if (!p) return;
+    const c = document.createElement('canvas');
+    c.className = 'cardcup';
+    c.width = W; c.height = H;
+    c.setAttribute('aria-hidden', 'true');
+    el.appendChild(c);
+    el.classList.add('has-cup');          // hides the flat SVG underneath
+    cards.set(el, { p, canvas: c, ctx: c.getContext('2d'),
+                    phase: (el.dataset.cup.charCodeAt(0) % 7) * 0.9 });
+  }
+
+  function drawCard(el, now) {
+    const e = cards.get(el);
+    if (!e) return;
+    const cup = cupFor(e.p);
+    scene.add(cup);
+    /* Time based, not per frame, so the round robin below cannot make one
+       card spin slower than another just because it is drawn less often. */
+    cup.rotation.y = REDUCED ? e.phase : e.phase + now / 1000 * 0.5;
+    cup.rotation.x = 0.05;
+    renderer.render(scene, camera);
+    scene.remove(cup);
+    e.ctx.clearRect(0, 0, W, H);
+    e.ctx.drawImage(gl, 0, 0, W, H);
+  }
+
+  /* A phone can have six cards on screen. Drawing every one every frame is
+     the difference between a smooth page and a hot one, so spread them. */
+  const BUDGET = 4;
+  let cursor = 0;
+  function frame(now) {
+    const list = [...visible];
+    if (list.length) {
+      const count = Math.min(BUDGET, list.length);
+      for (let i = 0; i < count; i++) drawCard(list[(cursor + i) % list.length], now);
+      cursor = (cursor + count) % list.length;
+    }
+    raf = visible.size ? requestAnimationFrame(frame) : 0;
+  }
+
+  /* The grid is rebuilt on every filter and search, which throws the old
+     canvases away, so rebind rather than assume one pass is enough. */
+  function scan() {
+    for (const el of [...cards.keys()]) {
+      if (!el.isConnected) { cards.delete(el); visible.delete(el); }
+    }
+    document.querySelectorAll('[data-cup]').forEach(el => io.observe(el));
+  }
+  scan();
+  addEventListener('blendmandu:cards', scan);
+}
+
+/* ============================================================
    BOOT
    ============================================================ */
 async function boot() {
@@ -847,6 +971,7 @@ async function boot() {
   initHero();
   initSticky();
   initSequence();
+  initCardCups();
 }
 
 if (webglOK()) {

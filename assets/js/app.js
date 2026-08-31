@@ -357,7 +357,7 @@ function renderGate() {
 function cardHTML(p) {
   return `
     <article class="card">
-      <div class="card__art">
+      <div class="card__art" data-cup="${p.id}">
         ${pTag(p) ? `<span class="card__tag">${esc(pTag(p))}</span>` : ''}
         ${productArt(p)}
       </div>
@@ -415,6 +415,8 @@ function initShop() {
            <p class="lede" style="margin-inline:auto">${t('shop.noneBlurb')}</p>
            <button class="pill pill--accent" data-reset-search>${t('shop.showAll')}</button>
          </div>`;
+
+    dispatchEvent(new Event('blendmandu:cards'));
 
     $$('.filters__btn', filters).forEach(b =>
       b.classList.toggle('is-active', b.dataset.cat === cat));
@@ -487,6 +489,7 @@ function initFeatured() {
   if (!strip) return;
   strip.innerHTML = PRODUCTS.filter(p => p.tag === 'Bestseller' || p.id === 'green-machine')
     .slice(0, 4).map(cardHTML).join('');
+    dispatchEvent(new Event('blendmandu:cards'));
   strip.addEventListener('click', e => {
     const b = e.target.closest('[data-add]');
     if (b) addToCart(b.dataset.add);
@@ -960,6 +963,7 @@ function initPDP() {
       const p = byId(id);
       return p ? cardHTML(p) : '';
     }).join('');
+    dispatchEvent(new Event('blendmandu:cards'));
   }
 
   // one delegated handler covers the PDP button and every related card
