@@ -26,7 +26,7 @@ module.exports = {
   strings: [
     // ---- index: hero ----
     ['Kathmandu &middot; open 24 hours', 'काठमाडौं &middot; २४ घण्टा खुला'],
-    ['<span>Smoothies blended at 3 AM,</span> <span>delivered across Kathmandu</span>',
+    ["<span>Blended at 3 AM</span> <span>if that's when</span> <span>you want it</span>",
      '<span>राति ३ बजे ब्लेन्ड गरिएको स्मुदी,</span> <span>काठमाडौंभर पुर्‍याइन्छ</span>'],
     ['Fresh smoothies, acai bowls and cold pressed juice, blended after you order and at your door in 30 to 45 minutes. Anywhere in Kathmandu, any hour of the day or night. No app, no account, cash or eSewa on arrival.',
      'ताजा स्मुदी, असाई बाउल र कोल्ड प्रेस्ड जुस, अर्डरपछि ब्लेन्ड गरी ३० देखि ४५ मिनेटमा तपाईंको ढोकामा। काठमाडौंभर, दिनरात जुनसुकै बेला। एप चाहिँदैन, खाता चाहिँदैन, आइपुगेपछि नगद वा इसेवा।'],
@@ -42,11 +42,11 @@ module.exports = {
     ['Fruit first', 'पहिले फलफूल'],
     ['Seasonal Nepali fruit wherever the season allows it, and nothing frozen months ago standing in for it.',
      'मौसमले दिएसम्म नेपाली मौसमी फलफूल। महिनौंअघि जमाइएको कुनै विकल्प होइन।'],
-    ['Nothing made in advance', 'पहिल्यै बनाइएको केही छैन'],
-    ["The blender does not start until your order lands. No batches sit in a fridge losing everything that made them worth drinking.",
+    ['Nothing sits waiting', 'पहिल्यै बनाइएको केही छैन'],
+    ["The blender doesn't start until your order lands. No batches sitting in a fridge losing everything that made them worth drinking.",
      'तपाईंको अर्डर नआएसम्म ब्लेन्डर चल्दैन। फ्रिजमा राखेर स्वाद गुमाइरहेका ब्याच हामीसँग छैनन्।'],
     ['Sealed and sent', 'बन्द गरी पठाइन्छ'],
-    ['Lidded, sleeved and on a bike within minutes. Thirty to forty five to your door, at any hour you care to ask.',
+    ['Lidded, sleeved and on a bike within minutes. 30 to 45 minutes to your door, at any hour you care to ask.',
      'ढक्कन लगाएर, स्लिभ हालेर केही मिनेटमै बाइकमा। तीसदेखि पैँतालीस मिनेटमा तपाईंको ढोकामा, जुनसुकै बेला।'],
 
     // ---- index: sequence ----
@@ -58,9 +58,9 @@ module.exports = {
     ['About us', 'हाम्रो बारेमा'],
     ['>Smoothie and juice menu, delivered across Kathmandu<', '>स्मुदी र जुस मेनु, काठमाडौंभर डेलिभरी<'],
     ['Welcome!', 'स्वागत छ!'],
-    ["We started Blendmandu because good fruit is everywhere in this valley and a genuinely fresh smoothie somehow is not. So we skipped the shopfront, put the money into produce and a kitchen that never closes, and we bring it to you instead.",
+    ["We started Blendmandu because good fruit is everywhere in this valley and a genuinely fresh smoothie still somehow isn't. So we skipped the shopfront, put the money into produce and a kitchen that never closes, and we bring it to you instead.",
      'हामीले Blendmandu सुरु गर्‍यौं किनभने यो उपत्यकामा राम्रो फलफूल जताततै छ, तर साँच्चै ताजा स्मुदी भने कतै छैन। त्यसैले पसल नखोली त्यो पैसा फलफूल र कहिल्यै नबन्द हुने किचनमा लगायौं, र तपाईंकहाँ पुर्‍याउन थाल्यौं।'],
-    ["Every cup is blended after you order it, so nothing sits in a fridge waiting. Seasonal Nepali fruit where we can get it, no syrups, no powders you did not ask for, and honest labels on what is inside.",
+    ["Every cup is blended after you order it, so nothing sits in a fridge waiting. Seasonal Nepali fruit where we can get it, no syrups, no powders you didn't ask for, and honest labels on what's inside.",
      'हरेक कप तपाईंले अर्डर गरेपछि मात्र ब्लेन्ड हुन्छ, त्यसैले फ्रिजमा कुरेर बस्ने केही छैन। पाएसम्म नेपाली मौसमी फलफूल, कुनै सिरप छैन, नमागेको पाउडर छैन, र भित्र के छ भन्ने इमानदार लेबल।'],
     ['Always open', 'सधैं खुला'],
     ['Minutes, typical', 'मिनेट, सामान्यतया'],
@@ -76,7 +76,7 @@ module.exports = {
     ['Pick your blends from the menu and add them to the cart. No account, no sign up.',
      'मेनुबाट आफ्नो ब्लेन्ड छानेर कार्टमा थप्नुहोस्। खाता चाहिँदैन, साइन अप चाहिँदैन।'],
     ['Send it on WhatsApp', 'व्हाट्सएपमा पठाउनुहोस्'],
-    ["Checkout writes your order into a WhatsApp message. Press send and we have it.",
+    ["Checkout writes your order into a WhatsApp message. Hit send and we've got it.",
      'चेकआउटले तपाईंको अर्डर व्हाट्सएप सन्देशमा लेखिदिन्छ। पठाउनुहोस्, हामीले पायौं।'],
     ['We blend it fresh', 'हामी ताजा ब्लेन्ड गर्छौं'],
     ['Nothing is made ahead. Your cup starts once the order lands in the kitchen.',
@@ -96,7 +96,7 @@ module.exports = {
     ['Kalanki · Swayambhu · Gongabu · Koteshwor', 'कलंकी · स्वयम्भू · गोंगबु · कोटेश्वर'],
 
     // ---- shop ----
-    ["Every smoothie, bowl and cold pressed juice below is blended after you order it, never before. Seasonal fruit, no syrups, no powders you did not ask for. Prices start at Rs 150, delivery anywhere in Kathmandu takes 30 to 45 minutes, and the kitchen never closes.",
+    ["Every smoothie, bowl and cold pressed juice below is blended after you order it, never before. Seasonal fruit, no syrups, no powders you didn't ask for. Prices start at Rs 150, delivery anywhere in Kathmandu takes 30 to 45 minutes, and the kitchen never closes.",
      'तलका हरेक स्मुदी, बाउल र कोल्ड प्रेस्ड जुस तपाईंले अर्डर गरेपछि मात्र ब्लेन्ड हुन्छ, पहिले होइन। मौसमी फलफूल, कुनै सिरप छैन, नमागेको पाउडर छैन। मूल्य रु 150 देखि सुरु हुन्छ, काठमाडौंभर डेलिभरीमा ३० देखि ४५ मिनेट लाग्छ, र किचन कहिल्यै बन्द हुँदैन।'],
     ['>Search<', '>खोज्नुहोस्<'],
     ['mango, vegan, protein…', 'आँप, भेगन, प्रोटिन…'],
@@ -135,7 +135,7 @@ module.exports = {
   /* strings that MUST exist in each file — build fails if one goes missing,
      which is how a copy change on the English page gets caught */
   requiredIn: {
-    'index.html': ['<span>Smoothies blended at 3 AM,</span>', 'How we blend', 'Welcome!', 'How it works',
+    'index.html': ['<span>Blended at 3 AM</span>', 'How we blend', 'Welcome!', 'How it works',
                    'Areas & fees', 'Four steps, no app'],
     'shop.html':  ['>Categories<', '>Search<'],
     'cart.html':  ['>Your cart<', 'Where to?', 'Send my order on WhatsApp'],
