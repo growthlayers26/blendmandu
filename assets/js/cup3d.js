@@ -102,7 +102,7 @@ const tintOf = p => mix(hexToRgb(p.c2), SHADE, 0.52);
 /* ============================================================
    LABEL TEXTURE — the wrap that goes round the cup
    ============================================================ */
-function labelTexture(p, W = 1024, H = 512, plain = false) {
+function labelTexture(p, W = 1024, H = 512, plain = false, band = null) {
   const c = document.createElement('canvas');
   c.width = W; c.height = H;
   const x = c.getContext('2d');
@@ -123,6 +123,30 @@ function labelTexture(p, W = 1024, H = 512, plain = false) {
   x.fillStyle = g;
   x.fillRect(0, 0, DW, DH);
 
+  /* The gradient covers the whole sheet, but the printed matter must not.
+     A label wraps the straight body of a vessel, and on a bottle that body
+     is only v 0.23 to 0.70 of the profile, so drawing across the full
+     sheet pushed the flavour name onto the shoulder and the volume line
+     around the base. Squeeze the artwork into the band the body occupies.
+     Canvas y runs top down and v runs bottom up, hence the inversion. */
+  /* Scaling the context to fit the band squashed the glyphs: on a shot,
+     whose body is only a third of the profile, the wordmark came out
+     visibly flattened. Move the artwork to the middle of the band instead
+     and pull its own spacing in by the same factor, so the type keeps its
+     proportions and only the layout tightens. */
+  const k = band ? (band[1] - band[0]) : 1;
+  /* Scaling by k alone shrank a shot's label to nothing: only the vertical
+     ever needed constraining, since the label wraps the circumference and
+     has width to spare. Hold a legibility floor, and on a band too short
+     for three stacked elements print just the panel, which is all a real
+     60ml bottle carries anyway. */
+  const sc = band ? Math.min(1, Math.max(k * 1.9, 0.62)) : 1;
+  const tight = k < 0.36;
+  if (band) {
+    const mid = DH * (1 - (band[0] + band[1]) / 2);
+    x.translate(0, mid - DH / 2);
+  }
+
   /* A bowl is wide and shallow and a shot is tiny, so the tall cup's
      300x250 panel would either stretch across the whole sheet or shrink
      past reading. Those get the flavour gradient and a compact wordmark
@@ -131,6 +155,7 @@ function labelTexture(p, W = 1024, H = 512, plain = false) {
     for (const cx of [DW * 0.25, DW * 0.75]) {
       x.save();
       x.translate(cx, DH / 2);
+      x.scale(sc, sc);
       x.fillStyle = 'rgba(248,247,229,.93)';
       x.fillRect(-190, -46, 380, 92);
       x.fillStyle = '#1d1d1d';
@@ -139,8 +164,10 @@ function labelTexture(p, W = 1024, H = 512, plain = false) {
       x.fillText('BLENDMANDU', 0, 18);
       x.restore();
 
+      if (!tight) {
       x.save();
-      x.translate(cx, DH / 2 - 96);
+      x.translate(cx, DH / 2 - 96 * k);
+      x.scale(sc, sc);
       x.fillStyle = '#f8f7e5';
       x.textAlign = 'center';
       x.font = '40px Righteous, sans-serif';
@@ -148,12 +175,14 @@ function labelTexture(p, W = 1024, H = 512, plain = false) {
       x.restore();
 
       x.save();
-      x.translate(cx, DH / 2 + 104);
+      x.translate(cx, DH / 2 + 104 * k);
+      x.scale(sc, sc);
       x.fillStyle = 'rgba(248,247,229,.85)';
       x.textAlign = 'center';
       x.font = '30px Righteous, sans-serif';
       x.fillText(p.meta.split('·')[0].trim().toUpperCase(), 0, 0);
       x.restore();
+      }
     }
     const tp = new THREE.CanvasTexture(c);
     tp.colorSpace = THREE.SRGBColorSpace;
@@ -165,6 +194,7 @@ function labelTexture(p, W = 1024, H = 512, plain = false) {
   for (const cx of [DW * 0.25, DW * 0.75]) {
     x.save();
     x.translate(cx, DH / 2);
+    x.scale(sc, sc);
 
     x.fillStyle = '#f8f7e5';
     x.fillRect(-150, -125, 300, 250);
@@ -186,7 +216,8 @@ function labelTexture(p, W = 1024, H = 512, plain = false) {
 
     // flavour name above the panel
     x.save();
-    x.translate(cx, DH / 2 - 168);
+    x.translate(cx, DH / 2 - 168 * k);
+    x.scale(sc, sc);
     x.fillStyle = '#f8f7e5';
     x.textAlign = 'center';
     x.font = '44px Righteous, sans-serif';
@@ -195,7 +226,8 @@ function labelTexture(p, W = 1024, H = 512, plain = false) {
 
     // volume line below
     x.save();
-    x.translate(cx, DH / 2 + 178);
+    x.translate(cx, DH / 2 + 178 * k);
+    x.scale(sc, sc);
     x.fillStyle = 'rgba(248,247,229,.85)';
     x.textAlign = 'center';
     x.font = '28px Righteous, sans-serif';
@@ -245,7 +277,7 @@ const VESSELS = {
                                  -0.38 + 0.80 * Math.pow(t, 1.45)));
     }
     return { pts, rim: [1.21, 0.42], fill: [1.02, 0.15, 0.20], granola: true,
-             scale: 1.05, plainLabel: true, tilt: -0.38 };
+             scale: 1.05, plainLabel: true, tilt: -0.38, band: [0.40, 0.96] };
   },
 
   /* bottle: cold pressed juice, straight sided with a shoulder and a cap */
@@ -258,7 +290,8 @@ const VESSELS = {
       pts.push(new THREE.Vector2(0.50 - 0.30 * Math.pow(t, 1.4), 0.34 + 0.52 * t));
     }
     pts.push(new THREE.Vector2(0.20, 1.10));
-    return { pts, cap: [0.235, 0.26, 1.20], scale: 1, plainLabel: false };
+    return { pts, cap: [0.235, 0.26, 1.20], scale: 1, plainLabel: false,
+             band: [0.26, 0.67] };   /* body measures 0.23 to 0.70 */
   },
 
   /* shot: 60ml, squat, capped. Scaled up so it fills a card without
@@ -276,9 +309,37 @@ const VESSELS = {
       pts.push(new THREE.Vector2(0.45 - 0.23 * Math.pow(t, 1.25), 0.10 + 0.22 * t));
     }
     pts.push(new THREE.Vector2(0.22, 0.40));
-    return { pts, cap: [0.255, 0.20, 0.47], scale: 1.62, plainLabel: true };
+    return { pts, cap: [0.255, 0.20, 0.47], scale: 1.62, plainLabel: true,
+             band: [0.37, 0.68] };   /* body measures 0.34 to 0.71 */
   },
 };
+
+/* LatheGeometry hands out the texture's V coordinate by point INDEX, not
+   by distance along the profile. The bottle's straight body is 47% of its
+   height but only one step out of thirteen, so it received 8% of the
+   label, while the shoulder took 69%. That is why the flavour name climbed
+   onto the neck and the volume line slid off the bottom.
+
+   Resampling at even arc length makes V track physical height, so the
+   label sits where it is drawn on every vessel. */
+function resample(pts, n = 128) {
+  const dist = [0];
+  for (let i = 1; i < pts.length; i++) dist.push(dist[i - 1] + pts[i].distanceTo(pts[i - 1]));
+  const total = dist[dist.length - 1];
+  if (!total) return pts;
+  const out = [];
+  let seg = 1;
+  for (let i = 0; i < n; i++) {
+    const target = total * i / (n - 1);
+    while (seg < pts.length - 1 && dist[seg] < target) seg++;
+    const span = dist[seg] - dist[seg - 1] || 1;
+    const t = (target - dist[seg - 1]) / span;
+    out.push(new THREE.Vector2(
+      pts[seg - 1].x + (pts[seg].x - pts[seg - 1].x) * t,
+      pts[seg - 1].y + (pts[seg].y - pts[seg - 1].y) * t));
+  }
+  return out;
+}
 
 function buildCup(product, texW, texH) {
   const group = new THREE.Group();
@@ -290,9 +351,9 @@ function buildCup(product, texW, texH) {
   group.add(inner);
 
   const body = new THREE.Mesh(
-    new THREE.LatheGeometry(spec.pts, 96),
+    new THREE.LatheGeometry(resample(spec.pts), 96),
     new THREE.MeshStandardMaterial({
-      map: labelTexture(product, texW, texH, spec.plainLabel),
+      map: labelTexture(product, texW, texH, spec.plainLabel, spec.band),
       roughness: 0.42,
       metalness: 0.06,
     })
@@ -1043,7 +1104,15 @@ function initCardCups() {
   const cups = new Map();
   function cupFor(p) {
     let c = cups.get(p.id);
-    if (!c) { c = buildCup(p, 512, 256); cups.set(p.id, c); }
+    if (!c) {
+      c = buildCup(p, 512, 256);
+      /* A tall cup plus straw reaches far higher than a shot, and the card
+         camera is fixed, so the lid was being clipped off the top. Measure
+         what was built and hang it on its own centre. */
+      const box = new THREE.Box3().setFromObject(c);
+      c.userData.cardShift = (box.max.y + box.min.y) / 2;
+      cups.set(p.id, c);
+    }
     return c;
   }
 
@@ -1083,6 +1152,7 @@ function initCardCups() {
        card spin slower than another just because it is drawn less often. */
     cup.rotation.y = REDUCED ? e.phase : e.phase + now / 1000 * 0.5;
     cup.rotation.x = 0.05;
+    cup.position.y = -(cup.userData.cardShift || 0);
     renderer.render(scene, camera);
     scene.remove(cup);
     e.ctx.clearRect(0, 0, W, H);

@@ -954,7 +954,10 @@ html.lenis, html.lenis body { height: auto; }
 
 @media (max-width: 760px) {
   .pdp { grid-template-columns: 1fr; }
-  .pdp__art { position: static; }
+  /* was position:static, which unsticks it but also removes the
+     containing block the cup canvas anchors to, so the canvas escaped and
+     sized itself to the viewport. relative unsticks it just as well. */
+  .pdp__art { position: relative; top: auto; }
   .pdp__facts > div { grid-template-columns: 1fr; gap: 3px; }
 }
 
