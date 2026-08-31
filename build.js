@@ -62,14 +62,24 @@ function clampDesc(text, max = 155) {
 const money = n => `${SHOP.currency} ${n.toLocaleString('en-IN')}`;
 
 /* ---------- shared head ---------- */
-function head({ title, desc, url, ogtype = 'website', base = '', extra = '', lang = 'en', alt = '' }) {
+function head({ title, desc, url, ogtype = 'website', base = '', extra = '', lang = 'en', alt = '', preload = false }) {
   desc = clampDesc(desc);   // clamp once here so no call site can forget
+  /* The cup module and three.js were fetched serially: the browser could
+     not discover three.js until cup3d.js had downloaded AND executed as
+     far as its dynamic import, which measured at 598ms on a warm cache.
+     For that whole window the flat SVG fallback is what is on screen, so
+     the real cup arriving reads as a flash of the old art. Declaring both
+     here lets the preload scanner start them while the HTML is still
+     parsing. Only emitted for pages that actually build a cup. */
+  const pre = preload ? `
+<link rel="modulepreload" href="${base}assets/js/cup3d.js?v=${VER}">
+<link rel="modulepreload" href="${base}assets/vendor/three.module.js">` : '';
   const hreflang = alt ? `
 <link rel="alternate" hreflang="en" href="${lang === 'en' ? url : alt}">
 <link rel="alternate" hreflang="ne" href="${lang === 'ne' ? url : alt}">
 <link rel="alternate" hreflang="x-default" href="${lang === 'en' ? url : alt}">` : '';
   return `<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">${pre}
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(desc)}">
 <link rel="canonical" href="${url}">${hreflang}
@@ -421,7 +431,8 @@ for (const file of ['index.html', 'shop.html', 'cart.html']) {
   const desc = unesc((t.match(/<meta name="description" content="([^"]*)"/) || [])[1] || '');
   const noindex = /name="robots" content="noindex"/.test(t);
   t = t.replace(/<head>[\s\S]*?<\/head>/,
-    '<head>\n' + head({ title, desc, url, base: '', lang: 'en', alt })
+    '<head>\n' + head({ title, desc, url, base: '', lang: 'en', alt,
+                        preload: file === 'index.html' })
     + (noindex ? '\n<meta name="robots" content="noindex">' : '')
     + '\n</head>');
 
@@ -559,7 +570,8 @@ for (const file of ['index.html', 'shop.html', 'cart.html']) {
 
   t = t.replace(/<html[^>]*>/, `<html lang="${LANGS.ne.htmlLang}" data-base="" data-lang="ne">`);
   t = t.replace(/<head>[\s\S]*?<\/head>/,
-    '<head>\n' + head({ title: meta.title, desc: meta.desc, url, base: '../', lang: 'ne', alt })
+    '<head>\n' + head({ title: meta.title, desc: meta.desc, url, base: '../', lang: 'ne', alt,
+                        preload: file === 'index.html' })
     + (/name="robots" content="noindex"/.test(t) ? '\n<meta name="robots" content="noindex">' : '')
     + '\n</head>');
 
