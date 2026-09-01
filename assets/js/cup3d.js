@@ -102,7 +102,7 @@ const tintOf = p => mix(hexToRgb(p.c2), SHADE, 0.52);
 /* ============================================================
    LABEL TEXTURE — the wrap that goes round the cup
    ============================================================ */
-function labelTexture(p, W = 1024, H = 512, plain = false, band = null) {
+export function labelTexture(p, W = 1024, H = 512, plain = false, band = null) {
   const c = document.createElement('canvas');
   c.width = W; c.height = H;
   const x = c.getContext('2d');
@@ -341,7 +341,7 @@ function resample(pts, n = 128) {
   return out;
 }
 
-function buildCup(product, texW, texH) {
+export function buildCup(product, texW, texH) {
   const group = new THREE.Group();
   const spec = (VESSELS[product.cup] || VESSELS.tall)();
   /* Parts go on an inner group so a vessel can carry a fixed tilt while the
@@ -1204,8 +1204,12 @@ async function boot() {
   initCardCups();
 }
 
+/* Exported so a capture page can await the engine before building a cup:
+   THREE is only assigned once boot() has finished its dynamic import. */
+export let ready = Promise.resolve(false);
+
 if (webglOK()) {
-  boot();
+  ready = boot().then(() => true);
 } else {
   // no WebGL: the markup already carries a static SVG fallback, and the
   // 1.2 MB library above is never requested
