@@ -103,6 +103,10 @@ function head({ title, desc, url, ogtype = 'website', base = '', extra = '', lan
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
 <meta name="theme-color" content="#f8f7e5">
+<meta name="geo.region" content="NP-BA">
+<meta name="geo.placename" content="Kathmandu">
+<meta name="geo.position" content="27.7172;85.3240">
+<meta name="ICBM" content="27.7172, 85.3240">
 <meta name="msapplication-TileColor" content="#ff834f">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">

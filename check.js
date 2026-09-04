@@ -5,6 +5,13 @@
 const fs = require('fs');
 const path = require('path');
 
+/* Read the declared site origin from the same place build.js does, so the
+   origin rule below can compare pages against it rather than only against
+   each other. products.js is a browser script, so evaluate it for SHOP. */
+const { SHOP } = new Function(
+  fs.readFileSync('assets/js/products.js', 'utf8') + '; return { SHOP };')();
+const ORIGIN = SHOP.url.replace(/\/$/, '');
+
 const pages = [];
 (function walk(dir) {
   for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -73,6 +80,11 @@ for (const f of pages) {
   for (const m of s.matchAll(/(?:rel="canonical" href|property="og:(?:url|image)" content|name="twitter:image" content|rel="alternate" hreflang="[^"]*" href)="(https?:\/\/[^\/"]+)/g))
     origins.add(m[1]);
   if (origins.size > 1) bad(f, `mixed self-referential origins: ${[...origins].join(', ')}`);
+  /* Self-consistency is not enough: a page can be uniformly wrong. Every
+     absolute self-reference must match the origin the build declares, which
+     is what caught diag.html still on the old vercel.app host after the
+     domain move. */
+  for (const o of origins) if (o !== ORIGIN) bad(f, `self-referential origin ${o} is not the site origin ${ORIGIN}`);
 
   // internal links must resolve to a real file
   const dir = path.dirname(f);

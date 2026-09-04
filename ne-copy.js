@@ -24,6 +24,10 @@ module.exports = {
 
   /* [english, nepali] — applied in order, longest first is safest */
   strings: [
+    // ---- shop: local delivery areas ----
+    ["Delivery covers Thamel, Durbar Marg, Lazimpat, Naxal, Baluwatar, Maharajgunj, Chabahil, Baneshwor, Kalanki, Swayambhu, Gongabu and Koteshwor, and everywhere else inside Kathmandu. Free once your order passes Rs 1,500.",
+     "डेलिभरी ठमेल, दरबारमार्ग, लाजिम्पाट, नक्साल, बालुवाटार, महाराजगन्ज, चाबहिल, बानेश्वर, कलंकी, स्वयम्भू, गोंगबु र कोटेश्वरसहित काठमाडौंभर पुग्छ। अर्डर रु 1,500 नाघेपछि निःशुल्क।"],
+
     // ---- index: hero ----
     ['Kathmandu &middot; open 24 hours', 'काठमाडौं &middot; २४ घण्टा खुला'],
     ["<span>Blended at 3 AM</span> <span>if that's when</span> <span>you want it</span>",

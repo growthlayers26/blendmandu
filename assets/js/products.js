@@ -6,7 +6,7 @@
 const SHOP = {
   brand:      'BLENDMANDU',
   // ---- CHANGE THIS to your real domain (no trailing slash) ----
-  url:        'https://blendmandu-ktm.vercel.app',
+  url:        'https://blendmandu.com',
   brandLine1: 'BLEND',
   brandLine2: 'MANDU',
   brandTab:   'KTM',
@@ -14,8 +14,10 @@ const SHOP = {
   // ---- CHANGE THIS to your real WhatsApp number (country code, no +) ----
   whatsapp:   '9779842579959',
   phone:      '+977 9842579959',
-  email:      'order@blendmandu.com',
-  instagram:  'https://instagram.com/',
+  email:      '',            // no mailbox on a domain you own yet; schema omits it
+
+  instagram:  '',            // set to the real profile URL, not the network home page
+
 
   currency:   'Rs',
   freeDeliveryOver: 1500,

@@ -4,8 +4,11 @@
     {
       "name": "blendmandu",
       "runtimeExecutable": "sh",
-      "runtimeArgs": ["-c", "exec python3 -m http.server \"${PORT:-4173}\""],
-      "autoPort": true
+      "runtimeArgs": [
+        "-c",
+        "exec python3 -m http.server 4173"
+      ],
+      "port": 4173
     }
   ]
 }

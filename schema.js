@@ -30,7 +30,7 @@ module.exports = ({ SHOP, ORIGIN, urlFor, T, money, PRODUCTS, CATEGORIES, catLab
     legalName: B.legalName,
     url: urlFor(lang, ''),
     telephone: SHOP.phone,
-    email: SHOP.email,
+    ...(SHOP.email ? { email: SHOP.email } : {}),   // omitted while the domain is not owned
     image: `${ORIGIN}/og-image.png`,
     logo: `${ORIGIN}/icon-512.png`,
     priceRange: B.priceRange,
@@ -39,7 +39,17 @@ module.exports = ({ SHOP, ORIGIN, urlFor, T, money, PRODUCTS, CATEGORIES, catLab
     servesCuisine: B.cuisine,
     address,
     geo: { '@type': 'GeoCoordinates', latitude: B.latitude, longitude: B.longitude },
-    areaServed: { '@type': 'City', name: 'Kathmandu', addressCountry: 'NP' },
+    /* Derived from the real delivery zones so the two can never drift.
+        "smoothie delivery Baneshwor" is the query that converts, not
+        "smoothie delivery Nepal". */
+    areaServed: [
+      { '@type': 'City', name: 'Kathmandu', addressCountry: 'NP' },
+      ...SHOP.zones.flatMap(z => z.name.split(' / ')).map(n => ({
+        '@type': 'Place', name: n,
+        address: { '@type': 'PostalAddress', addressLocality: n,
+                   addressRegion: 'Bagmati', addressCountry: 'NP' },
+      })),
+    ],
     hasMenu: urlFor(lang, 'shop.html'),
     // 24/7 — the whole proposition, and invisible to Google without this
     openingHoursSpecification: [{
@@ -48,7 +58,11 @@ module.exports = ({ SHOP, ORIGIN, urlFor, T, money, PRODUCTS, CATEGORIES, catLab
       opens: '00:00',
       closes: '23:59',
     }],
-    sameAs: [SHOP.instagram].filter(Boolean),
+    /* Only real profile URLs belong here. A link to a network's home page
+        is not a sameAs and is worse than omitting the property. */
+    ...(function(){ const s=[SHOP.instagram,SHOP.facebook,SHOP.tiktok]
+          .filter(u => u && /\/[^/]+\/?$/.test(u.replace(/^https?:\/\//,'').replace(/^[^/]+/,'')));
+        return s.length ? { sameAs: s } : {}; })(),
   });
 
   /* WebSite + SearchAction gives the sitelinks search box. We have a real
