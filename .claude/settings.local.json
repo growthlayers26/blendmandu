@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "WebFetch(domain:brewdistrict24.com)"
+      "WebFetch(domain:brewdistrict24.com)",
+      "Bash(node check.js)"
     ]
   }
 }
