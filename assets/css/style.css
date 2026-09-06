@@ -10,7 +10,7 @@
   --cream-deep:   #efedd6;
   --ink:          #1d1d1d;
   --ink-soft:     #5a5a51;
-  --accent:       #ff834f;
+  --accent:       #e66a35;
   --accent-deep:  #e2662f;
   --green:        #6E9E5E;
   --white:        #FFFFFF;
@@ -55,8 +55,8 @@ h1, h2, h3, h4, .display {
   margin: 0 0 .5em;
 }
 h1 { font-size: clamp(2.6rem, 7vw, 4.6rem); }
-h2 { font-size: clamp(2rem, 4.6vw, 3.1rem); }
-h3 { font-size: clamp(1.15rem, 2.2vw, 1.45rem); }
+h2 { font-size: clamp(2rem, 4.6vw, 3.1rem); font-weight: 600; }
+h3 { font-size: clamp(1.15rem, 2.2vw, 1.45rem); font-weight: 600; }
 
 .eyebrow {
   font-family: var(--display);
@@ -402,7 +402,7 @@ p { margin: 0 0 1.1em; }
 }
 .cartline__art {
   border: var(--dash);
-  border-radius: 16px;
+  border-radius: 18px;
   background: var(--white);
   aspect-ratio: 1;
   display: grid;
@@ -461,7 +461,7 @@ textarea.input { min-height: 88px; resize: vertical; }
 .choices { display: grid; gap: 10px; }
 .choice {
   display: flex; align-items: flex-start; gap: 11px;
-  border: var(--rule); border-radius: 16px;
+  border: var(--rule); border-radius: 18px;
   padding: 13px 15px; cursor: pointer;
   background: var(--white);
 }
