@@ -81,3 +81,36 @@ the top outstanding risk until the owner confirms them. Also noted but not
 touched: `sitemap.xml` has an uncommitted local diff (lastmod bumped from
 2026-09-03 to 2026-09-08 on several URLs) that predates this run and was not
 made by it; left as-is since nothing was deployed today.
+
+**2026-09-09** — No metadata change (still no valid performance export;
+`seo/data/gsc_latest.json` is unchanged from yesterday, still 0
+impressions/0 clicks site-wide via the Composio GSC connector, wrong shape
+for the per-page gate regardless). `node check.js`: 49 pages, 0 failures,
+0 warnings. Live probe of `/`, `/shop.html`, `/cart.html`, `/ne/`,
+`/ne/shop.html`, `/product/acai-bowl.html`, `/sitemap.xml`, `/robots.txt`
+all 200. Canonical on `/` resolves 200 direct, not a redirect. `www` still
+308s to apex, direction unchanged. Schema still 3 JSON-LD blocks
+(LocalBusiness/FoodEstablishment, WebSite, FAQPage), no aggregateRating.
+Live `areaServed` still lists Kathmandu city plus the 12 named Place
+entries matching all 12 SHOP.zones neighbourhoods exactly.
+
+Fixed the en dash flagged 2026-09-08: [index.html:69](../index.html:69) read
+"delivered in 30–45 mins" (U+2013), which violates the standing no
+hyphen/en dash/em dash rule, and its Nepali twin in `ne/index.html:69` was
+never added to `ne-copy.js`, so the next `node build.js` would have
+silently overwritten the hand-edited Nepali line with untranslated English.
+Changed the English source to "30 to 45 mins" and added the pair to
+`ne-copy.js`'s `strings` table (matching the "देखि" phrasing already used
+elsewhere, e.g. the cart page's "३० देखि ४५ मिनेट"). Ran `node build.js`
+then `node check.js` (0 failures) to regenerate `ne/index.html` from the
+table instead of the stale hand-edit, confirmed both language versions now
+read "30 to 45" with no dash. This is a copy-compliance fix under the
+playbook's non-negotiable organic rules, not a metadata edit, so it is not
+gated by the impressions/CTR evidence rule and needed no review-date row.
+Deployed (see commit for hash); asset-version hash and `sitemap.xml`
+lastmod stamps moved on every page as a normal side effect of running
+`node build.js` — not separate content changes.
+
+Standing flags, still open: allergen lines on all 15 products in
+`assets/js/products.js` remain UNVERIFIED against the real kitchen, still
+the top outstanding risk until the owner confirms them.

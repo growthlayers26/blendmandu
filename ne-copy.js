@@ -40,6 +40,8 @@ module.exports = {
     ['Next flavour', 'अर्को स्वाद'],
     ['Add to cart', 'कार्टमा थप्नुहोस्'],
     ['See all 15 blends', 'पूरै मेनु हेर्नुहोस्'],
+    ['Blended fresh on order &amp; delivered in 30 to 45 mins',
+     'अर्डरपछि ताजा ब्लेन्ड &amp; ३० देखि ४५ मिनेटमा डेलिभरी'],
 
     // ---- index: pinned section ----
     ['How we blend', 'हामी कसरी ब्लेन्ड गर्छौं'],
