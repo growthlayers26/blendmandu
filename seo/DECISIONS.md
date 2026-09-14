@@ -114,3 +114,61 @@ lastmod stamps moved on every page as a normal side effect of running
 Standing flags, still open: allergen lines on all 15 products in
 `assets/js/products.js` remain UNVERIFIED against the real kitchen, still
 the top outstanding risk until the owner confirms them.
+
+**2026-09-10** — No metadata change (no valid performance export;
+`seo/data/gsc_latest.json` unchanged since 2026-09-07, still 0
+impressions/0 clicks site-wide via the Composio GSC connector, wrong shape
+for the per-page 200-impression/CTR gate regardless). `node check.js`: 49
+pages, 0 failures, 0 warnings. Live probe of `/`, `/shop.html`,
+`/cart.html`, `/ne/`, `/ne/shop.html`, `/product/acai-bowl.html`,
+`/sitemap.xml`, `/robots.txt` all 200. Canonical on `/` resolves 200
+direct, not a redirect. `www` still 308s to apex, direction unchanged.
+Schema still 3 JSON-LD blocks (FoodEstablishment/LocalBusiness, WebSite,
+FAQPage), no aggregateRating. Live `areaServed` still lists Kathmandu city
+plus the 12 named Place entries matching all 12 SHOP.zones neighbourhoods
+exactly (Thamel, Durbar Marg, Lazimpat, Naxal, Baluwatar, Maharajgunj,
+Chabahil, Baneshwor, Kalanki, Swayambhu, Gongabu, Koteshwor). Confirmed the
+2026-09-09 en dash fix is live and holding: both English ("30 to 45 mins")
+and Nepali ("३० देखि ४५ मिनेटमा") hero trust badge text read clean, no
+dash characters. No invented rating text found on the live homepage.
+
+Standing flags, still open: allergen lines on all 15 products in
+`assets/js/products.js` remain UNVERIFIED against the real kitchen, still
+the top outstanding risk until the owner confirms them. Also noted but not
+touched: `sitemap.xml` has an uncommitted local diff (lastmod bumped from
+2026-09-09 to 2026-09-10 on several URLs), present at session start before
+this run made any changes; left as-is since nothing else was deployed
+today and no code change was made.
+
+**2026-09-15** — No metadata change (no valid performance export;
+`seo/data/gsc_latest.json` is unchanged since 2026-09-07 — 8 days stale
+and still the wrong shape for the per-page 200-impression/CTR gate
+regardless; no CSV export has ever landed in `seo/data/`). `node check.js`:
+49 pages, 0 failures, 0 warnings. Live probe of `/`, `/shop.html`,
+`/cart.html`, `/ne/`, `/ne/shop.html`, `/product/acai-bowl.html`,
+`/sitemap.xml`, `/robots.txt` all 200. Canonical on `/` is
+`https://blendmandu.com/`, resolves 200 direct, not a redirect. `www`
+still 308s to apex, direction unchanged. Schema still 3 JSON-LD blocks
+(FoodEstablishment/LocalBusiness, WebSite, FAQPage), no aggregateRating
+or reviewCount anywhere in the parsed blocks. Live `areaServed` still
+lists Kathmandu city plus 12 named Place entries matching all 12
+SHOP.zones neighbourhoods in `assets/js/products.js` exactly (Thamel,
+Durbar Marg, Lazimpat, Naxal, Baluwatar, Maharajgunj, Chabahil, Baneshwor,
+Kalanki, Swayambhu, Gongabu, Koteshwor). No invented rating text
+("4.8", "200+ orders" or similar) found anywhere on the live homepage.
+
+Housekeeping: this run found the 2026-09-10 entry above staged in git but
+never committed, and no daily log entries at all for 2026-09-11 through
+2026-09-14 — the routine appears to have not run (or not completed) for
+four days before today. Committing the backlogged 2026-09-10 entry
+together with today's in this run's commit; no health-check content was
+lost since checks that were skipped don't retroactively exist to log. The
+owner should check why the scheduled task did not fire 09-11 to 09-14.
+
+Standing flags, still open: allergen lines on all 15 products in
+`assets/js/products.js` remain UNVERIFIED against the real kitchen, still
+the top outstanding risk until the owner confirms them. Also noted but
+not touched: `sitemap.xml` has an uncommitted local diff (lastmod bumped
+from 2026-09-09 to 2026-09-14 on several URLs), present at session start
+before this run made any changes and predating this run; left as-is since
+nothing else was deployed today and no code change was made.
