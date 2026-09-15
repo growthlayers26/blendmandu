@@ -172,3 +172,32 @@ not touched: `sitemap.xml` has an uncommitted local diff (lastmod bumped
 from 2026-09-09 to 2026-09-14 on several URLs), present at session start
 before this run made any changes and predating this run; left as-is since
 nothing else was deployed today and no code change was made.
+
+**2026-09-16** — No metadata change (still no valid performance export;
+`seo/data/gsc_latest.json` is unchanged since 2026-09-07 — now 9 days
+stale, and it is the wrong shape for the per-page 200-impression/CTR gate
+regardless; no CSV export has ever landed in `seo/data/`). `node check.js`:
+49 pages, 0 failures, 0 warnings. Live probe of `/`, `/shop.html`,
+`/cart.html`, `/ne/`, `/ne/shop.html`, `/product/acai-bowl.html`,
+`/sitemap.xml`, `/robots.txt` all 200. Canonical on `/` is
+`https://blendmandu.com/`, resolves 200 direct, not a redirect; `www`
+still 308s to apex, direction unchanged. Schema still 3 JSON-LD blocks
+(FoodEstablishment/LocalBusiness, WebSite, FAQPage), no aggregateRating or
+review anywhere in the parsed blocks. Live `areaServed` still lists
+Kathmandu city plus 12 named Place entries matching all 12 SHOP.zones
+neighbourhoods in `assets/js/products.js` exactly (Thamel, Durbar Marg,
+Lazimpat, Naxal, Baluwatar, Maharajgunj, Chabahil, Baneshwor, Kalanki,
+Swayambhu, Gongabu, Koteshwor). No invented rating text ("4.8", "200+
+orders" or similar) found anywhere on the live homepage. No code change
+made today, so nothing to deploy.
+
+Standing flags, still open: allergen lines on all 15 products in
+`assets/js/products.js` remain UNVERIFIED against the real kitchen, still
+the top outstanding risk until the owner confirms them. The uncommitted
+`sitemap.xml` diff flagged 2026-09-15 (lastmod bumped from 2026-09-09 to
+2026-09-15 on several URLs) is unchanged today — still sitting in the
+working tree, still not deployed, still predates this run. It has now
+lingered across at least two runs without being committed or reverted;
+worth the owner just committing it or running `git checkout -- sitemap.xml`
+to clear it, since an uncommitted diff that never ships is doing nothing
+either way.
