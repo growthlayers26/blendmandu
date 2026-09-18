@@ -201,3 +201,40 @@ lingered across at least two runs without being committed or reverted;
 worth the owner just committing it or running `git checkout -- sitemap.xml`
 to clear it, since an uncommitted diff that never ships is doing nothing
 either way.
+
+**2026-09-19** — No metadata change. No valid performance export exists:
+`seo/data/gsc_latest.json` is unchanged since 2026-09-07 (12 days stale
+now), still 0 impressions/0 clicks site-wide via the Composio GSC
+connector, and still the wrong shape for the per-page 200-impression/CTR
+gate regardless. No CSV export has ever landed in `seo/data/` (the
+directory itself has never been committed to git — it is untracked at
+session start, holding only that one JSON file from launch week).
+`node check.js`: 49 pages, 0 failures, 0 warnings. Live probe of `/`,
+`/shop.html`, `/cart.html`, `/ne/`, `/ne/shop.html`,
+`/product/acai-bowl.html`, `/sitemap.xml`, `/robots.txt` all 200; `www`
+still 308s to apex, direction unchanged. Canonical on `/` is
+`https://blendmandu.com/`, confirmed 200 direct (not a redirect). Schema
+still 3 JSON-LD blocks (FoodEstablishment/LocalBusiness, WebSite,
+FAQPage), no aggregateRating or review in any parsed block. Live
+`areaServed` lists Kathmandu city plus 12 named Place entries matching all
+12 SHOP.zones neighbourhoods in `assets/js/products.js` exactly (Thamel,
+Durbar Marg, Lazimpat, Naxal, Baluwatar, Maharajgunj, Chabahil, Baneshwor,
+Kalanki, Swayambhu, Gongabu, Koteshwor). No invented rating text ("4.8",
+"200+ orders" or similar) found on the live homepage. No en dash or em
+dash characters found in the fetched homepage HTML. No code change made
+today, so nothing to deploy.
+
+Housekeeping: this is the first log entry since 2026-09-16 — no entries
+exist for 2026-09-17 or 2026-09-18, meaning the routine did not run (or
+did not complete) for two days before today, same pattern as the 09-11 to
+09-14 gap noted on 09-15. Worth the owner checking why the scheduled task
+is intermittently not firing. The `sitemap.xml` working-tree diff flagged
+2026-09-15 is still present and has now moved again (lastmod bumped from
+2026-09-09 to 2026-09-18 in the working copy, per `node check.js` or
+`node build.js` touching it on whichever day last ran) without ever being
+committed — now lingering across at least three logged runs; still
+recommend the owner either commit it or run `git checkout -- sitemap.xml`.
+
+Standing flags, still open: allergen lines on all 15 products in
+`assets/js/products.js` remain UNVERIFIED against the real kitchen, still
+the top outstanding risk until the owner confirms them.
