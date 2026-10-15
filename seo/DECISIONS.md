@@ -238,3 +238,37 @@ recommend the owner either commit it or run `git checkout -- sitemap.xml`.
 Standing flags, still open: allergen lines on all 15 products in
 `assets/js/products.js` remain UNVERIFIED against the real kitchen, still
 the top outstanding risk until the owner confirms them.
+
+**2026-10-16** — No metadata change. Nothing changed on the site. No
+performance CSV has ever landed in `seo/data/`; the only file is
+`gsc_latest.json`, regenerated 2026-10-02 with `"measured": false` and two
+errors: the service account can see no GSC property, and the Composio
+`google_search_console` toolkit has no active connection. Performance data
+is therefore stale/absent and the per-page 200-impression/CTR gate cannot
+be evaluated, so per the playbook: health checks only.
+`node check.js`: 49 pages, 0 failures, 0 warnings. Live probe of `/`,
+`/shop.html`, `/cart.html`, `/ne/`, `/ne/shop.html`,
+`/product/acai-bowl.html`, `/sitemap.xml`, `/robots.txt` all 200. `www`
+still 308s to apex; direction unchanged. Canonical on `/` is
+`https://blendmandu.com/`, 200 direct, not a redirect. Live schema: 3
+JSON-LD blocks (FoodEstablishment+LocalBusiness, WebSite, FAQPage), all
+parse, no aggregateRating or review. `areaServed` = Kathmandu plus 12
+Places, identical in order to the 12 neighbourhoods in SHOP.zones (stored
+as three grouped zone names split on " / "). No "4.8" / "200+ orders"
+text on the live homepage or in `index.html`/`i18n.js`/`ne-copy.js`; no
+en or em dash in visible homepage text. Nothing to deploy.
+
+Housekeeping: no log entries exist between 2026-09-19 and today, a 26 day
+gap; the scheduled routine did not run or did not complete in that window.
+The 2026-09-19 log commit is still local only (`main` ahead of origin by
+1). The working tree carries a large uncommitted diff that this routine
+did not make: 59 tracked files (+743/-641, incl. `assets/js/app.js`,
+`cup3d.js`, `i18n.js`, `build.js`, `check.js`, `sw.js`, every page in
+both languages) plus untracked `assets/js/spin.js`, `assets/img/`,
+`test-hreflang.js`, `.evolver/`. Left untouched. It is not live, and
+any future deploy from this tree would ship it unreviewed, so the owner
+should commit or discard it deliberately.
+
+Standing flags, still open: allergen lines on all 15 products in
+`assets/js/products.js` remain UNVERIFIED against the real kitchen, the
+top outstanding risk until the owner confirms them.
