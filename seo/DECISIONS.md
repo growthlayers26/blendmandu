@@ -272,3 +272,14 @@ should commit or discard it deliberately.
 Standing flags, still open: allergen lines on all 15 products in
 `assets/js/products.js` remain UNVERIFIED against the real kitchen, the
 top outstanding risk until the owner confirms them.
+
+**2026-10-16 (re-run)** — Nothing changed. Re-ran the routine on request:
+`node check.js` 49 pages, 0 failures, 0 warnings; all 8 live routes 200;
+`www` 308s to apex; canonical `https://blendmandu.com/` is 200 direct; 3
+JSON-LD blocks parse, no aggregateRating/review; areaServed is Kathmandu
+plus the 12 SHOP.zones neighbourhoods in the same order; no "4.8" / "200+
+orders" text live; no en/em dash in visible text on `/`, `/shop.html`,
+`/cart.html`. Performance data still absent (`gsc_latest.json` unmeasured,
+no CSV), so no metadata change. New allergen observation: Mango Sunrise
+lists coconut milk but allergens "None", while Acai Bowl lists coconut as
+an allergen. Inconsistent either way; owner to confirm with the kitchen.
