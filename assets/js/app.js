@@ -372,7 +372,7 @@ function renderGate() {
 function cardHTML(p) {
   return `
     <article class="card">
-      <div class="card__art"${PHOTO_CUP.has(p.id) ? ` data-photo="${p.id}"` : ''}>
+      <div class="card__art"${PHOTO_CUP.has(p.id) ? ` data-photo="${p.id}"` : spinsAsBottle(p) ? ` data-bottle="${p.id}"` : ''}>
         ${pTag(p) ? `<span class="card__tag">${esc(pTag(p))}</span>` : ''}
         ${photoSrc(p)
           ? `<img class="card__photo" src="${photoSrc(p)}" width="800" height="1000" alt="" loading="lazy" decoding="async" draggable="false">`

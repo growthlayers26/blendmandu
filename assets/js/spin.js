@@ -357,6 +357,91 @@ void main() {
     }
   }
 
+  /* ---------- juice bottles and shots: only the label turns ----------
+     The juice, the glass and its highlights, the cap and the light look the
+     same from every side, so the photograph stays as it is and only the label
+     is redrawn: each column of it looks up its longitude minus the angle in a
+     strip of the label unwrapped with the light taken out, and the light is
+     multiplied back. The label's edges are level circles seen from a little
+     above, so each column runs between two curves, not two rows. A shot's
+     label is a patch that turns away round the back, so a shot is drawn on a
+     plate with its label taken off. Plain 2D canvas, no WebGL. Built by
+     blendmandu-3d, tools/bottle_spin.py, into assets/img/bottle/. */
+  const bottleAsset = name => new URL(`../img/bottle/${name}`, SRC).href + new URL(SRC).search;
+  const picture = src => new Promise((ok, no) => {
+    const im = new Image(); im.decoding = 'async'; im.onload = () => ok(im); im.onerror = no; im.src = src;
+  });
+  let bottleSpec = null;
+  const bottleKits = {};
+  function bottleKit(id) {
+    return bottleKits[id] ||= (async () => {
+      bottleSpec ||= fetch(bottleAsset('bottles.json')).then(r => r.json());
+      const g = (await bottleSpec)[id];
+      if (!g) throw new Error(`no bottle ${id}`);
+      const [band, shade, plate] = await Promise.all([
+        picture(bottleAsset(`${id}-band.webp`)), picture(bottleAsset(`${id}-shade.webp`)),
+        g.kind === 'patch' ? picture(bottleAsset(`${id}-plate.webp`)) : null]);
+      const cols = [];
+      for (let x = g.bx0; x < g.bx1; x++) {
+        const d = (x + 0.5 - g.cx) / g.R;
+        if (Math.abs(d) >= 1) { cols.push(null); continue; }
+        const c = Math.cos(Math.asin(d));
+        const y0 = g.top[0] + g.top[1] * c + g.inset - g.W0;
+        const y1 = g.bot[0] + g.bot[1] * c - g.inset - g.W0;
+        cols.push({ lam: Math.asin(d), y0, h: y1 - y0 });
+      }
+      const canvas = () => { const c = document.createElement('canvas'); c.width = g.bx1 - g.bx0; c.height = g.W1 - g.W0; return c; };
+      const box = canvas(), mask = canvas();
+      const kit = { g, band, shade, plate, cols, box, mask, bx: box.getContext('2d'), mx: mask.getContext('2d') };
+      // a band covers its whole box at every angle: its mask is drawn once
+      if (g.kind === 'band') labelColumns(kit, kit.mx, 0);
+      return kit;
+    })();
+  }
+  function labelColumns(k, x, th) {
+    const { g, band, cols } = k;
+    for (let i = 0; i < cols.length; i++) {
+      const c = cols[i];
+      if (!c) continue;
+      let u = ((c.lam - th) / (2 * Math.PI) + 0.5) % 1;
+      if (u < 0) u += 1;
+      x.drawImage(band, Math.min(Math.floor(u * g.N), g.N - 1), 0, 1, g.H, i, c.y0, 1, c.h);
+    }
+  }
+  class Bottle extends Turntable {
+    constructor(host, poster, id) {
+      super(host, poster);
+      this.id = id;
+      this.kit = null;
+      bottleKit(id).then(k => { this.kit = k; this.key = ''; this.draw(); wake(); }, () => {});
+    }
+    draw() {
+      const k = this.kit;
+      if (!k || !this.dw) return;
+      const key = this.angle.toFixed(2);
+      if (key === this.key) return;
+      this.key = key;
+      const { g, box, mask, bx, mx } = k;
+      const th = this.angle * Math.PI / 180;
+      // the label at this angle, its light put back
+      bx.globalCompositeOperation = 'source-over';
+      bx.clearRect(0, 0, box.width, box.height);
+      labelColumns(k, bx, th);
+      bx.globalCompositeOperation = 'multiply';
+      bx.drawImage(k.shade, 0, 0);
+      // multiply paints the whole box: keep only where the label is
+      if (g.kind === 'patch') { mx.clearRect(0, 0, mask.width, mask.height); labelColumns(k, mx, th); }
+      bx.globalCompositeOperation = 'destination-in';
+      bx.drawImage(mask, 0, 0);
+      bx.globalCompositeOperation = 'source-over';
+      const ctx = this.ctx, s = this.dw / 800;
+      ctx.clearRect(0, 0, this.c.width, this.c.height);
+      ctx.drawImage(k.plate || this.poster, this.dx, this.dy, this.dw, this.dh);
+      ctx.drawImage(box, this.dx + g.bx0 * s, this.dy + g.W0 * s, box.width * s, box.height * s);
+      if (!this.shown) { this.shown = true; this.host.classList.add('has-spin'); }
+    }
+  }
+
   /* ---------- one animation loop for every turntable on the page ---------- */
   const actors = [];
   let raf = 0, last = 0;
@@ -542,9 +627,12 @@ void main() {
     });
     if (isHero) addEventListener('scroll', wake, { passive: true });
 
-    /* The textures load at once, not after the page: the cup is the first
-       thing on it. It is turning at full speed the moment it is drawn. */
+    /* The textures load as soon as the cup's photo is on screen (it is the
+       page's largest paint, and on a slow connection 550 KB of textures beside
+       it would hold it back), not after the whole page. It is turning at full
+       speed the moment it is drawn. */
     (async () => {
+      if (!poster.complete) await within(new Promise(r => poster.addEventListener('load', r, { once: true })), 2500);
       await within(renderer(), 8000);
       if (!R.ok) return;
       stage.classList.add('is-live');
@@ -600,7 +688,7 @@ void main() {
         const c = cards.get(e.target);
         if (!c) continue;
         c.visible = e.isIntersecting;
-        if (c.visible) renderer().then(wake);
+        if (c.visible && !(c.tt instanceof Bottle)) renderer().then(wake);
       }
       wake();
     }, { rootMargin: '150px' });
@@ -617,13 +705,25 @@ void main() {
         cards.set(el, { tt, phase: (tt.id.charCodeAt(0) % 7) * 52 + tt.id.length * 13, visible: false });
         io.observe(el);
       });
+      // a juice turns like a cup; a shot's label is a patch that would spend half of
+      // every turn round the back, so a shot sways, never far from showing its label
+      document.querySelectorAll('.card__art[data-bottle]').forEach(el => {
+        if (cards.has(el)) return;
+        const poster = el.querySelector('.card__photo');
+        if (!poster) return;
+        const tt = new Bottle(el, poster, el.dataset.bottle);
+        cards.set(el, { tt, phase: (tt.id.charCodeAt(0) % 7) * 52 + tt.id.length * 13, visible: false,
+                        sway: el.dataset.bottle.endsWith('-shot') });
+        io.observe(el);
+      });
     }
     actors.push(now => {
-      if (!R.ok) return false;
       let any = false;
       for (const [, c] of cards) {
         if (!c.visible) continue;
-        c.tt.angle = c.phase + (now / 1000) * SPEED;
+        if (!(c.tt instanceof Bottle) && !R.ok) continue;
+        const t = now / 1000;
+        c.tt.angle = c.sway ? Math.sin(t * 0.45 + c.phase) * 62 : c.phase + t * SPEED;
         c.tt.draw();
         any = true;
       }
@@ -669,7 +769,8 @@ void main() {
     }
 
     if (REDUCED) return;                                 // the stylesheet lays all four out instead
-    frames.forEach(im => { im.loading = 'eager'; });     // all four ready before the first fade
+    // all four ready before the first fade, fetched as the section nears, not with the page
+    watch(section, v => { if (v) frames.forEach(im => { im.loading = 'eager'; }); }, '1200px 0px');
     watch(section, v => { visible = v; if (v) wake(); }, '200px 0px');
     addEventListener('resize', () => { lastP = -1; wake(); });
     actors.push(() => {
@@ -678,6 +779,57 @@ void main() {
       return false;
     });
     addEventListener('scroll', () => { if (visible) wake(); }, { passive: true });
+  }
+
+  /* ---------- a juice or a shot on its own page: turning, drag to spin, flick to throw ---------- */
+  function stageBottle(stage) {
+    const poster = stage.querySelector('.pdp__photo');
+    if (!poster || !stage.dataset.bottle) return;
+    const tt = new Bottle(stage, poster, stage.dataset.bottle);
+    const IDLE = REDUCED || SAVE ? 0 : 14.4, DEG_PER_PX = 0.8;
+    let vel = 0, visible = true, dragging = false, moved = false, x0 = 0, lastX = 0, lastT = 0;
+    stage.addEventListener('pointerdown', e => {
+      if (e.button > 0) return;
+      dragging = true; moved = false; x0 = lastX = e.clientX; lastT = performance.now();
+      try { stage.setPointerCapture(e.pointerId); } catch {}
+      stage.classList.add('is-dragging');
+    });
+    stage.addEventListener('pointermove', e => {
+      if (!dragging) return;
+      if (Math.abs(e.clientX - x0) > 6) moved = true;
+      const now = performance.now(), dx = e.clientX - lastX;
+      if (moved) {
+        tt.angle += dx * DEG_PER_PX;
+        vel = vel * 0.5 + (dx * DEG_PER_PX) / Math.max((now - lastT) / 1000, 0.008) * 0.5;
+        wake();
+      }
+      lastX = e.clientX; lastT = now;
+    });
+    const release = () => {
+      if (!dragging) return;
+      dragging = false;
+      stage.classList.remove('is-dragging');
+      if (!moved || performance.now() - lastT > 90) vel = 0;
+      vel = clamp(vel, -720, 720);
+      wake();
+    };
+    stage.addEventListener('pointerup', release);
+    stage.addEventListener('pointercancel', release);
+    stage.addEventListener('keydown', e => {
+      if (e.key === 'ArrowLeft')  { tt.angle -= 15; wake(); e.preventDefault(); }
+      if (e.key === 'ArrowRight') { tt.angle += 15; wake(); e.preventDefault(); }
+    });
+    watch(stage, v => { visible = v; }, '100px');
+    actors.push((now, dt) => {
+      if (!visible) return false;
+      if (!dragging) {
+        const idle = tt.kit ? IDLE : 0;
+        vel = chase(vel, idle, Math.abs(vel) > IDLE * 1.5 ? 0.45 : 0.9, dt);
+        tt.angle += vel * dt;
+      }
+      tt.draw();
+      return dragging || IDLE > 0 || Math.abs(vel) > 0.05;
+    });
   }
 
   /* A bowl, juice or shot on its own page: one photograph, so it cannot turn,
@@ -712,6 +864,7 @@ void main() {
   const seq = document.querySelector('#seq-section');
   if (seq) photoStory(seq);
   document.querySelectorAll('[data-tilt]').forEach(photoTilt);
+  document.querySelectorAll('.pdp__art[data-bottle]').forEach(stageBottle);
   const pin = document.querySelector('#pin');
   if (pin) pinnedCup(pin);
   if (!REDUCED && !SAVE) cardCups();

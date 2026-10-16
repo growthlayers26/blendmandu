@@ -153,6 +153,8 @@ const PHOTO_CUP = new Set(['himalayan-berry', 'mango-sunrise', 'green-machine',
 const PHOTO_RANGE = new Set(['acai-bowl', 'dragonfruit-bowl', 'protein-bowl',
                              'beet-ginger', 'citrus-immunity', 'green-press',
                              'ginger-turmeric-shot', 'wheatgrass-shot', 'amla-shot']);
+/* a juice or a shot photographed: its label turns (spin.js, assets/img/bottle/) */
+const spinsAsBottle = p => PHOTO_RANGE.has(p.id) && (p.cup === 'bottle' || p.cup === 'shot');
 /* path under assets/, or '' when there is none */
 function productPhoto(p) {
   return PHOTO_CUP.has(p.id) ? `img/cup/${p.id}.webp`

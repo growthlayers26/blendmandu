@@ -59,6 +59,7 @@ const I18N = {
 
     'product.add': 'Add to cart',
     'product.spin': 'The real cup, shown from every side. Drag to spin it.',
+    'product.spinBottle': 'The real bottle, shown from every side. Drag to spin it.',
     'product.allergens': 'Allergens',
     'product.delivery': 'Delivery',
     'product.made': 'Made',
@@ -205,6 +206,7 @@ const I18N = {
 
     'product.add': 'कार्टमा थप्नुहोस्',
     'product.spin': 'असली कप, चारैतिरबाट। घुमाउन तान्नुहोस्।',
+    'product.spinBottle': 'असली बोतल, चारैतिरबाट। घुमाउन तान्नुहोस्।',
     'product.allergens': 'एलर्जेन',
     'product.delivery': 'डेलिभरी',
     'product.made': 'बनाउने तरिका',

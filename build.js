@@ -15,8 +15,8 @@ const fs = require('fs');
 const path = require('path');
 
 const src = fs.readFileSync('assets/js/products.js', 'utf8');
-const { SHOP, PRODUCTS, CATEGORIES, productArt, productPhoto, PRODUCT_I18N, CATEGORY_I18N } =
-  new Function(src + '; return {SHOP,PRODUCTS,CATEGORIES,productArt,productPhoto,PRODUCT_I18N,CATEGORY_I18N};')();
+const { SHOP, PRODUCTS, CATEGORIES, productArt, productPhoto, spinsAsBottle, PRODUCT_I18N, CATEGORY_I18N } =
+  new Function(src + '; return {SHOP,PRODUCTS,CATEGORIES,productArt,productPhoto,spinsAsBottle,PRODUCT_I18N,CATEGORY_I18N};')();
 
 const { I18N, LANGS } = require('./assets/js/i18n.js');
 const FAQ = require('./faq.js');
@@ -53,7 +53,7 @@ const cupFiles = dir => fs.readdirSync(dir, { withFileTypes: true })
 const VER = crypto.createHash('sha1').update(
   ['assets/css/style.css','assets/js/app.js','assets/js/products.js',
    'assets/js/i18n.js','assets/js/analytics.js','assets/js/spin.js',
-   ...['assets/img/cup', 'assets/img/range', 'assets/img/og', 'assets/img/story'].flatMap(d => fs.existsSync(d) ? cupFiles(d) : [])]
+   ...['assets/img/cup', 'assets/img/bottle', 'assets/img/range', 'assets/img/og', 'assets/img/story'].flatMap(d => fs.existsSync(d) ? cupFiles(d) : [])]
     .map(f => fs.readFileSync(f)).join('')
 ).digest('hex').slice(0, 8);
 /* the six smoothies that have the real cup, turned by spin.js (assets/img/cup/) */
@@ -152,8 +152,39 @@ const faqHTML = lang => FAQ[lang].map(([q, a]) => `
       </details>`).join('');
 
 /* insert site-level structured data + the FAQ body into a hand-written page */
+/* The menu as plain HTML, every product a card with its name, price and a
+   link to its page, written into shop.html at build time. app.js redraws the
+   grid the moment it runs (filters, search), but a crawler that never runs it
+   still finds the whole menu, and so does anyone without JavaScript. */
+function gridHTML(lang) {
+  const assets = lang === 'en' ? '' : '../';
+  return PRODUCTS.map(p => {
+    const tag = trField(lang, p.id, 'tag', p.tag);
+    const photo = productPhoto(p);
+    const spin = SPIN.has(p.id) ? ` data-photo="${p.id}"` : spinsAsBottle(p) ? ` data-bottle="${p.id}"` : '';
+    const href = `product/${p.id}.html`;
+    return `
+    <article class="card">
+      <div class="card__art"${spin}>
+        ${tag ? `<span class="card__tag">${esc(tag)}</span>` : ''}
+        ${photo ? `<img class="card__photo" src="${assets}assets/${photo}?v=${VER}" width="800" height="1000" alt="" loading="lazy" decoding="async" draggable="false">` : productArt(p)}
+        <a class="card__artlink" href="${href}" aria-label="${esc(p.name)}"></a>
+      </div>
+      <h3 class="card__name"><a class="card__link" href="${href}">${esc(p.name)}</a></h3>
+      <p class="card__meta meta">${esc(trField(lang, p.id, 'meta', p.meta))}</p>
+      <div class="card__foot">
+        <span class="card__price">${money(p.price)}</span>
+        <button class="pill pill--accent" data-add="${p.id}">${esc(T(lang, 'product.add'))}</button>
+      </div>
+    </article>`;
+  }).join('') + '<!--/grid-->';
+}
+
 function enrich(t, file, lang) {
   const blocks = [];
+  if (file === 'shop.html')
+    t = t.replace(/<div class="grid" id="grid">(?:<\/div>|[\s\S]*?<!--\/grid--><\/div>)/,
+                  `<div class="grid" id="grid">${gridHTML(lang)}</div>`);
   if (file === 'index.html') {
     blocks.push(SCHEMA.business(lang), SCHEMA.website(lang), SCHEMA.faq(lang));
     // match the div whatever it already contains, so a rebuild refreshes it
@@ -238,7 +269,9 @@ ${head({ title: `${p.name}, ${money(p.price)} | Smoothie Delivery Kathmandu`, de
     ${SPIN.has(p.id) ? `<div class="pdp__art pdp__art--spin" data-spin="${p.id}" tabindex="0" role="group" aria-label="${esc(T(lang, 'product.spin'))}">
       ${tag ? `<span class="card__tag">${esc(tag)}</span>` : ''}
       <img class="cupstage__img" src="${assetBase}assets/img/cup/${p.id}.webp" width="800" height="1000" alt="${esc(p.name)}" fetchpriority="high" decoding="async" draggable="false">
-    </div>` : productPhoto(p) ? `<div class="pdp__art pdp__art--photo" data-tilt>
+    </div>` : productPhoto(p) ? `<div class="pdp__art pdp__art--photo${spinsAsBottle(p)
+      ? ` pdp__art--spin" data-bottle="${p.id}" tabindex="0" role="group" aria-label="${esc(T(lang, 'product.spinBottle'))}"`
+      : '" data-tilt'}>
       ${tag ? `<span class="card__tag">${esc(tag)}</span>` : ''}
       <img class="pdp__photo" src="${assetBase}assets/${productPhoto(p)}?v=${VER}" width="800" height="1000" alt="${esc(p.name)}" fetchpriority="high" decoding="async" draggable="false">
     </div>` : `<div class="pdp__art">

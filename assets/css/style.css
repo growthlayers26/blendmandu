@@ -334,7 +334,7 @@ p { margin: 0 0 1.1em; }
    box) and the photo hides once the canvas has drawn. The photo stays in the
    page: it is what shows first, and what shows with no script at all. */
 .spin__canvas { position: absolute; display: block; pointer-events: none; }
-.has-spin > .cupstage__img, .has-spin > .pin__img, .has-spin > .card__photo { visibility: hidden; }
+.has-spin > .cupstage__img, .has-spin > .pin__img, .has-spin > .card__photo, .has-spin > .pdp__photo { visibility: hidden; }
 .card__name { margin: 18px 0 8px; font-size: 1.16rem; }
 .card__meta { margin-bottom: 14px; }
 .card__foot {
