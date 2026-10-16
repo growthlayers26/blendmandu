@@ -82,23 +82,13 @@ const loadedVer = (document.querySelector('script[src*="diag.js"]') || {})
     row('  max texture size', gl.getParameter(gl.MAX_TEXTURE_SIZE), '');
   }
 
-  /* This mirrors webglOK() in cup3d.js. Kept as its own copy on purpose:
-     importing the real one would run the whole cup, and the point here is
-     to report the decision, not to make it. */
+  /* spin.js turns the cup with WebGL, and leaves the still photos in place
+     on a 2G connection. Reported here, not decided: importing spin.js would
+     run the whole cup. */
   const wouldRender = !!gl && !/^(slow-)?2g$/.test(conn);
   row('Cup should render', wouldRender ? 'yes' : 'no', wouldRender ? 'ok' : 'bad');
 
-  /* ---------- 5. does the 3D library actually load on this device ---------- */
-  const t0 = performance.now();
-  try {
-    const mod = await import('/assets/vendor/three.module.js');
-    const ms = Math.round(performance.now() - t0);
-    row('three.js loaded', `yes, in ${ms} ms (r${mod.REVISION || '?'})`, 'ok');
-  } catch (e) {
-    row('three.js loaded', 'FAILED: ' + e.message, 'bad');
-  }
-
-  /* ---------- 6. device ---------- */
+  /* ---------- 5. device ---------- */
   row('Screen', `${innerWidth} x ${innerHeight} @ ${devicePixelRatio}x`, '');
   row('Memory / cores', `${navigator.deviceMemory || '?'} GB / ${navigator.hardwareConcurrency || '?'}`, '');
   row('Browser', navigator.userAgent, '');

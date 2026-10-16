@@ -11,8 +11,10 @@ cart.html                cart + checkout, sends the order to WhatsApp
 assets/css/style.css
 assets/js/products.js    <- brand, phone, prices, menu live here
 assets/js/app.js         <- shell, cart, checkout, reveals, menu overlay
-assets/js/cup3d.js       <- WebGL cup: hero, pinned scroll, scrubbed sequence
-assets/vendor/three.module.js   Three.js r160 (MIT)
+assets/js/spin.js        <- the photographed cup, turned in WebGL; product photo tilt; fruit to cup
+assets/img/cup/          the cup photo, unwrapped (strip, lid, maps) + one still per smoothie
+assets/img/range/        bowls, juices and shots, one photo each
+assets/img/story/        the fruit to cup photographs
 assets/vendor/lenis.min.js      Lenis 1.1.18 smooth scroll (MIT)
 ```
 
@@ -249,28 +251,24 @@ cached bundle after you deploy.
 
 ## The motion layer
 
-Modelled on the reference build, which runs GSAP + Lenis + Three.js.
+Every product is a photograph on the same cream studio sweep, generated
+from the approved cup photo and built by the blendmandu-3d tools.
 
 | Piece | What it does |
 |---|---|
-| Hero cup (`#cup-hero`) | WebGL. Drag to spin, click to change flavour. Cup, label, price, cart button and the **whole page colour** swap per flavour. |
-| Pinned section (`#pin`) | A second WebGL cup, pinned for 300vh while scroll drives its rotation and steps through three captions. |
-| Sequence (`#seq`) | A 60-frame 2D canvas animation scrubbed by scroll: fruit drops, blends, pours. |
+| Hero cup (`#cup-hero`) | The photographed cup, turned in WebGL by `spin.js`. Drag to spin and tilt, click to change flavour. Cup, label, price, cart button and the **whole page colour** swap per flavour. |
+| Pinned section (`#pin`) | The same cup, turned by scroll while three captions step through. |
+| From fruit to cup (`#seq-section`) | Four photographs crossfaded by scroll, with the step they belong to lit beside them. |
+| Menu cards | Smoothie cups turn slowly; bowls, juices and shots are their photographs. |
+| Product pages | A smoothie's cup can be dragged round; a bowl, juice or shot leans towards the pointer. |
 | Marching dots | Every dotted rule animates, like their `dottedLineAnim`. |
 | Scroll reveals | Sections and cards fade up with a stagger. |
 | Menu overlay | Full-screen, staggered links. |
 | Lenis | Inertial smooth scroll, desktop only. |
 
-The cup is **procedural** — geometry lathed from a profile curve, label drawn
-into a canvas at runtime. There is no 3D model or texture file to manage, so
-changing a flavour colour in `PRODUCTS` restyles the 3D cup automatically.
-
-**It degrades on purpose.** `webglOK()` in `cup3d.js` refuses WebGL on devices
-reporting under 3GB RAM, under 4 cores, or a 2G connection, and the page falls
-back to the flat SVG art with the pinned sections unpinned. `prefers-reduced-motion`
-disables all of it. This matters more in Kathmandu than the animation does.
-
-To turn the 3D off entirely, drop the `cup3d.js` script tag from `index.html`.
+**It degrades on purpose.** Without WebGL the cups stay as still photographs,
+and on a 2G or data-saver connection the menu cards do not turn.
+`prefers-reduced-motion` stops the spin, the tilt and the crossfade.
 
 ## Known limits
 

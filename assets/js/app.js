@@ -5,6 +5,14 @@
 /* Product pages live one directory down, so every internal link is written
    relative to this. Each page sets it before app.js loads. */
 const BASE = document.documentElement.dataset.base || '';
+/* Asset root, taken from this script's own URL so it is right on /ne/ too
+   (BASE above is for page links, which stay inside each language). */
+const ASSETS = new URL('..', document.currentScript.src).href;
+
+/* Every product has a photograph (productPhoto() in products.js). The six
+   smoothies' cups are also turned by spin.js: those cards say data-photo. */
+const ASSET_V = new URL(document.currentScript.src).search;   // ?v=, carried onto the stills
+const photoSrc = p => { const f = productPhoto(p); return f ? `${ASSETS}${f}${ASSET_V}` : ''; };
 
 const CART_KEY = 'blendmandu.cart.v1';
 const GATE_KEY = 'blendmandu.zone.v1';
@@ -168,6 +176,13 @@ function renderShell() {
       </div>
     </header>
   `);
+  /* The masthead sticks over the top of the page. Pinned sections (the cup in
+     How we blend, From fruit to cup) read its height as --mh and sit below it;
+     it changes with the width, and once the fonts arrive. */
+  const mast = document.querySelector('.masthead');
+  const fitMast = () => document.documentElement.style.setProperty('--mh', `${mast.offsetHeight}px`);
+  fitMast();
+  if ('ResizeObserver' in window) new ResizeObserver(fitMast).observe(mast);
 
   document.body.insertAdjacentHTML('beforeend', `
     <footer class="footer">
@@ -357,9 +372,11 @@ function renderGate() {
 function cardHTML(p) {
   return `
     <article class="card">
-      <div class="card__art" data-cup="${p.id}">
+      <div class="card__art"${PHOTO_CUP.has(p.id) ? ` data-photo="${p.id}"` : ''}>
         ${pTag(p) ? `<span class="card__tag">${esc(pTag(p))}</span>` : ''}
-        ${productArt(p)}
+        ${photoSrc(p)
+          ? `<img class="card__photo" src="${photoSrc(p)}" width="800" height="1000" alt="" loading="lazy" decoding="async" draggable="false">`
+          : productArt(p)}
       </div>
       <h3 class="card__name">${esc(pName(p))}</h3>
       <p class="card__meta meta">${esc(pMeta(p))}</p>
@@ -542,7 +559,7 @@ function initCart() {
       const q = cart[id];
       return `
         <div class="cartline">
-          <div class="cartline__art">${productArt(p)}</div>
+          <div class="cartline__art">${photoSrc(p) ? `<img src="${photoSrc(p)}" width="800" height="1000" alt="" decoding="async">` : productArt(p)}</div>
           <div>
             <div class="cartline__name">${esc(pName(p))}</div>
             <div class="meta">${esc(pMeta(p))} · ${money(p.price)}</div>
@@ -1057,29 +1074,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if (document.body.dataset.page === 'cart') {
         track('view_cart', { value: cartSubtotal(), currency: 'NPR', items: cartCount() });
       }
-    }],
-
-  // flat art sits under the WebGL stage; cup3d hides it once the canvas is live
-    ['fallbackArt', () => {
-      const fb = $('#cup-fallback');
-      const hero = PRODUCTS.find(p => p.cat === 'smoothies') || PRODUCTS[0];
-      if (!fb || !hero) return;
-      const paint = () => { if (!fb.innerHTML) fb.innerHTML = productArt(hero); };
-
-      /* This used to paint unconditionally, which is what made every
-         refresh flash the flat cup: app.js drew it, then cup3d.js faded
-         it out once WebGL was ready. Preloading three.js shrank that
-         window but could never close it, because the library still has to
-         parse, compile and build a scene after it arrives. So do not draw
-         the flat cup at all unless the real one is genuinely not coming. */
-      if (document.documentElement.classList.contains('no-webgl')) { paint(); return; }
-      addEventListener('blendmandu:no-webgl', paint, { once: true });
-
-      /* Last resort: something has gone wrong that neither path reported,
-         and an empty stage is worse than the flat art. */
-      setTimeout(() => {
-        if (!document.querySelector('.cupstage.is-live')) paint();
-      }, 2500);
     }],
   ]);
 });

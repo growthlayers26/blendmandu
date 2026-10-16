@@ -12,6 +12,10 @@
   --ink-soft:     #5a5a51;
   --accent:       #e66a35;
   --accent-deep:  #e2662f;
+  /* Small text in the accent. --accent itself is 3.0:1 on cream, below the 4.5:1
+     text floor; this is the same orange darkened until it clears 4.5:1 on cream,
+     the panel cream, white and the checked-option tint. */
+  --accent-text:  #ad4615;
   --green:        #6E9E5E;
   --white:        #FFFFFF;
 
@@ -65,7 +69,7 @@ h3 { font-size: clamp(1.15rem, 2.2vw, 1.45rem); font-weight: 600; }
   letter-spacing: .09em;
   color: var(--ink);
 }
-.eyebrow--accent { color: var(--accent-deep); }
+.eyebrow--accent { color: var(--ink-soft); }
 
 .meta {
   font-family: var(--display);
@@ -134,7 +138,7 @@ p { margin: 0 0 1.1em; }
   text-decoration: none;
   white-space: nowrap;
 }
-.navlink:hover { color: var(--accent-deep); }
+.navlink:hover { color: var(--accent-text); }
 
 /* ---------- badge logo ---------- */
 .badge {
@@ -221,9 +225,9 @@ p { margin: 0 0 1.1em; }
   min-width: 20px; height: 20px;
   border-radius: 999px;
   background: var(--accent);
-  color: var(--ink);
+  color: #1d1d1d;                  /* var(--ink) turns cream on tinted pages: 3.0:1 on the orange */
   font-family: var(--display);
-  font-size: .66rem;
+  font-size: .72rem;
   display: none;
   align-items: center;
   justify-content: center;
@@ -251,7 +255,7 @@ p { margin: 0 0 1.1em; }
   white-space: nowrap;
 }
 .ticker__track span { display: inline-flex; align-items: center; gap: 42px; }
-.ticker__track span::after { content: "\25C6"; color: var(--accent); }
+.ticker__track span::after { content: "\25C6"; color: currentColor; opacity: .5; }
 @keyframes slide { to { transform: translateX(-50%); } }
 @media (prefers-reduced-motion: reduce) {
   .ticker__track { animation: none; }
@@ -297,8 +301,8 @@ p { margin: 0 0 1.1em; }
   letter-spacing: .06em;
   color: var(--ink);
 }
-.filters__btn:hover { color: var(--accent-deep); }
-.filters__btn.is-active { color: var(--accent-deep); }
+.filters__btn:hover { color: var(--accent-text); }
+.filters__btn.is-active { color: var(--accent-text); }
 
 .grid {
   display: grid;
@@ -323,12 +327,14 @@ p { margin: 0 0 1.1em; }
 .card:hover .card__art { transform: translateY(-4px); }
 .card__art svg { width: 100%; height: 100%; }
 
-/* A real cup replaces the flat drawing once WebGL has one ready. The SVG
-   stays in the DOM rather than being removed: it is what shows when there
-   is no WebGL, and toggling display is cheaper than rebuilding markup. */
-.cardcup { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-.card__art.has-cup > svg, .pdp__art.has-cup > svg { display: none; }
+.card__photo { width: 100%; height: 100%; display: block; object-fit: contain; user-select: none; }
 .pdp__art { position: relative; }
+
+/* A turntable canvas is laid over its photo (spin.js sizes it to the photo's
+   box) and the photo hides once the canvas has drawn. The photo stays in the
+   page: it is what shows first, and what shows with no script at all. */
+.spin__canvas { position: absolute; display: block; pointer-events: none; }
+.has-spin > .cupstage__img, .has-spin > .pin__img, .has-spin > .card__photo { visibility: hidden; }
 .card__name { margin: 18px 0 8px; font-size: 1.16rem; }
 .card__meta { margin-bottom: 14px; }
 .card__foot {
@@ -343,7 +349,7 @@ p { margin: 0 0 1.1em; }
 }
 .card__price {
   font-family: var(--display);
-  color: var(--accent-deep);
+  color: var(--accent-text);
   font-size: 1rem;
   letter-spacing: .03em;
 }
@@ -357,7 +363,7 @@ p { margin: 0 0 1.1em; }
   letter-spacing: .1em;
   text-transform: uppercase;
   background: var(--green);
-  color: var(--white);
+  color: #1d1d1d;                   /* 5.39:1 on the green, in light and tinted pages alike */
   padding: 5px 10px 4px;
   border-radius: 999px;
   white-space: nowrap;
@@ -370,7 +376,7 @@ p { margin: 0 0 1.1em; }
 .step__num {
   font-family: var(--display);
   font-size: 2.4rem;
-  color: var(--accent);
+  color: var(--accent-text);
   line-height: 1;
   margin-bottom: 10px;
 }
@@ -409,7 +415,7 @@ p { margin: 0 0 1.1em; }
   place-items: center;
   padding: 6px;
 }
-.cartline__art svg { width: 100%; height: 100%; }
+.cartline__art svg, .cartline__art img { width: 100%; height: 100%; display: block; object-fit: contain; }
 .cartline__name { font-family: var(--display); text-transform: uppercase; font-size: .95rem; letter-spacing: .04em; }
 
 .qty { display: inline-flex; align-items: center; border: var(--rule); border-radius: 999px; overflow: hidden; }
@@ -424,7 +430,7 @@ p { margin: 0 0 1.1em; }
 .totals { display: grid; gap: 10px; margin-top: 22px; }
 .totals__row { display: flex; justify-content: space-between; gap: 16px; font-family: var(--display); text-transform: uppercase; font-size: .86rem; letter-spacing: .05em; }
 .totals__row--grand { border-top: var(--rule); padding-top: 14px; font-size: 1.15rem; }
-.totals__row--grand .totals__val { color: var(--accent-deep); }
+.totals__row--grand .totals__val { color: var(--accent-text); }
 
 /* ---------- form ---------- */
 .field { margin-bottom: 18px; }
@@ -497,7 +503,7 @@ textarea.input { min-height: 88px; resize: vertical; }
 .footer__title { font-family: var(--display); text-transform: uppercase; font-size: .84rem; letter-spacing: .09em; margin-bottom: 14px; }
 .footer__list { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px; font-size: .95rem; }
 .footer__list a { text-decoration: none; }
-.footer__list a:hover { color: var(--accent-deep); }
+.footer__list a:hover { color: var(--accent-text); }
 .footer__bar {
   margin-top: 40px; padding: 18px 0 26px;
   border-top: var(--dash);
@@ -621,12 +627,12 @@ textarea.input { min-height: 88px; resize: vertical; }
 .card__art svg {
   transition: transform .6s cubic-bezier(.16,1,.3,1);
 }
-/* The art zoom used to name the SVG only. Once a real cup takes over that
-   SVG is display:none, so the zoom silently did nothing on every card with
-   WebGL. Name both, and let the canvas take the same treatment. */
+/* The art zoom names everything a card can show: the turning cup's canvas,
+   a product photo, and the drawn fallback. */
 .card:hover .card__art svg,
-.card:hover .card__art .cardcup { transform: scale(1.06) rotate(-1.5deg); }
-.card__art .cardcup { transition: transform .5s cubic-bezier(.2,.9,.3,1); }
+.card:hover .card__art .card__photo,
+.card:hover .card__art .spin__canvas { transform: scale(1.06) rotate(-1.5deg); }
+.card__art .card__photo, .card__art .spin__canvas { transition: transform .5s cubic-bezier(.2,.9,.3,1); }
 
 /* ---- scroll reveals ---- */
 [data-reveal] {
@@ -652,7 +658,8 @@ textarea.input { min-height: 88px; resize: vertical; }
   [data-reveal] { opacity: 1; transform: none; transition: none; }
   .card:hover .card__art,
   .card:hover .card__art svg,
-  .card:hover .card__art .cardcup { transform: none; }
+  .card:hover .card__art .card__photo,
+  .card:hover .card__art .spin__canvas { transform: none; }
 }
 
 /* ============================================================
@@ -667,9 +674,13 @@ html.is-tinted {
   --cream:      var(--tint);
   --cream-deep: color-mix(in srgb, var(--tint) 88%, #000);
   --ink:        #f8f7e5;
-  --ink-soft:   rgba(248,247,229,.70);
+  --ink-soft:   rgba(248,247,229,.80);   /* .70 fell to 4.09:1 on the 7%-white panels over mango and turmeric */
   --white:      rgba(255,255,255,.07);
   --accent-deep:#F7A876;
+  /* lighter than --accent-deep: the tinted pages put 7%-white panels on the flavour
+     colour, and Tropical Turmeric is the lightest tint. Worst case of all six,
+     panels included, is 5.00:1. */
+  --accent-text:#FFD2B3;
   --rule:       1px solid rgba(248,247,229,.85);
   --dash:       1px dashed rgba(248,247,229,.38);
 }
@@ -689,6 +700,26 @@ html.is-tinted .footer__bar::before {
 html.is-tinted .ticker { background: #f8f7e5; color: var(--tint); }
 html.is-tinted .badge__box { background: transparent; }
 
+/* ---------- contrast and transparency preferences ---------- */
+@media (prefers-contrast: more) {
+  :root {
+    --ink-soft: #1d1d1d;
+    --accent-text: #853510;
+    --dash: 1px dashed rgba(29,29,29,.85);
+  }
+  html.is-tinted {
+    --ink-soft: #f8f7e5;
+    --accent-text: #FFF2E6;
+    --dash: 1px dashed rgba(248,247,229,.85);
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  html.is-tinted {
+    --white: color-mix(in srgb, var(--tint) 90%, #fff);
+    --ink-soft: color-mix(in srgb, #f8f7e5 82%, var(--tint));
+  }
+}
+
 /* ---------- hero stage ---------- */
 .hero--3d { padding-bottom: clamp(30px, 5vw, 56px); text-align: center; }
 
@@ -699,18 +730,15 @@ html.is-tinted .badge__box { background: transparent; }
   margin: clamp(6px, 2vw, 20px) auto 0;
   touch-action: pan-y;
 }
-.cupstage canvas { width: 100%; height: 100%; display: block; opacity: 0; transition: opacity .45s ease; }
-.cupstage.is-live canvas { opacity: 1; }
-/* The fallback used to be removed with display:none the instant the canvas
-   went live, while the canvas itself took .6s to fade up. The stage emptied
-   in between, which is what made the swap read as a flash rather than a
-   handoff. Fading the two across each other hides the seam. */
-.cupstage__fallback {
-  position: absolute; inset: 0; display: grid; place-items: center; padding: 6%;
-  opacity: 1; transition: opacity .45s ease;
+
+/* the hero cup is a turntable: it turns on its own, drags, and floats (spin.js) */
+.cupstage--spin, .pdp__art--spin { cursor: grab; outline-offset: 6px; touch-action: pan-y; }
+.cupstage--spin.is-dragging, .pdp__art--spin.is-dragging { cursor: grabbing; }
+.cupstage__img {
+  width: 100%; height: 100%; display: block;
+  object-fit: contain;
+  user-select: none; -webkit-user-select: none; -webkit-user-drag: none;
 }
-.cupstage.is-live .cupstage__fallback { opacity: 0; pointer-events: none; }
-.cupstage__fallback svg { width: 100%; height: 100%; }
 
 .cupstage__arrow {
   position: absolute;
@@ -737,11 +765,14 @@ html.is-tinted .badge__box { background: transparent; }
 .cupmeta__hint { margin-bottom: 14px; display: none; }
 .cupstage.is-live ~ .cupmeta .cupmeta__hint { display: block; }
 .cupmeta h2 { margin-bottom: .18em; }
-.cupmeta__price { font-family: var(--display); color: var(--accent-deep); font-size: 1.25rem; letter-spacing: .04em; }
+.cupmeta__price { font-family: var(--display); color: var(--accent-text); font-size: 1.25rem; letter-spacing: .04em; }
 
 /* ---------- pinned section ---------- */
 .pin { height: 300vh; position: relative; }
-.pin__sticky { position: sticky; top: 0; height: 100vh; display: grid; align-items: center; overflow: hidden; }
+.pin__sticky {
+  position: sticky; top: 0; height: 100vh; box-sizing: border-box; display: grid; align-items: center; overflow: hidden;
+  padding: calc(var(--mh, 0px) + 12px) 0 20px;       /* --mh: the sticky masthead's height, set by app.js */
+}
 .pin__grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(20px, 5vw, 60px); align-items: center; }
 .pin__copy { position: relative; min-height: 340px; }
 .pin__step {
@@ -753,22 +784,49 @@ html.is-tinted .badge__box { background: transparent; }
   pointer-events: none;
 }
 .pin__step.is-on { opacity: 1; transform: none; pointer-events: auto; }
-.pin__stage { height: min(74vh, 560px); }
-.pin__stage canvas { width: 100%; height: 100%; display: block; }
-html.no-webgl .pin { height: auto; }
-html.no-webgl .pin__sticky { position: static; height: auto; padding-block: 60px; }
-html.no-webgl .pin__copy { min-height: 0; }
-html.no-webgl .pin__step { position: static; opacity: 1; transform: none; margin-bottom: 34px; }
-html.no-webgl .pin__stage { display: none; }
+.pin__stage { height: min(calc(100vh - var(--mh, 0px) - 52px), 560px); position: relative; }
+/* rendered frames, turned by scroll; needs no WebGL, so no fallback layout */
+.pin__img { width: 100%; height: 100%; display: block; object-fit: contain; will-change: transform; user-select: none; }
 
-/* ---------- scrubbed sequence ---------- */
-.seq { height: 260vh; position: relative; }
-.seq__sticky { position: sticky; top: 0; height: 100vh; display: grid; align-items: center; }
-.seq__inner { text-align: center; }
-/* superseded below */
-html.no-webgl .seq { height: auto; }
-html.no-webgl .seq__sticky { position: static; height: auto; padding-block: 60px; }
-html.no-webgl #seq { display: none; }
+/* the story's photographs, whole, in About us */
+.about__photos { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 22px; }
+.about__photos img { width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; display: block; border-radius: calc(var(--radius) * .6); }
+
+/* ---------- from fruit to cup: four photographs, crossfaded by scrolling ---------- */
+.seq { height: 340vh; position: relative; }
+.seq__sticky {
+  position: sticky; top: 0; height: 100vh; box-sizing: border-box; display: grid; align-items: center; overflow: hidden;
+  padding: calc(var(--mh, 0px) + 16px) 0 24px;       /* --mh: the sticky masthead's height, set by app.js */
+}
+/* mirrors the pinned cup above it: photograph left, words right */
+.seq__grid { display: grid; grid-template-columns: auto 1fr; gap: clamp(28px, 6vw, 88px); align-items: center; min-width: 0; }
+.seq__media {
+  position: relative; overflow: hidden; isolation: isolate;
+  height: min(calc(100vh - var(--mh, 0px) - 56px), 640px); aspect-ratio: 4 / 5;
+  border-radius: var(--radius);
+  background: rgb(246, 235, 224);           /* the sweep's own cream, under the photographs */
+  box-shadow: 0 40px 80px -40px rgba(0, 0, 0, .6);
+}
+.seq__frame {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block;
+  opacity: 0; will-change: opacity, transform; user-select: none;
+}
+.seq__frame.is-on { opacity: 1; }
+.seq__copy { min-width: 0; max-width: 30rem; }
+.seq__list { list-style: none; margin: 30px 0 0; padding: 0; counter-reset: seq; }
+.seq__list li {
+  counter-increment: seq; position: relative;
+  padding: 14px 0 14px 54px; border-top: var(--dash);
+  color: var(--ink-soft); opacity: .5;
+  transition: opacity .45s ease, color .45s ease;
+}
+.seq__list li:last-child { border-bottom: var(--dash); }
+.seq__list li::before {
+  content: counter(seq, decimal-leading-zero);
+  position: absolute; left: 0; top: 14px;
+  font-family: var(--display); font-size: .95rem; letter-spacing: .04em;
+}
+.seq__list li.is-on { opacity: 1; color: var(--ink); }
 
 @media (max-width: 860px) {
   .pin { height: auto; }
@@ -777,18 +835,38 @@ html.no-webgl #seq { display: none; }
   .pin__copy { min-height: 0; }
   .pin__step { position: static; opacity: 1; transform: none; margin-bottom: 30px; }
   .pin__stage { height: 60vh; }
-  .seq { height: 200vh; }
+  .seq { height: 300vh; }
+  .seq__grid { grid-template-columns: 1fr; gap: 18px; justify-items: center; text-align: center; }
+  /* the line above the photograph, and room under it for the cart bar */
+  .seq__sticky { padding-bottom: 96px; }
+  .seq__media { height: min(calc(100vh - var(--mh, 0px) - 316px), 500px); max-width: 100%; order: 3; }
+  .seq__copy { display: contents; }
+  .seq__copy .eyebrow, .seq__copy h2 { order: 1; margin: 0; }
+  .seq__list { order: 2; min-height: 3.6em; }
+  /* one line at a time under the photograph */
+  .seq__list { display: grid; margin-top: 4px; }
+  .seq__list li { grid-area: 1 / 1; padding: 0; border: 0; max-width: 34ch; opacity: 0; }
+  .seq__list li:last-child { border: 0; }
+  .seq__list li::before { position: static; margin-right: 10px; }
   .cupstage__arrow--l { left: -2px; }
   .cupstage__arrow--r { right: -2px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   body { transition: none; }
-  .cupstage canvas, .cupstage__fallback { transition: none; }
   .pin, .seq { height: auto; }
   .pin__sticky, .seq__sticky { position: static; height: auto; padding-block: 56px; }
+  /* no crossfade: the four photographs side by side, every line showing */
+  .seq__media { height: auto; width: min(520px, 100%); aspect-ratio: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+                overflow: visible; background: none; box-shadow: none; border-radius: 0; }
+  .seq__frame { position: static; opacity: 1; height: auto; aspect-ratio: 4 / 5; border-radius: calc(var(--radius) * .6); }
+  .seq__list li { grid-area: auto; opacity: 1; }
+
   .pin__step { position: static; opacity: 1; transform: none; margin-bottom: 30px; }
   .pin__copy { min-height: 0; }
+}
+@media (prefers-reduced-motion: reduce) and (min-width: 861px) {
+  .seq__grid { grid-template-columns: minmax(0, 520px) minmax(0, 1fr); }   /* an auto column took the photos' full width */
 }
 
 /* ---- Lenis (smooth scroll) required styles ---- */
@@ -865,7 +943,7 @@ html.lenis, html.lenis body { height: auto; }
   transition-delay: calc(var(--i) * 60ms + 90ms);
 }
 .menu-overlay.is-open .menu-nav a { opacity: 1; transform: none; }
-.menu-nav a:hover { color: var(--accent-deep); }
+.menu-nav a:hover { color: var(--accent-text); }
 
 .menu-foot {
   display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
@@ -874,7 +952,7 @@ html.lenis, html.lenis body { height: auto; }
   font-size: .76rem; letter-spacing: .08em;
 }
 .menu-foot a { text-decoration: none; }
-.menu-foot a:hover { color: var(--accent-deep); }
+.menu-foot a:hover { color: var(--accent-text); }
 
 @media (prefers-reduced-motion: reduce) {
   .menu-overlay, .menu-nav a { transition: none; }
@@ -896,7 +974,7 @@ html.lenis, html.lenis body { height: auto; }
   gap: 8px;
 }
 .crumbs a { text-decoration: none; }
-.crumbs a:hover { color: var(--accent-deep); }
+.crumbs a:hover { color: var(--accent-text); }
 .crumbs [aria-current] { color: var(--ink); }
 
 .pdp {
@@ -918,10 +996,13 @@ html.lenis, html.lenis body { height: auto; }
   top: 130px;
 }
 .pdp__art svg { width: 100%; height: 100%; }
+/* a bowl, juice or shot: its photograph, leaning towards the pointer (spin.js) */
+.pdp__art--photo { perspective: 1100px; }
+.pdp__photo { width: 100%; height: 100%; display: block; object-fit: contain; user-select: none; will-change: transform; }
 .pdp__meta { margin-bottom: 18px; }
 .pdp__price {
   font-family: var(--display);
-  color: var(--accent-deep);
+  color: var(--accent-text);
   font-size: clamp(1.6rem, 3.4vw, 2.2rem);
   letter-spacing: .03em;
   margin: 22px 0 20px;
@@ -949,7 +1030,7 @@ html.lenis, html.lenis body { height: auto; }
 /* card art becomes a link overlay, name becomes a link */
 .card__artlink { position: absolute; inset: 0; z-index: 1; border-radius: var(--radius); }
 .card__link { text-decoration: none; }
-.card__link:hover { color: var(--accent-deep); }
+.card__link:hover { color: var(--accent-text); }
 .card__tag { z-index: 2; }
 
 @media (max-width: 760px) {
@@ -974,9 +1055,9 @@ html.lenis, html.lenis body { height: auto; }
 }
 .prose ul { padding-left: 1.15em; margin: 0 0 1.2em; }
 .prose li { margin-bottom: .5em; }
-.prose a { color: var(--accent-deep); text-underline-offset: 3px; }
+.prose a { color: var(--accent-text); text-underline-offset: 3px; }
 .prose a:hover { color: var(--ink); }
-.prose .panel a { color: var(--accent-deep); }
+.prose .panel a { color: var(--accent-text); }
 
 .footer__legal {
   display: flex; flex-wrap: wrap; gap: 6px 14px;
@@ -984,7 +1065,7 @@ html.lenis, html.lenis body { height: auto; }
   font-size: .7rem; letter-spacing: .08em;
 }
 .footer__legal a { text-decoration: none; }
-.footer__legal a:hover { color: var(--accent-deep); }
+.footer__legal a:hover { color: var(--accent-text); }
 
 /* ============================================================
    SEARCH
@@ -1022,7 +1103,7 @@ html.lenis, html.lenis body { height: auto; }
 }
 
 /* language toggle */
-.lang-btn { font-family: var(--display); font-size: .68rem; letter-spacing: .04em; text-decoration: none; }
+.lang-btn { font-family: var(--display); font-size: .72rem; letter-spacing: .04em; text-decoration: none; }
 /* both directions use Latin codes, so no Devanagari-specific styling */
 
 /* ============================================================
@@ -1222,7 +1303,7 @@ body:has(.consent.is-up) .wafloat { display: none; }
   transition: transform .25s ease;
 }
 .faq__item[open] .faq__q::after { transform: translateY(-30%) rotate(-135deg); }
-.faq__q:hover { color: var(--accent-deep); }
+.faq__q:hover { color: var(--accent-text); }
 .faq__a { padding: 0 44px 22px 0; }
 .faq__a p { margin: 0; }
 @media (prefers-reduced-motion: reduce) { .faq__q::after { transition: none; } }
@@ -1264,14 +1345,6 @@ html.is-tinted .field__error { color: #ffb4ab; }
 .input[aria-invalid="true"] { border-color: #b3261e; border-width: 2px; }
 html.is-tinted .input[aria-invalid="true"] { border-color: #ffb4ab; }
 
-/* the scrubbed sequence needs room to read; it was cramped at 46vh */
-#seq { width: min(860px, 94vw); height: min(56vh, 440px); margin: 26px auto 0; display: block; }
-.seq__caption {
-  margin: 18px auto 0;
-  max-width: 44ch;
-  min-height: 2.6em;
-  color: var(--ink-soft);
-}
 
 /* the hero stage is transformed by JS on scroll (parallax + scale-away) */
 .cupstage { will-change: transform, opacity; transform-origin: 50% 30%; }
@@ -1421,7 +1494,7 @@ html.is-tinted .input[aria-invalid="true"] { border-color: #ffb4ab; }
   .masthead .lang-btn {
     display: inline-flex;
     width: 40px; height: 40px;
-    font-size: .66rem;
+    font-size: .72rem;
   }
   .masthead__side--right { gap: 6px; }
 
@@ -1438,11 +1511,28 @@ html.is-tinted .input[aria-invalid="true"] { border-color: #ffb4ab; }
   .badge__box { min-width: 80px; }
   .badge__line { font-size: .95rem; }
   /* the CTA is the widest thing in the row, so it gives up the most */
-  .masthead__side .pill { padding: 9px 11px 8px; font-size: .68rem; }
+  .masthead__side .pill { padding: 9px 10px 8px; font-size: .72rem; }
   /* 38 cleared the WCAG minimum but sat under the 44 that phones want.
      There is room for 42 once the gap either side is tightened. */
   .masthead .lang-btn { width: 42px; height: 42px; }
-  .masthead__side--right { gap: 4px; }
+  .masthead__side--right { gap: 2px; }
+}
+
+/* Below about 420px the three-column grid cannot fit. 1fr auto 1fr makes the
+   left column as wide as the right one (the menu, language and cart buttons,
+   134px), so the row needs ~376px and pushed the cart button off the edge of
+   every phone narrower than that, 360 and 375 included. Let the columns size
+   to their content instead; the badge sits in the space between. */
+@media (max-width: 419px) {
+  .masthead { padding-inline: 14px; }
+  .masthead__grid { grid-template-columns: auto 1fr auto; }
+  .badge { justify-self: center; padding: 0 4px; }
+  .masthead__side .pill { padding: 9px 8px 8px; }
+}
+/* On the very smallest phones even that is too much: the header order button
+   steps aside. The menu, the cart and every product's own button still order. */
+@media (max-width: 340px) {
+  .masthead__side .pill { display: none; }
 }
 
 /* Kept in the overlay as well: it is a full-width tap target with the

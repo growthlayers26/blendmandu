@@ -35,7 +35,7 @@ module.exports = {
     ['Fresh smoothies, acai bowls and cold pressed juice, blended after you order and at your door in 30 to 45 minutes. Anywhere in Kathmandu, any hour of the day or night. No app, no account, cash or eSewa on arrival.',
      'ताजा स्मुदी, असाई बाउल र कोल्ड प्रेस्ड जुस, अर्डरपछि ब्लेन्ड गरी ३० देखि ४५ मिनेटमा तपाईंको ढोकामा। काठमाडौंभर, दिनरात जुनसुकै बेला। एप चाहिँदैन, खाता चाहिँदैन, आइपुगेपछि नगद वा इसेवा।'],
     ['Drag to spin, or tap the cup to change flavour', 'घुमाउन तान्नुहोस् &middot; स्वाद बदल्न कपमा क्लिक गर्नुहोस्'],
-    ['Three-dimensional smoothie cup. Drag to spin it, click to change flavour.', 'त्रि-आयामिक स्मुदी कप। घुमाउन तान्नुहोस्, स्वाद बदल्न क्लिक गर्नुहोस्।'],
+    ['Smoothie cup shown from every side. Drag to spin it, tap to change flavour.', 'चारैतिरबाट देखिने स्मुदी कप। घुमाउन तान्नुहोस्, स्वाद बदल्न थिच्नुहोस्।'],
     ['Previous flavour', 'अघिल्लो स्वाद'],
     ['Next flavour', 'अर्को स्वाद'],
     ['Add to cart', 'कार्टमा थप्नुहोस्'],
@@ -59,6 +59,12 @@ module.exports = {
     ['From fruit to cup', 'फलफूलदेखि कपसम्म'],
     ['Ninety seconds,', 'नब्बे सेकेन्ड,'],
     ['start to finish', 'सुरुदेखि अन्त्यसम्म'],
+    ['Whole fruit, weighed and dropped in', 'सग्लो फलफूल, तौलेर हालिन्छ'],
+    ['Thirty seconds on high, nothing batched in advance', 'तीस सेकेन्ड तीव्र गतिमा, पहिल्यै बनाइएको केही छैन'],
+    ['Poured straight across, no holding tank', 'सिधै खन्याइन्छ, कतै रोकिँदैन'],
+    ['Lidded, sleeved, and out the door', 'ढक्कन लगाएर, स्लिभ हालेर, बाहिर'],
+    ['Fresh raspberries, blueberries, strawberries, blackberries, banana and mint', 'ताजा रास्पबेरी, ब्लुबेरी, स्ट्रबेरी, ब्ल्याकबेरी, केरा र पुदिना'],
+    ['A berry smoothie just blended in the jar', 'भर्खरै जगमा ब्लेन्ड गरिएको बेरी स्मुदी'],
 
     // ---- index: about ----
     ['About us', 'हाम्रो बारेमा'],

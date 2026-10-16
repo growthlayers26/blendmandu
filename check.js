@@ -109,5 +109,66 @@ for (const f of ['og-image.png','favicon.ico','favicon.svg','apple-touch-icon.pn
                  'icon-192.png','icon-512.png','site.webmanifest','robots.txt','sitemap.xml'])
   if (!fs.existsSync(f)) bad('(root)', `missing ${f}`);
 
+/* ---------- cross-page hreflang reciprocity ----------
+   Presence of hreflang="en"/"ne" is not enough. Google discards the entire
+   cluster unless every page in it names the others by the exact URL those
+   others call their own canonical. A one-sided cluster looks perfect to a
+   per-file check: that is how /ne/ shipped declaring /index.html while /
+   declared /ne/, and the audit still reported 0 failures. This pass reads
+   every page once and verifies the links both ways, plus that the sitemap
+   and each canonical agree. */
+const heads = new Map();   // local url -> { file, canonical, alts, noindex }
+const toLocal = u => {
+  let p = String(u).trim().replace(ORIGIN, '');
+  p = p.replace(/^index\.html$/, '');
+  p = p.replace(/\/index\.html$/, '/');
+  if (p === '') p = '/';
+  else p = '/' + p.replace(/^\/+/, '');
+  return p;
+};
+
+for (const f of pages) {
+  const s = fs.readFileSync(f, 'utf8');
+  if (/name="robots" content="noindex"/.test(s)) continue;
+  const cm = s.match(/<link rel="canonical" href="([^"]+)"/);
+  const alts = {};
+  for (const m of s.matchAll(/<link rel="alternate" hreflang="([^"]+)" href="([^"]+)"/g))
+    alts[m[1]] = m[2];
+  if (!cm || !alts.en || !alts.ne) continue;
+  heads.set(toLocal(cm[1]), { file: f, canonical: cm[1], alts });
+}
+
+for (const [, h] of [...heads].sort()) {
+  /* every alternate must be the canonical of some other page, and that page
+     must point back here */
+  for (const lang of Object.keys(h.alts).sort()) {
+    const href = h.alts[lang];
+    const other = heads.get(toLocal(href));
+    if (!other) {
+      bad(h.file, `hreflang ${lang} -> ${href} is not the canonical of any page`);
+    } else if (!Object.values(other.alts).includes(h.canonical)) {
+      bad(h.file, `hreflang ${lang} -> ${href} does not point back at ${h.canonical} (non-reciprocal)`);
+    }
+  }
+  /* x-default must resolve to the same URL as hreflang="en" */
+  if (h.alts['x-default'] && h.alts['x-default'] !== h.alts.en)
+    bad(h.file, `x-default (${h.alts['x-default']}) != hreflang en (${h.alts.en})`);
+  /* a page's own canonical must appear among its own alternates */
+  if (!Object.values(h.alts).includes(h.canonical))
+    bad(h.file, `canonical ${h.canonical} absent from its own hreflang set`);
+}
+
+/* sitemap and canonicals must name the same URLs. A sitemap entry that
+   disagrees with the page's canonical splits crawl signals across two
+   addresses for one piece of content. */
+if (fs.existsSync('sitemap.xml')) {
+  const sm = fs.readFileSync('sitemap.xml', 'utf8');
+  const locs = new Set([...sm.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m => m[1].trim()));
+  for (const [, h] of [...heads].sort())
+    if (!locs.has(h.canonical)) bad(h.file, `canonical ${h.canonical} is not in sitemap.xml`);
+  for (const l of locs)
+    if (/index\.html$/.test(l)) bad('sitemap.xml', `lists ${l} — the directory root is the canonical`);
+}
+
 console.log(`\n${pages.length} pages checked — ${fail} failures, ${warn} warnings`);
 process.exit(fail ? 1 : 0);

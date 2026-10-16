@@ -15,8 +15,8 @@ const fs = require('fs');
 const path = require('path');
 
 const src = fs.readFileSync('assets/js/products.js', 'utf8');
-const { SHOP, PRODUCTS, CATEGORIES, productArt, PRODUCT_I18N, CATEGORY_I18N } =
-  new Function(src + '; return {SHOP,PRODUCTS,CATEGORIES,productArt,PRODUCT_I18N,CATEGORY_I18N};')();
+const { SHOP, PRODUCTS, CATEGORIES, productArt, productPhoto, PRODUCT_I18N, CATEGORY_I18N } =
+  new Function(src + '; return {SHOP,PRODUCTS,CATEGORIES,productArt,productPhoto,PRODUCT_I18N,CATEGORY_I18N};')();
 
 const { I18N, LANGS } = require('./assets/js/i18n.js');
 const FAQ = require('./faq.js');
@@ -43,11 +43,22 @@ const ORIGIN = SHOP.url.replace(/\/$/, '');
    yesterday's app.js after a deploy — customers see a stale shop and you
    get bug reports for bugs you already fixed. */
 const crypto = require('crypto');
+/* The cup's textures and posters are in the hash too: the service worker
+   serves images cache-first under a cache named after this version, so a
+   re-exported cup with the same file names would otherwise never reach a
+   returning visitor. */
+const cupFiles = dir => fs.readdirSync(dir, { withFileTypes: true })
+  .flatMap(e => e.isDirectory() ? cupFiles(path.join(dir, e.name)) : [path.join(dir, e.name)])
+  .sort();
 const VER = crypto.createHash('sha1').update(
-  ['assets/css/style.css','assets/js/app.js','assets/js/products.js','assets/js/cup3d.js',
-   'assets/js/i18n.js','assets/js/analytics.js']
+  ['assets/css/style.css','assets/js/app.js','assets/js/products.js',
+   'assets/js/i18n.js','assets/js/analytics.js','assets/js/spin.js',
+   ...['assets/img/cup', 'assets/img/range', 'assets/img/og', 'assets/img/story'].flatMap(d => fs.existsSync(d) ? cupFiles(d) : [])]
     .map(f => fs.readFileSync(f)).join('')
 ).digest('hex').slice(0, 8);
+/* the six smoothies that have the real cup, turned by spin.js (assets/img/cup/) */
+const SPIN = new Set(['himalayan-berry', 'mango-sunrise', 'green-machine',
+                      'peanut-banana', 'cacao-almond', 'tropical-turmeric']);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
 /* Google cuts meta descriptions around 155 characters. Anything past that
@@ -62,24 +73,17 @@ function clampDesc(text, max = 155) {
 const money = n => `${SHOP.currency} ${n.toLocaleString('en-IN')}`;
 
 /* ---------- shared head ---------- */
-function head({ title, desc, url, ogtype = 'website', base = '', extra = '', lang = 'en', alt = '', preload = false }) {
+function head({ title, desc, url, ogtype = 'website', base = '', extra = '', lang = 'en', alt = '', image = '' }) {
   desc = clampDesc(desc);   // clamp once here so no call site can forget
-  /* The cup module and three.js were fetched serially: the browser could
-     not discover three.js until cup3d.js had downloaded AND executed as
-     far as its dynamic import, which measured at 598ms on a warm cache.
-     For that whole window the flat SVG fallback is what is on screen, so
-     the real cup arriving reads as a flash of the old art. Declaring both
-     here lets the preload scanner start them while the HTML is still
-     parsing. Only emitted for pages that actually build a cup. */
-  const pre = preload ? `
-<link rel="modulepreload" href="${base}assets/js/cup3d.js?v=${VER}">
-<link rel="modulepreload" href="${base}assets/vendor/three.module.js">` : '';
+  /* a product page shares its own card (assets/img/og/, made by blendmandu-3d
+     tools/og_cards.py); everything else the site's */
+  const og = image ? `${ORIGIN}/${image}?v=${VER}` : `${ORIGIN}/og-image.png`;
   const hreflang = alt ? `
 <link rel="alternate" hreflang="en" href="${lang === 'en' ? url : alt}">
 <link rel="alternate" hreflang="ne" href="${lang === 'ne' ? url : alt}">
 <link rel="alternate" hreflang="x-default" href="${lang === 'en' ? url : alt}">` : '';
   return `<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">${pre}
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(desc)}">
 <link rel="canonical" href="${url}">${hreflang}
@@ -90,13 +94,13 @@ function head({ title, desc, url, ogtype = 'website', base = '', extra = '', lan
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(desc)}">
 <meta property="og:url" content="${url}">
-<meta property="og:image" content="${ORIGIN}/og-image.png">
+<meta property="og:image" content="${og}">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${esc(title)}">
 <meta name="twitter:description" content="${esc(desc)}">
-<meta name="twitter:image" content="${ORIGIN}/og-image.png">
+<meta name="twitter:image" content="${og}">
 
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
@@ -129,9 +133,10 @@ const scripts = (assetBase, cup = false) =>
 <script src="${assetBase}assets/js/products.js?v=${VER}"></script>
 <script src="${assetBase}assets/js/analytics.js?v=${VER}"></script>
 <script src="${assetBase}assets/js/app.js?v=${VER}"></script>` +
-/* The 3D engine is opt-in per page: a policy page must never be made
-   to pull 1.24 MB of three.js it has no cup to draw with. */
-(cup ? `\n<script type="module" src="${assetBase}assets/js/cup3d.js?v=${VER}"></script>` : '');
+/* spin.js is opt-in per page: it turns the smoothie cups, on the product's
+   own stage and on its related cards, and tilts the other products' photos.
+   A policy page has nothing for it to do. */
+(cup ? `\n<script src="${assetBase}assets/js/spin.js?v=${VER}"></script>` : '');
 
 const SCHEMA = require('./schema.js')({
   SHOP, ORIGIN, urlFor, T, money, PRODUCTS, CATEGORIES, catLabel, FAQ,
@@ -195,7 +200,7 @@ for (const lang of LANGCODES) {
       name: p.name, description: blurb, sku: p.id.toUpperCase(),
       category: catName,
       brand: { '@type': 'Brand', name: SHOP.brand },
-      image: `${ORIGIN}/og-image.png`,
+      image: productPhoto(p) ? `${ORIGIN}/assets/${productPhoto(p)}` : `${ORIGIN}/og-image.png`,
       offers: {
         '@type': 'Offer', url, price: String(p.price), priceCurrency: 'NPR',
         availability: 'https://schema.org/InStock',
@@ -215,7 +220,8 @@ for (const lang of LANGCODES) {
     const html = `<!doctype html>
 <html lang="${LANGS[lang].htmlLang}" data-base="${linkBase}" data-lang="${lang}">
 <head>
-${head({ title: `${p.name}, ${money(p.price)} | Smoothie Delivery Kathmandu`, desc, url, ogtype: 'product', base: assetBase, lang, alt, preload: true,
+${head({ title: `${p.name}, ${money(p.price)} | Smoothie Delivery Kathmandu`, desc, url, ogtype: 'product', base: assetBase, lang, alt,
+  image: fs.existsSync(`assets/img/og/${p.id}.jpg`) ? `assets/img/og/${p.id}.jpg` : '',
   extra: `\n<script type="application/ld+json">${JSON.stringify(jsonld)}</script>\n<script type="application/ld+json">${JSON.stringify(breadcrumb)}</script>` })}
 </head>
 <body>
@@ -229,10 +235,16 @@ ${head({ title: `${p.name}, ${money(p.price)} | Smoothie Delivery Kathmandu`, de
   </nav>
 
   <div class="pdp">
-    <div class="pdp__art" data-cup="${p.id}">
+    ${SPIN.has(p.id) ? `<div class="pdp__art pdp__art--spin" data-spin="${p.id}" tabindex="0" role="group" aria-label="${esc(T(lang, 'product.spin'))}">
+      ${tag ? `<span class="card__tag">${esc(tag)}</span>` : ''}
+      <img class="cupstage__img" src="${assetBase}assets/img/cup/${p.id}.webp" width="800" height="1000" alt="${esc(p.name)}" fetchpriority="high" decoding="async" draggable="false">
+    </div>` : productPhoto(p) ? `<div class="pdp__art pdp__art--photo" data-tilt>
+      ${tag ? `<span class="card__tag">${esc(tag)}</span>` : ''}
+      <img class="pdp__photo" src="${assetBase}assets/${productPhoto(p)}?v=${VER}" width="800" height="1000" alt="${esc(p.name)}" fetchpriority="high" decoding="async" draggable="false">
+    </div>` : `<div class="pdp__art">
       ${tag ? `<span class="card__tag">${esc(tag)}</span>` : ''}
       ${productArt(p)}
-    </div>
+    </div>`}
 
     <div class="pdp__info">
       <p class="eyebrow eyebrow--accent">${esc(catName)}</p>
@@ -438,8 +450,7 @@ for (const file of ['index.html', 'shop.html', 'cart.html']) {
   const desc = unesc((t.match(/<meta name="description" content="([^"]*)"/) || [])[1] || '');
   const noindex = /name="robots" content="noindex"/.test(t);
   t = t.replace(/<head>[\s\S]*?<\/head>/,
-    '<head>\n' + head({ title, desc, url, base: '', lang: 'en', alt,
-                        preload: file === 'index.html' || file === 'shop.html' })
+    '<head>\n' + head({ title, desc, url, base: '', lang: 'en', alt })
     + (noindex ? '\n<meta name="robots" content="noindex">' : '')
     + '\n</head>');
 
@@ -569,7 +580,16 @@ for (const file of ['index.html', 'shop.html', 'cart.html']) {
   let t = fs.readFileSync(file, 'utf8');
 
   // rewrite the head for Nepali
-  const rel = file;
+  /* The index must be addressed as the directory root "/ne/", not
+     "/ne/index.html". The English pass below already collapses
+     index.html -> '' so that / and /ne/ name the same pair as each other;
+     without the same collapse here, /ne/ declared its alternates as
+     /index.html and /ne/index.html while / declared them as / and /ne/.
+     hreflang has to be reciprocal — each page must name the other by the
+     exact URL the other calls its own canonical — so a mismatch here makes
+     Google discard the whole cluster, and it also left the sitemap
+     (/ne/) disagreeing with the canonical on the page. */
+  const rel = file === 'index.html' ? '' : file;
   const url = urlFor('ne', rel);
   const alt = urlFor('en', rel);
   const meta = NE_COPY.meta[file];
@@ -577,8 +597,7 @@ for (const file of ['index.html', 'shop.html', 'cart.html']) {
 
   t = t.replace(/<html[^>]*>/, `<html lang="${LANGS.ne.htmlLang}" data-base="" data-lang="ne">`);
   t = t.replace(/<head>[\s\S]*?<\/head>/,
-    '<head>\n' + head({ title: meta.title, desc: meta.desc, url, base: '../', lang: 'ne', alt,
-                        preload: file === 'index.html' || file === 'shop.html' })
+    '<head>\n' + head({ title: meta.title, desc: meta.desc, url, base: '../', lang: 'ne', alt })
     + (/name="robots" content="noindex"/.test(t) ? '\n<meta name="robots" content="noindex">' : '')
     + '\n</head>');
 
@@ -623,7 +642,8 @@ console.log('nepali index/shop/cart written');
     if (e.isDirectory()) { stampAll(full); continue; }
     if (!e.name.endsWith('.html')) continue;
     let t = fs.readFileSync(full, 'utf8');
-    const out = t.replace(/(assets\/(?:css\/[\w-]+\.css|js\/[\w-]+\.js))(\?v=[a-f0-9]+)?/g, `$1?v=${VER}`);
+    // the cup's stills too: /assets/ is cached for a year, so a re-exported cup needs a new URL
+    const out = t.replace(/(assets\/(?:css\/[\w-]+\.css|js\/[\w-]+\.js|img\/cup\/[\w-]+\.webp))(\?v=[a-f0-9]+)?/g, `$1?v=${VER}`);
     if (out !== t) fs.writeFileSync(full, out);
   }
 })('.');

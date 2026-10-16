@@ -58,6 +58,7 @@ const I18N = {
     'shop.showAll': 'Show everything',
 
     'product.add': 'Add to cart',
+    'product.spin': 'The real cup, shown from every side. Drag to spin it.',
     'product.allergens': 'Allergens',
     'product.delivery': 'Delivery',
     'product.made': 'Made',
@@ -126,10 +127,6 @@ const I18N = {
     'footer.terms': 'Terms',
     'footer.legal': 'Legal',
 
-    'seq.step1': 'Whole fruit, weighed and dropped in',
-    'seq.step2': 'Thirty seconds on high, nothing batched in advance',
-    'seq.step3': 'Poured straight across, no holding tank',
-    'seq.step4': 'Lidded, sleeved, and out the door',
 
     'faq.eyebrow': 'Questions',
     'faq.title': 'Before you order',
@@ -207,6 +204,7 @@ const I18N = {
     'shop.showAll': 'सबै देखाउनुहोस्',
 
     'product.add': 'कार्टमा थप्नुहोस्',
+    'product.spin': 'असली कप, चारैतिरबाट। घुमाउन तान्नुहोस्।',
     'product.allergens': 'एलर्जेन',
     'product.delivery': 'डेलिभरी',
     'product.made': 'बनाउने तरिका',
@@ -275,10 +273,6 @@ const I18N = {
     'footer.terms': 'सर्तहरू',
     'footer.legal': 'कानुनी',
 
-    'seq.step1': 'सग्लो फलफूल, तौलेर हालिन्छ',
-    'seq.step2': 'तीस सेकेन्ड तीव्र गतिमा, पहिल्यै बनाइएको केही छैन',
-    'seq.step3': 'सिधै खन्याइन्छ, कतै रोकिँदैन',
-    'seq.step4': 'ढक्कन लगाएर, स्लिभ हालेर, बाहिर',
 
     'faq.eyebrow': 'प्रश्नहरू',
     'faq.title': 'अर्डर गर्नुअघि',

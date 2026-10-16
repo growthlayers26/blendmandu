@@ -142,6 +142,23 @@ const CATEGORIES = [
   { id:'shots',     label:'Wellness shots' },
 ];
 
+/* ---------- photographs ----------
+   Every product is photographed on the same cream sweep: the six smoothies
+   in their cup (assets/img/cup/, turned by spin.js), the bowls, juices and
+   shots cut from group shots (assets/img/range/). A product added to the
+   menu without a photo falls back to productArt() below.
+------------------------------------ */
+const PHOTO_CUP = new Set(['himalayan-berry', 'mango-sunrise', 'green-machine',
+                           'peanut-banana', 'cacao-almond', 'tropical-turmeric']);
+const PHOTO_RANGE = new Set(['acai-bowl', 'dragonfruit-bowl', 'protein-bowl',
+                             'beet-ginger', 'citrus-immunity', 'green-press',
+                             'ginger-turmeric-shot', 'wheatgrass-shot', 'amla-shot']);
+/* path under assets/, or '' when there is none */
+function productPhoto(p) {
+  return PHOTO_CUP.has(p.id) ? `img/cup/${p.id}.webp`
+       : PHOTO_RANGE.has(p.id) ? `img/range/${p.id}.webp` : '';
+}
+
 /* ============================================================
    Product artwork — original inline SVG, one shape per format.
    No stock photos needed; colours come from the product.
