@@ -11,10 +11,11 @@
    clear lid, its light and the shadow stay as photographed, as a real
    lid's reflections would; the straw's lean swings round. A small tilt up and down
    (MAX_TILT) carries each layer on a stand-in shape, so the cup leans
-   towards you and away like the old 3D one. Every flavour is the same
-   photograph recoloured, so all six cost one download (about 520 KB)
-   and change instantly. Built by blendmandu-3d, tools/wrap_build.py and
-   tools/wrap_export.py, into assets/img/cup/.
+   towards you and away like the old 3D one. Every flavour is its own
+   photograph of the same cup (300 to 440 KB of textures each, about
+   110 KB at the half size the menu's cards use), loaded when a cup of
+   that flavour is first wanted. Built by blendmandu-3d,
+   tools/wrap_build.py and tools/wrap_export.py, into assets/img/cup/.
 
    One WebGL canvas, never in the page, draws every cup; each turntable
    copies its picture onto a canvas laid over its poster. Without WebGL
@@ -45,41 +46,15 @@ void main() { vUv = vec2(p.x * .5 + .5, .5 - p.y * .5); gl_Position = vec4(p, 0.
   const FRAG = `precision highp float;
 varying vec2 vUv;
 uniform sampler2D uStrip, uTop, uMaps, uStraw, uMound, uMStrip;
-uniform vec4 uBox, uStrawBox, uSleeve, uKf, uFlav, uLidA, uLidB, uMBox;
+uniform vec4 uBox, uStrawBox, uKf, uLidA, uLidB, uMBox;
 uniform vec3 uMoundS;
 uniform vec3 uRfit;
 uniform vec2 uCfit, uBody, uPivot, uTilt, uP0, uVh, uV0h;
-uniform float uKhi, uTheta, uL0, uRecolour, uTiltC, uStrawK;
+uniform float uKhi, uTheta, uTiltC, uStrawK;
 const float PI = 3.14159265;
 
 vec3 dec(vec3 c) { return mix(c / 12.92, pow((c + .055) / 1.055, vec3(2.4)), step(.04045, c)); }
 vec3 enc(vec3 c) { return mix(c * 12.92, 1.055 * pow(c, vec3(1. / 2.4)) - .055, step(.0031308, c)); }
-// a vector times mat3(rows) is the matrix of those rows times the vector
-vec3 toLab(vec3 c) {
-  vec3 lms = pow(max(c * mat3(.4122214708, .5363325363, .0514459929,
-                              .2119034982, .6806995451, .1073969566,
-                              .0883024619, .2817188376, .6299787005), vec3(0.)), vec3(1. / 3.));
-  return lms * mat3(.2104542553, .7936177850, -.0040720468,
-                    1.9779984951, -2.4285922050, .4505937099,
-                    .0259040371, .7827717662, -.8086757660);
-}
-vec3 fromLab(vec3 l) {
-  vec3 lms = l * mat3(1., .3963377774, .2158037573,
-                      1., -.1055613458, -.0638541728,
-                      1., -.0894841775, -1.2914855480);
-  return (lms * lms * lms) * mat3(4.0767416621, -3.3077115913, .2309699292,
-                                  -1.2684380046, 2.6097574011, -.3413193965,
-                                  -.0041960863, -.7034186147, 1.7076147010);
-}
-float hueOf(vec3 lab) { return length(lab.yz) > 1e-6 ? atan(lab.z, lab.y) : 0.; }
-// the berry turned into the flavour: lightness by a power round the berry's
-// median, chroma scaled, hue turned; wl weights the lightness on its own
-vec3 recolour(vec3 c, float w, float wl) {
-  vec3 lab = toLab(c);
-  float L2 = min(uFlav.x * pow(max(lab.x, 1e-4) / uL0, uFlav.w), .98);
-  float C2 = length(lab.yz) * uFlav.y, h2 = hueOf(lab) + uFlav.z;
-  return clamp(fromLab(vec3(mix(lab.x, L2, wl), mix(lab.yz, C2 * vec2(cos(h2), sin(h2)), w))), 0., 1.);
-}
 float cxAt(float u) { return uCfit.x * (u - 1600.) / 1000. + uCfit.y; }
 float radAt(float u) { float t = (u - 1600.) / 1000.; return (uRfit.x * t + uRfit.y) * t + uRfit.z; }
 float kfAt(float u) { return clamp(uKf.x + (u - uKf.y) * uKf.z, uKf.w, uKhi); }
@@ -121,12 +96,6 @@ void main() {
   float bA = mp.r, S = mp.g * 2., u = b.x;
   float phi = asin(clamp(b.y / radAt(u), -1., 1.));
   vec3 alb = dec(texture2D(uStrip, vec2((phi - uTheta + PI) / (2. * PI), (u - uBody.x + .5) / uBody.y)).rgb);
-  if (uRecolour > .5 && bA > .002) {
-    float w = 1.;                                    // smoothie: all of it
-    if (u >= uSleeve.z && u < uSleeve.w)             // the sleeve's edges: only what is smoothie coloured
-      w = u >= uSleeve.x && u < uSleeve.y ? 0. : 1. - clamp((degrees(hueOf(toLab(alb))) - 30.) / 15., 0., 1.);
-    alb = recolour(alb, w, w);
-  }
   vec3 body = alb * S * bA;
 
   // the straw: its lean swung round with the turn, tilted with the cup
@@ -153,22 +122,11 @@ void main() {
   vec2 mu = (uBox.xy + tuv * uBox.zw - uMBox.xy) / uMBox.zw;
   float hA = texture2D(uMound, clamp(mu, 0., 1.)).r * step(0., mu.x) * step(mu.x, 1.) * step(0., mu.y) * step(mu.y, 1.);
   vec3 hc = dec(texture2D(uMStrip, vec2((mph - uTheta + PI) / (2. * PI), (o.x - uMoundS.x) / (uMoundS.y - uMoundS.x))).rgb);
-  if (uRecolour > .5) {
-    vec3 lab = toLab(hc);
-    float shine = clamp((lab.x - .8) / .1, 0., 1.) * (1. - clamp((length(lab.yz) - .02) / .03, 0., 1.));
-    hc = recolour(hc, 1., 1. - shine);
-  }
   under = hc * hA + under * (1. - hA);
   underA = hA + underA * (1. - hA);
 
   float tA = texture2D(uMaps, tuv).b;
   vec3 tc = dec(texture2D(uTop, tuv).rgb);
-  if (uRecolour > .5 && tA > .85) {
-    vec3 un = clamp(tc / tA, 0., 1.), lab = toLab(un);
-    float shine = clamp((lab.x - .8) / .1, 0., 1.) * (1. - clamp((length(lab.yz) - .02) / .03, 0., 1.));
-    float w = clamp((tA - .85) / .12, 0., 1.);
-    tc = recolour(un, w, w * (1. - shine)) * tA;
-  }
   vec3 C = tc + under * (1. - tA);
   float A = tA + underA * (1. - tA);
   // the page composites this in sRGB: an alpha that dims the page behind as
@@ -177,8 +135,12 @@ void main() {
   gl_FragColor = vec4(oc, max(1. - pow(1. - clamp(A, 0., 1.), 1. / 2.2), max(oc.r, max(oc.g, oc.b))));
 }`;
 
-  /* ---------- the renderer, shared by every turntable on the page ---------- */
-  const R = { ok: false };
+  /* ---------- the renderer, shared by every turntable on the page ----------
+     Each flavour is its own photograph, built into its own set of textures
+     (assets/img/cup/<id>/): loaded when a cup of that flavour is first wanted,
+     full size for the hero and a product page, half size (sm/) for the menu's
+     cards, which are a few hundred pixels across. */
+  const R = { ok: false, kits: {} };
   let rendering = null;
   const loadImg = name => new Promise((ok, no) => {
     const im = new Image();
@@ -187,6 +149,7 @@ void main() {
     im.onerror = no;
     im.src = asset(name);
   });
+  const LAYERS = ['strip', 'top', 'maps', 'straw', 'mound', 'mstrip'];
   function renderer() {
     return (rendering ||= (async () => {
       const cv = document.createElement('canvas');
@@ -195,20 +158,17 @@ void main() {
       if (!gl) return null;
       const hp = gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_FLOAT);
       if (!hp || !hp.precision) return null;
-      const [geo, ...imgs] = await Promise.all([
-        fetch(asset('wrap.json')).then(r => r.json()),
-        ...['strip.webp', 'top.webp', 'maps.webp', 'straw.webp', 'mound.webp', 'mstrip.webp'].map(loadImg),
-      ]);
-      Object.assign(R, { cv, gl, geo, imgs, gl2: typeof WebGL2RenderingContext !== 'undefined' && gl instanceof WebGL2RenderingContext });
-      // a lost context keeps every turntable's last picture; a restored one picks up again
+      const geo = await fetch(asset('wrap.json')).then(r => r.json());
+      Object.assign(R, { cv, gl, geo: geo.flavours, gl2: typeof WebGL2RenderingContext !== 'undefined' && gl instanceof WebGL2RenderingContext });
+      // a lost context keeps every turntable's last picture; a restored one loads its textures again
       cv.addEventListener('webglcontextlost', e => { e.preventDefault(); R.ok = false; });
-      cv.addEventListener('webglcontextrestored', () => { R.ok = setup(); wake(); });
+      cv.addEventListener('webglcontextrestored', () => { R.kits = {}; R.ok = setup(); wake(); });
       R.ok = setup();
       return R.ok ? R : null;
     })().catch(() => null));
   }
   function setup() {
-    const { gl, geo, imgs, gl2 } = R;
+    const { gl } = R;
     const shader = (type, src) => {
       const s = gl.createShader(type);
       gl.shaderSource(s, src);
@@ -227,59 +187,76 @@ void main() {
     gl.enableVertexAttribArray(0);
     gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
     gl.disable(gl.BLEND);
-
     // the images are data as much as colour: no colour management, no premultiplying
     gl.pixelStorei(gl.UNPACK_COLORSPACE_CONVERSION_WEBGL, gl.NONE);
     gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
-    const aniso = gl.getExtension('EXT_texture_filter_anisotropic');
-    const texture = (unit, im, { repeat = false, mip = true } = {}) => {
-      gl.activeTexture(gl.TEXTURE0 + unit);
-      gl.bindTexture(gl.TEXTURE_2D, gl.createTexture());
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, im);
-      // WebGL 1 mipmaps only power-of-two sizes: the strip is one, the rest go without
-      const pot = !(im.width & (im.width - 1)) && !(im.height & (im.height - 1));
-      mip = mip && (gl2 || pot);
-      if (mip) gl.generateMipmap(gl.TEXTURE_2D);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, mip ? gl.LINEAR_MIPMAP_LINEAR : gl.LINEAR);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, repeat ? gl.REPEAT : gl.CLAMP_TO_EDGE);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-      // the body's edges squeeze the strip sideways: anisotropy keeps them sharp
-      if (mip && aniso) gl.texParameterf(gl.TEXTURE_2D, aniso.TEXTURE_MAX_ANISOTROPY_EXT, Math.min(8, gl.getParameter(aniso.MAX_TEXTURE_MAX_ANISOTROPY_EXT)));
-    };
-    texture(0, imgs[0], { repeat: true });
-    texture(1, imgs[1]);
-    texture(2, imgs[2]);
-    texture(3, imgs[3], { mip: false });
-    texture(4, imgs[4]);
-    texture(5, imgs[5], { repeat: true });
-
+    R.aniso = gl.getExtension('EXT_texture_filter_anisotropic');
     const U = name => gl.getUniformLocation(prog, name);
-    ['uStrip', 'uTop', 'uMaps', 'uStraw', 'uMound', 'uMStrip'].forEach((n, i) => gl.uniform1i(U(n), i));
-    const [bx0, by0, bx1, by1] = geo.box, [sx0, sy0, sx1, sy1] = geo.straw;
-    gl.uniform4f(U('uBox'), bx0, by0, bx1 - bx0, by1 - by0);
-    gl.uniform4f(U('uStrawBox'), sx0, sy0, sx1 - sx0, sy1 - sy0);
-    gl.uniform4f(U('uSleeve'), ...geo.sleeve);
-    gl.uniform4f(U('uKf'), ...geo.kf.slice(0, 4));
-    gl.uniform1f(U('uKhi'), geo.kf[4]);
-    gl.uniform2f(U('uCfit'), ...geo.cfit);
-    gl.uniform3f(U('uRfit'), ...geo.rfit);
-    gl.uniform2f(U('uBody'), ...geo.body);
-    gl.uniform2f(U('uPivot'), ...geo.pivot);
-    gl.uniform1f(U('uL0'), geo.l0);
-    gl.uniform1f(U('uTiltC'), geo.tiltc);
-    gl.uniform4f(U('uLidA'), ...geo.lid.slice(0, 4));
-    gl.uniform4f(U('uLidB'), ...geo.lid.slice(4, 8));
-    gl.uniform3f(U('uMoundS'), ...geo.mound);
-    const [mx0, my0, mx1, my1] = geo.moundbox;
-    gl.uniform4f(U('uMBox'), mx0, my0, mx1 - mx0, my1 - my0);
-    R.u = { theta: U('uTheta'), flav: U('uFlav'), recolour: U('uRecolour'), tilt: U('uTilt'),
-            p0: U('uP0'), vh: U('uVh'), v0h: U('uV0h'), strawK: U('uStrawK') };
+    LAYERS.forEach((n, i) => gl.uniform1i(U(`u${n === 'mstrip' ? 'MStrip' : n[0].toUpperCase() + n.slice(1)}`), i));
+    R.u = Object.fromEntries(['uTheta', 'uTilt', 'uP0', 'uVh', 'uV0h', 'uStrawK', 'uBox', 'uStrawBox', 'uKf', 'uKhi',
+      'uCfit', 'uRfit', 'uBody', 'uPivot', 'uTiltC', 'uLidA', 'uLidB', 'uMoundS', 'uMBox'].map(n => [n, U(n)]));
+    R.bound = '';
     return true;
   }
-  /* draw a cup at its angle in the shared canvas, then copy it onto the turntable's own */
+  /* one flavour's textures, at one size: a promise, made once */
+  function kit(id, small) {
+    const key = `${id}${small ? '/sm' : ''}`;
+    return (R.kits[key] ||= (async () => {
+      const imgs = await Promise.all(LAYERS.map(n => loadImg(`${key}/${n}.webp`)));
+      const { gl, gl2, aniso } = R;
+      const tex = imgs.map((im, i) => {
+        const t = gl.createTexture();
+        gl.activeTexture(gl.TEXTURE0 + i);
+        gl.bindTexture(gl.TEXTURE_2D, t);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, im);
+        const repeat = i === 0 || i === 5, want = i !== 3;           // the strips wrap round; the straw goes without mipmaps
+        // WebGL 1 mipmaps only power-of-two sizes: the strips are, the rest go without
+        const mip = want && (gl2 || (!(im.width & (im.width - 1)) && !(im.height & (im.height - 1))));
+        if (mip) gl.generateMipmap(gl.TEXTURE_2D);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, mip ? gl.LINEAR_MIPMAP_LINEAR : gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, repeat ? gl.REPEAT : gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        // the body's edges squeeze the strip sideways: anisotropy keeps them sharp
+        if (mip && aniso) gl.texParameterf(gl.TEXTURE_2D, aniso.TEXTURE_MAX_ANISOTROPY_EXT, Math.min(8, gl.getParameter(aniso.MAX_TEXTURE_MAX_ANISOTROPY_EXT)));
+        return t;
+      });
+      R.bound = '';
+      R.kits[key].ready = { tex, geo: R.geo[id] };
+      wake();
+      return R.kits[key].ready;
+    })());
+  }
+  const kitReady = (id, small) => { const k = R.kits[`${id}${small ? '/sm' : ''}`]; return k && k.ready; };
+  /* bind a flavour's textures and geometry, unless they are bound already */
+  function bind(key, k) {
+    const { gl, u } = R;
+    if (R.bound === key) return;
+    R.bound = key;
+    k.tex.forEach((t, i) => { gl.activeTexture(gl.TEXTURE0 + i); gl.bindTexture(gl.TEXTURE_2D, t); });
+    const g = k.geo, [bx0, by0, bx1, by1] = g.box, [sx0, sy0, sx1, sy1] = g.straw, [mx0, my0, mx1, my1] = g.moundbox;
+    gl.uniform4f(u.uBox, bx0, by0, bx1 - bx0, by1 - by0);
+    gl.uniform4f(u.uStrawBox, sx0, sy0, sx1 - sx0, sy1 - sy0);
+    gl.uniform4f(u.uKf, ...g.kf.slice(0, 4));
+    gl.uniform1f(u.uKhi, g.kf[4]);
+    gl.uniform2f(u.uCfit, ...g.cfit);
+    gl.uniform3f(u.uRfit, ...g.rfit);
+    gl.uniform2f(u.uBody, ...g.body);
+    gl.uniform2f(u.uPivot, ...g.pivot);
+    gl.uniform1f(u.uTiltC, g.tiltc);
+    gl.uniform4f(u.uLidA, ...g.lid.slice(0, 4));
+    gl.uniform4f(u.uLidB, ...g.lid.slice(4, 8));
+    gl.uniform3f(u.uMoundS, ...g.mound);
+    gl.uniform4f(u.uMBox, mx0, my0, mx1 - mx0, my1 - my0);
+  }
+  /* draw a cup at its angle in the shared canvas, then copy it onto the turntable's
+     own; false while its flavour's textures are still on their way */
   function paint(tt) {
-    const { gl, cv, u, geo } = R;
+    const key = `${tt.id}${tt.small ? '/sm' : ''}`;
+    const k = kitReady(tt.id, tt.small);
+    if (!k) { kit(tt.id, tt.small); return false; }
+    const { gl, cv, u } = R, geo = k.geo;
+    bind(key, k);
     const w = Math.round(tt.dw), h = Math.round(tt.dh);
     if (cv.width < w || cv.height < h) {
       cv.width = Math.max(cv.width, w);
@@ -300,20 +277,18 @@ void main() {
     const p0 = project(X0, py, 0);
     const p1 = project(X0 - L * Math.sin(lean) * Math.cos(th), py - L * Math.cos(lean), L * Math.sin(lean) * Math.sin(th));
     const vx = p1[0] - p0[0], vy = p1[1] - p0[1], vl = Math.hypot(vx, vy);
-    const own = geo.flavours[tt.id];
     gl.viewport(0, 0, w, h);
-    gl.uniform1f(u.theta, th);
-    gl.uniform2f(u.tilt, c, s);
-    gl.uniform2f(u.p0, p0[0], p0[1]);
-    gl.uniform2f(u.vh, vx / vl, vy / vl);
-    gl.uniform2f(u.v0h, -Math.sin(lean), -Math.cos(lean));
-    gl.uniform1f(u.strawK, L / vl);
-    gl.uniform4f(u.flav, ...(own || geo.flavours['himalayan-berry']));
-    gl.uniform1f(u.recolour, own && tt.id !== 'himalayan-berry' ? 1 : 0);
+    gl.uniform1f(u.uTheta, th);
+    gl.uniform2f(u.uTilt, c, s);
+    gl.uniform2f(u.uP0, p0[0], p0[1]);
+    gl.uniform2f(u.uVh, vx / vl, vy / vl);
+    gl.uniform2f(u.uV0h, -Math.sin(lean), -Math.cos(lean));
+    gl.uniform1f(u.uStrawK, L / vl);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
     tt.ctx.clearRect(0, 0, tt.c.width, tt.c.height);
     // the viewport is the bottom left corner of the shared canvas
     tt.ctx.drawImage(cv, 0, cv.height - h, w, h, Math.round(tt.dx), Math.round(tt.dy), w, h);
+    return true;
   }
 
   /* ---------- one canvas laid exactly over its poster image ---------- */
@@ -351,8 +326,8 @@ void main() {
       if (!R.ok || !this.dw) return;
       const key = `${this.id}:${this.angle.toFixed(2)}:${this.tilt.toFixed(2)}`;
       if (key === this.key) return;
+      if (!paint(this)) return;                        // its flavour still loading: the poster stays
       this.key = key;
-      paint(this);
       if (!this.shown) { this.shown = true; this.host.classList.add('has-spin'); }  // poster hides under it
     }
   }
@@ -513,14 +488,26 @@ void main() {
       }
       const next = (fi + dir + flavours.length) % flavours.length;
       const id = flavours[next].id;
+      if (R.ok && !kitReady(id)) await within(kit(id).catch(() => {}), 4000);
       const change = () => {
         fi = next; tt.id = id; tt.key = '';
         if (!R.ok) poster.src = posterURL(id);     // no WebGL: the flavour's still
         paintPage(flavours[fi]);
       };
-      if (REDUCED || !R.ok) { change(); tt.draw(); }
+      if (REDUCED || !R.ok || !kitReady(id)) {
+        change();
+        // its textures not here yet: show its still until they are
+        if (R.ok && !kitReady(id)) { poster.src = posterURL(id); stage.classList.remove('has-spin'); tt.shown = false; }
+        tt.draw();
+      }
       else await turn(dir, change);
       busy = false;
+      if (!SAVE) neighbours();
+    }
+    // the flavours either side of the one showing, fetched ahead of a change
+    function neighbours() {
+      if (!R.ok) return;
+      for (const d of [1, -1]) kit(flavours[(fi + d + flavours.length) % flavours.length].id).catch(() => {});
     }
 
     /* drag sideways to spin, up and down to tilt, flick to throw it, tap to change flavour */
@@ -628,13 +615,17 @@ void main() {
     if (isHero) addEventListener('scroll', wake, { passive: true });
 
     /* The textures load as soon as the cup's photo is on screen (it is the
-       page's largest paint, and on a slow connection 550 KB of textures beside
+       page's largest paint, and on a slow connection 300 KB of textures beside
        it would hold it back), not after the whole page. It is turning at full
-       speed the moment it is drawn. */
+       speed the moment it is drawn. The flavours either side load next, so a
+       change of flavour does not wait. */
     (async () => {
       if (!poster.complete) await within(new Promise(r => poster.addEventListener('load', r, { once: true })), 2500);
       await within(renderer(), 8000);
       if (!R.ok) return;
+      await within(kit(tt.id).catch(() => {}), 8000);
+      if (!kitReady(tt.id)) return;
+      if (!fixed && !SAVE) neighbours();
       stage.classList.add('is-live');
       vel = IDLE;
       tt.key = '';
@@ -701,6 +692,7 @@ void main() {
         if (!poster) return;
         const tt = new Turntable(el, poster);
         tt.id = el.dataset.photo;
+        tt.small = true;                               // a card is a few hundred pixels across
         // cards out of step with one another, so a row never turns in unison
         cards.set(el, { tt, phase: (tt.id.charCodeAt(0) % 7) * 52 + tt.id.length * 13, visible: false });
         io.observe(el);
