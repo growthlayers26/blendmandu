@@ -32,6 +32,8 @@
   // data saver or 2G (the old WebGL cups' cut-off): nothing turns on its own
   // and the menu cards keep their photo
   const SAVE = !!net.saveData || /2g$/.test(net.effectiveType || '');
+  // a phone short of memory, or a slow link: no fetching ahead, fewer sets kept
+  const LOW = SAVE || /3g$/.test(net.effectiveType || '') || (navigator.deviceMemory || 8) <= 4;
 
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   // The photograph is one view: tilted further than this the lid and the base
@@ -125,14 +127,15 @@ void main() {
   under = hc * hA + under * (1. - hA);
   underA = hA + underA * (1. - hA);
 
+  // What turns is lit in linear light; the lid, the rim band and the shadow were
+  // solved in sRGB, the space the page lays this canvas over itself in, so over
+  // the cream they give back the photograph exactly. Layer them there.
   float tA = texture2D(uMaps, tuv).b;
-  vec3 tc = dec(texture2D(uTop, tuv).rgb);
-  vec3 C = tc + under * (1. - tA);
+  vec3 tc = texture2D(uTop, tuv).rgb;                // sRGB, premultiplied
+  vec3 us = enc(clamp(under / max(underA, 1e-4), 0., 1.)) * underA;
+  vec3 C = clamp(tc + us * (1. - tA), 0., 1.);
   float A = tA + underA * (1. - tA);
-  // the page composites this in sRGB: an alpha that dims the page behind as
-  // much as the lid and the shadow would in linear light
-  vec3 oc = enc(clamp(C, 0., 1.));
-  gl_FragColor = vec4(oc, max(1. - pow(1. - clamp(A, 0., 1.), 1. / 2.2), max(oc.r, max(oc.g, oc.b))));
+  gl_FragColor = vec4(C, max(clamp(A, 0., 1.), max(C.r, max(C.g, C.b))));
 }`;
 
   /* ---------- the renderer, shared by every turntable on the page ----------
@@ -222,12 +225,27 @@ void main() {
         return t;
       });
       R.bound = '';
-      R.kits[key].ready = { tex, geo: R.geo[id] };
+      if (!small) evict(key);
+      R.kits[key].ready = { tex, geo: R.geo[id], used: performance.now() };
       wake();
       return R.kits[key].ready;
     })());
   }
   const kitReady = (id, small) => { const k = R.kits[`${id}${small ? '/sm' : ''}`]; return k && k.ready; };
+  /* Textures sit in graphics memory (a full set is about 80 MB with its mipmaps): keep the
+     few in use, and let the least recently drawn go when another arrives. A turntable that
+     wants one back simply loads it again, from the cache. */
+  const KEEP = LOW ? 2 : 3;
+  function evict(keepKey) {
+    const live = Object.entries(R.kits).filter(([key, k]) => k.ready && !key.endsWith('/sm') && key !== keepKey);
+    live.sort((a, b) => a[1].ready.used - b[1].ready.used);
+    while (live.length >= KEEP) {
+      const [key, k] = live.shift();
+      k.ready.tex.forEach(t => R.gl.deleteTexture(t));
+      delete R.kits[key];
+      if (R.bound === key) R.bound = '';
+    }
+  }
   /* bind a flavour's textures and geometry, unless they are bound already */
   function bind(key, k) {
     const { gl, u } = R;
@@ -256,6 +274,7 @@ void main() {
     const k = kitReady(tt.id, tt.small);
     if (!k) { kit(tt.id, tt.small); return false; }
     const { gl, cv, u } = R, geo = k.geo;
+    k.used = performance.now();
     bind(key, k);
     const w = Math.round(tt.dw), h = Math.round(tt.dh);
     if (cv.width < w || cv.height < h) {
@@ -502,12 +521,14 @@ void main() {
       }
       else await turn(dir, change);
       busy = false;
-      if (!SAVE) neighbours();
+      neighbours();
     }
     // the flavours either side of the one showing, fetched ahead of a change
     function neighbours() {
-      if (!R.ok) return;
-      for (const d of [1, -1]) kit(flavours[(fi + d + flavours.length) % flavours.length].id).catch(() => {});
+      if (!R.ok || LOW) return;
+      // when the browser is idle, not while the page is still arriving
+      const go = () => { for (const d of [1, -1]) kit(flavours[(fi + d + flavours.length) % flavours.length].id).catch(() => {}); };
+      if ('requestIdleCallback' in window) requestIdleCallback(go, { timeout: 5000 }); else setTimeout(go, 2500);
     }
 
     /* drag sideways to spin, up and down to tilt, flick to throw it, tap to change flavour */
@@ -625,7 +646,7 @@ void main() {
       if (!R.ok) return;
       await within(kit(tt.id).catch(() => {}), 8000);
       if (!kitReady(tt.id)) return;
-      if (!fixed && !SAVE) neighbours();
+      if (!fixed) neighbours();
       stage.classList.add('is-live');
       vel = IDLE;
       tt.key = '';
