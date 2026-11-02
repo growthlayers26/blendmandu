@@ -49,7 +49,7 @@ void main() { vUv = vec2(p.x * .5 + .5, .5 - p.y * .5); gl_Position = vec4(p, 0.
 varying vec2 vUv;
 uniform sampler2D uStrip, uTop, uMaps, uStraw, uMound, uMStrip;
 uniform vec4 uBox, uStrawBox, uKf, uLidA, uLidB, uMBox;
-uniform vec3 uMoundS;
+uniform vec3 uMoundS, uSweep;
 uniform vec3 uRfit;
 uniform vec2 uCfit, uBody, uPivot, uTilt, uP0, uVh, uV0h;
 uniform float uKhi, uTheta, uTiltC, uStrawK;
@@ -131,10 +131,15 @@ void main() {
   // solved in sRGB, the space the page lays this canvas over itself in, so over
   // the cream they give back the photograph exactly. Layer them there.
   float tA = texture2D(uMaps, tuv).b;
-  vec3 tc = texture2D(uTop, tuv).rgb;                // sRGB, premultiplied
+  vec4 top = texture2D(uTop, tuv);                   // sRGB, premultiplied; its alpha, the cup's outline
   vec3 us = enc(clamp(under / max(underA, 1e-4), 0., 1.)) * underA;
-  vec3 C = clamp(tc + us * (1. - tA), 0., 1.);
+  vec3 C = top.rgb + us * (1. - tA);
   float A = tA + underA * (1. - tA);
+  // Inside the cup's outline the clear plastic keeps the studio's cream it was
+  // photographed against: laid over a dark page it all but vanished, and the lid's
+  // flange with it, so the lid looked cut off and out of line with the cup.
+  C = clamp(C + (1. - A) * uSweep * top.a, 0., 1.);
+  A = A + (1. - A) * top.a;
   gl_FragColor = vec4(C, max(clamp(A, 0., 1.), max(C.r, max(C.g, C.b))));
 }`;
 
@@ -197,7 +202,7 @@ void main() {
     const U = name => gl.getUniformLocation(prog, name);
     LAYERS.forEach((n, i) => gl.uniform1i(U(`u${n === 'mstrip' ? 'MStrip' : n[0].toUpperCase() + n.slice(1)}`), i));
     R.u = Object.fromEntries(['uTheta', 'uTilt', 'uP0', 'uVh', 'uV0h', 'uStrawK', 'uBox', 'uStrawBox', 'uKf', 'uKhi',
-      'uCfit', 'uRfit', 'uBody', 'uPivot', 'uTiltC', 'uLidA', 'uLidB', 'uMoundS', 'uMBox'].map(n => [n, U(n)]));
+      'uCfit', 'uRfit', 'uBody', 'uPivot', 'uTiltC', 'uLidA', 'uLidB', 'uMoundS', 'uMBox', 'uSweep'].map(n => [n, U(n)]));
     R.bound = '';
     return true;
   }
@@ -266,6 +271,7 @@ void main() {
     gl.uniform4f(u.uLidB, ...g.lid.slice(4, 8));
     gl.uniform3f(u.uMoundS, ...g.mound);
     gl.uniform4f(u.uMBox, mx0, my0, mx1 - mx0, my1 - my0);
+    gl.uniform3f(u.uSweep, ...(g.sweep || [0.97, 0.92, 0.87]));
   }
   /* draw a cup at its angle in the shared canvas, then copy it onto the turntable's
      own; false while its flavour's textures are still on their way */
